@@ -1,4 +1,5 @@
 const Restaurant = require("../models/RestaurantModel")
+const Review = require('../models/ReviewModel')
 
 // @desc    Get all restaurants
 // @route   GET /api/v1/restaurants/
@@ -7,8 +8,25 @@ exports.getRestaurants = async (req, res, next) => {
     try {
         const restaurants = await Restaurant.find({})
 
+        for (let i = 0; i < restaurants.length; i++) {
+            const avgRating = await Review.aggregate([
+                {
+                    $match: { restaurant: restaurants[i]._id }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        averageRating: { $avg: "$rating" }
+                    }
+                }
+            ]);
+
+            restaurants[i] = { ...restaurants[i]._doc, reservations: restaurants[i].reservations, averageRating: avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 'No Review' };
+        }
+
         return res.status(200).send({
             success: true,
+            count: restaurants.length,
             data: restaurants
         })
     } catch (err) {
@@ -34,9 +52,22 @@ exports.getRestaurantByID = async (req, res, next) => {
             })
         }
 
+        const avgRating = await Review.aggregate([
+            {
+                $match: { restaurant: restaurant._id }
+            },
+            {
+                $group: {
+                    _id: null,
+                    averageRating: { $avg: "$rating" }
+                }
+            }
+        ])
+
         return res.status(200).send({
             success: true,
-            data: restaurant
+            data: restaurant,
+            averageRating: avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 'No Review'
         })
 
     } catch (err) {
