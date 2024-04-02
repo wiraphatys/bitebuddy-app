@@ -11,7 +11,7 @@ const {
 
 const {
     protect
-} = require("../middlewares/authMiddleware");
+} = require("../middlewares/AuthMiddleware");
 
 router.route("/")
     .get(protect, getReservations)

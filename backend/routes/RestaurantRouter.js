@@ -13,7 +13,7 @@ const {
 const {
     protect,
     authorize
-} = require("../middlewares/authMiddleware");
+} = require("../middlewares/AuthMiddleware");
 
 router.route("/")
     .get(getRestaurants)
