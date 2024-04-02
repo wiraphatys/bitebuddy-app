@@ -16,7 +16,7 @@ const {
 
 router.route("/")
     .get(getMenus)
-    .post(protect, authorize("admin", "owner"), createRestaurant);
+    .post(protect, authorize("admin", "owner"), createMenu);
 
 router.route("/:id")
     .get(getMenuById)
