@@ -30,7 +30,7 @@ exports.getUsers = async (req, res, next) => {
 // @desc    Get single user
 // @route   GET /api/v1/users/:id
 // @access  Private
-exports.getUserByID = async (req, res, next) => {
+exports.getUserById = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
 
@@ -58,7 +58,7 @@ exports.getUserByID = async (req, res, next) => {
 // @desc    Update user
 // @route   PUT /api/users/:id
 // @access  Private
-exports.updateUser = async (req, res, next) => {
+exports.updateUserById = async (req, res, next) => {
     try {
         let user = await User.findById(req.params.id);
 
@@ -123,7 +123,7 @@ exports.updateUser = async (req, res, next) => {
 // @desc    Delete user
 // @route   DELETE /api/users/:id
 // @access  Private
-exports.deleteUser = async (req, res, next) => {
+exports.deleteUserById = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
 

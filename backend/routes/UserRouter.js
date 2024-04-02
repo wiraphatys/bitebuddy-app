@@ -3,9 +3,9 @@ const router = express.Router();
 
 const {
     getUsers,
-    getUserByID,
-    updateUser,
-    deleteUser
+    getUserById,
+    updateUserById,
+    deleteUserById
 } = require('../controllers/UserController');
 
 const {
@@ -17,8 +17,8 @@ const {
 router.route("/").get(protect, authorize("admin"), getUsers);
 
 router.route("/:id")
-    .get(protect, authorize("admin"), getUserByID)
-    .put(protect, updateUser)
-    .delete(protect, deleteUser);
+    .get(protect, authorize("admin"), getUserById)
+    .put(protect, updateUserById)
+    .delete(protect, deleteUserById);
 
 module.exports = router;
