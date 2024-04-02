@@ -1,10 +1,12 @@
 const express = require("express");
-const router = express.Router();
+const router = express.Router({mergeParams: true});
 
-const {
-    getReviews,
-} = require('../controllers/ReviewController');
+const {getReviews, getReview, createReview, updateReview, deleteReview } = require('../controllers/reviews');
 
-router.route("/").get(getReviews);
+const {protect, authorize} = require('../middleware/auth');
+
+router.route('/').get(protect, getReviews).post(protect,authorize('admin','user'), createReview);
+
+router.route('/:id').get(protect, getReview).put(protect,authorize('admin','user'), updateReview).delete(protect,authorize('admin','user'), deleteReview);
 
 module.exports = router;
