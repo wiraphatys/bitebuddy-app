@@ -3,7 +3,7 @@ const router = express.Router({mergeParams: true});
 
 const {getReviews, getReview, createReview, updateReview, deleteReview } = require('../controllers/reviews');
 
-const {protect, authorize} = require('../middleware/auth');
+const {protect, authorize} = require('../middlewares/AuthMiddleware');
 
 router.route('/').get(protect, getReviews).post(protect,authorize('admin','user'), createReview);
 
