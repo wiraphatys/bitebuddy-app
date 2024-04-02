@@ -53,6 +53,7 @@ app.use('/api/v1/menus', require("./routes/MenuRouter"));
 app.use('/api/v1/restaurants', require("./routes/RestaurantRouter"));
 app.use('/api/v1/reservations', require("./routes/ReservationRouter"));
 app.use('/api/v1/reviews', require("./routes/ReviewRouter"));
+app.use('/api/v1/auth', require('./routes/AuthRouter'));
 
 // Start listening
 const server = app.listen(PORT, () => {

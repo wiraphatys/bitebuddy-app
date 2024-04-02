@@ -4,6 +4,7 @@ const router = express.Router();
 const {
     getUsers,
     getUserById,
+    createUser,
     updateUserById,
     deleteUserById
 } = require('../controllers/UserController');
@@ -20,5 +21,7 @@ router.route("/:id")
     .get(protect, authorize("admin"), getUserById)
     .put(protect, updateUserById)
     .delete(protect, deleteUserById);
+
+router.route("/:role").post(createUser);
 
 module.exports = router;

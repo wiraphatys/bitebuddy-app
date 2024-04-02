@@ -55,6 +55,40 @@ exports.getUserById = async (req, res, next) => {
     }
 }
 
+// @desc    Register user
+// @route   POST /api/v1/users/:role
+// @access  Public
+exports.createUser = (async (req, res, next) => {
+    try {
+        const { email , password , firstName , lastName , tel } = req.body;
+        const role = req.params.role
+
+        if (role !== "user" && role !== "owner" && role !== "admin") {
+            return res.status(400).json({
+                success: false,
+                message: e.message
+            })
+        }
+
+        const user = await User.create({ email, password, firstName, lastName, tel, role })
+
+        // Create token
+        const token = user.getSignedJwtToken()
+
+        return res.status(200).json({
+            success: true,
+            token
+        })
+
+    } catch (e) {
+        console.log(e.stack)
+        return res.status(400).send({
+            success: false,
+            message: e.message
+        })
+    }
+})
+
 // @desc    Update user
 // @route   PUT /api/users/:id
 // @access  Private
