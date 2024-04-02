@@ -1,32 +1,34 @@
 const mongoose = require('mongoose');
-const { Schema , model } = mongoose;
+const { Schema, model } = mongoose;
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new Schema({
     email: {
-        type: String, 
-        unique: true, 
+        type: String,
+        unique: true,
         required: [true, "please fill an email."],
         match: [
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             'Please add a valid email'
         ]
     },
-    password: { 
-        type: String, 
+    password: {
+        type: String,
         required: [true, "please fill a password."],
         minlength: 8,
         select: false
     },
-    firstName: { 
-        type: String, 
+    firstName: {
+        type: String,
         required: [true, "please fill a firstname."]
     },
-    lastName: { 
-        type: String, 
+    lastName: {
+        type: String,
         required: [true, "please fill a lastname."]
     },
-    tel: { 
-        type: String, 
+    tel: {
+        type: String,
         required: [true, "please fill a telephone number."]
     },
     role: {
@@ -34,11 +36,11 @@ const UserSchema = new Schema({
         enum: ['user', 'owner', 'admin'],
         default: 'user'
     },
-    createdAt: { 
-        type: Date, default: Date.now 
+    createdAt: {
+        type: Date, default: Date.now
     },
-    updatedAt: { 
-        type: Date, default: Date.now 
+    updatedAt: {
+        type: Date, default: Date.now
     }
 });
 
