@@ -1,5 +1,5 @@
-// import User model
-const User = require('../controllers/UserController')
+// auth controller
+const User = require('../models/UserModel')
 
 // define function for send token response
 const sendTokenResponse = ((user, statusCode, res) => {
@@ -53,7 +53,7 @@ exports.login = (async (req, res, next) => {
     } catch (e) {
         return res.status(401).send({
             success: false,
-            msg: "Cannot convert email or password to string"
+            msg: e.message
         })
     }
 

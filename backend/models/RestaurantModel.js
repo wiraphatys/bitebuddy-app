@@ -34,6 +34,16 @@ const RestaurantSchema = new Schema({
         type: String, 
         required: [true, "please fill a zipcode."] 
     },
+    closeDate: {
+        type: [Number], // Array of Numbers
+        required: true,
+        validate: {
+            validator: function (arr) {
+                return Array.isArray(arr) && arr.every(val => Number.isInteger(val) && val >= 0 && val <= 6);
+            },
+            message: "closeDate must be an array of numbers (0 - 6)."
+        }
+    },
     owner: {
         type: Schema.ObjectId,
         ref: 'User',
