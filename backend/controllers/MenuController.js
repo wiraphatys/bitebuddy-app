@@ -1,16 +1,72 @@
 const Menu = require("../models/MenuModel")
+const Restaurant = require("../models/RestaurantModel")
 
 // @desc    Get all menus
-// @route   GET /api/v1/menus/
+// @route   GET /api/v1/restaurants/:restaurantId/menus
 // @access  Public
 exports.getMenus = async (req, res, next) => {
     try {
-        const menus = await Menu.find({})
+        if (!req.params.restaurantId) {
+            return res.status(400).json({
+                success: false,
+                message: "Reference Error"
+            })
+        }
+        if (req.user.role === "owner") {
 
-        return res.status(200).send({
-            success: true,
-            data: menus
-        })
+            const restaurant = await Restaurant.findById(req.params.restaurantId)
+
+            // Ownership validation
+            if (restaurant && restaurant.owner.toString() === req.user.id) {
+
+                const menus = await Menu.find({ restaurant: req.params.restaurantId })
+
+                if (menus.length === 0) {
+                    return res.status(200).json({
+                        success: true,
+                        count: 0,
+                        message: "Your restaurant has no menu, create now !"
+                    })
+                }
+
+                return res.status(200).send({
+                    success: true,
+                    count: menus.length,
+                    data: menus
+                })
+            } else {
+                return res.status(401).json({
+                    success: false,
+                    message: "You are not authorized to access this route."
+                })
+            }
+        } else if (req.user.role === "user") {
+
+            const restaurant = await Restaurant.findById(req.params.restaurantId)
+
+            if (!restaurant) {
+                return res.status(404).json({
+                    success: false,
+                    message: `Not found restaurant ID of ${req.params.restaurantId}`
+                })
+            }
+
+            const menus = await Menu.find({ restaurant: req.params.restaurantId })
+
+            if (menus.length === 0) {
+                return res.status(200).json({
+                    success: true,
+                    count: 0,
+                    message: "This restaurant not has any menu."
+                })
+            }
+
+            return res.status(200).json({
+                success: true,
+                count: menus.length,
+                data: menus
+            })
+        }
     } catch (err) {
         return res.status(500).json({
             success: false,
@@ -57,16 +113,28 @@ exports.getMenuById = async (req, res, next) => {
 }
 
 // @desc    Create new menu
-// @route   POST /api/v1/menus/
+// @route   POST /api/v1/restaurant/:restaurantId/menus
 // @access  Private
 exports.createMenu = async (req, res, next) => {
     try {
-        const menu = await Menu.create(req.body);
-        
-        res.status(201).send({
-            success: true,
-            data: menu
-        })
+        // Parse restaurantId to req.body
+        req.body.restaurant = req.params.restaurantId
+
+        const restaurant = await Restaurant.findById(req.params.restaurantId)
+
+        if (restaurant && restaurant.owner.toString() === req.user.id) {
+            const menu = await Menu.create(req.body);
+
+            return res.status(201).send({
+                success: true,
+                data: menu
+            })
+        } else {
+            return res.status(401).json({
+                success: false,
+                message: "You are not authorized to access this route."
+            })
+        }
     } catch (err) {
         // Handling validation errors
         if (err.name === 'ValidationError') {
@@ -95,23 +163,26 @@ exports.updateMenuById = async (req, res, next) => {
         // Find before execute updating process
         let menu = await Menu.findById(req.params.id);
 
-        if (!menu) {
-            return res.status(404).send({
+        const restaurant = await Restaurant.findById(menu?.restaurant)
+
+        // Ownership validation
+        if (menu && restaurant.owner.toString() === req.user.id) {
+
+            menu = await Menu.findByIdAndUpdate(req.params.id, req.body, {
+                new: true,
+                runValidators: true
+            })
+
+            return res.status(200).json({
+                success: true,
+                data: menu
+            })
+        } else {
+            return res.status(401).json({
                 success: false,
-                message: `Not found menu ID of ${req.params.id}`
+                message: "You are not authorized to update this menu"
             })
         }
-
-        // Execute updating process
-        menu = await Menu.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        })
-
-        res.status(200).send({
-            success: true,
-            data: menu
-        })
 
     } catch (err) {
         return res.status(500).send({
@@ -129,20 +200,24 @@ exports.deleteMenuById = async (req, res, next) => {
         // Find before execute deleting process
         let menu = await Menu.findById(req.params.id);
 
-        if (!menu) {
-            return res.status(404).send({
+        const restaurant = await Restaurant.findById(menu?.restaurant)
+
+        // Ownership validation
+        if (menu && restaurant.owner.toString() === req.user.id) {
+            // Execute deleting process
+            await menu.deleteOne();
+
+            return res.status(200).send({
+                success: true,
+                data: {}
+            })
+
+        } else {
+            return res.status(401).json({
                 success: false,
-                message: `Not found menu ID of ${req.params.id}`  
+                message: "You are not authorized to delete this menu"
             })
         }
-
-        // Execute deleting process
-        await menu.deleteOne();
-
-        return res.status(200).send({
-            success: true,
-            data: {}
-        })
 
     } catch (err) {
         console.log(err.message);

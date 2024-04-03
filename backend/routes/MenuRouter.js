@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router();
+const router = express.Router({ mergeParams: true }); // Enable params merging
 
 const {
     getMenus,
@@ -15,12 +15,12 @@ const {
 } = require("../middlewares/AuthMiddleware");
 
 router.route("/")
-    .get(getMenus)
-    .post(protect, authorize("admin", "owner"), createMenu);
+    .get(protect, getMenus)
+    .post(protect, authorize("owner"), createMenu);
 
 router.route("/:id")
-    .get(getMenuById)
-    .put(protect, authorize("admin", "owner"), updateMenuById)
+    .get(protect, getMenuById)
+    .put(protect, authorize("owner"), updateMenuById)
     .delete(protect, authorize("admin", "owner"), deleteMenuById);
 
 module.exports = router;
