@@ -60,17 +60,17 @@ exports.getUserById = async (req, res, next) => {
 // @access  Public
 exports.createUser = (async (req, res, next) => {
     try {
-        const { email , password , firstName , lastName , tel } = req.body;
+        const { email , password , firstName , lastName , tel , img } = req.body;
         const role = req.params.role
 
         if (role !== "user" && role !== "owner" && role !== "admin") {
             return res.status(400).json({
                 success: false,
-                message: e.message
+                message: "invalid role"
             })
         }
 
-        const user = await User.create({ email, password, firstName, lastName, tel, role })
+        const user = await User.create({ email, password, firstName, lastName, tel, role , img })
 
         // Create token
         const token = user.getSignedJwtToken()

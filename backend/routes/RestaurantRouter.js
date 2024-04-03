@@ -7,8 +7,8 @@ const {
     getRestaurants,
     getRestaurantByID,
     createRestaurant,
-    updateRestaurant,
-    deleteRestaurant
+    updateRestaurantById,
+    deleteRestaurantById
 } = require('../controllers/RestaurantController');
 
 const {
@@ -17,13 +17,13 @@ const {
 } = require("../middlewares/AuthMiddleware");
 
 router.route("/")
-    .get(getRestaurants)
-    .post(protect, authorize("admin", "owner"), createRestaurant);
+    .get(protect, getRestaurants)
+    .post(protect, authorize("owner"), createRestaurant);
 
 router.route("/:id")
-    .get(getRestaurantByID)
-    .put(protect, authorize("admin", "owner"), updateRestaurant)
-    .delete(protect, authorize("admin", "owner"), deleteRestaurant);
+    .get(protect, authorize("user"), getRestaurantByID)
+    .put(protect, authorize("owner"), updateRestaurantById)
+    .delete(protect, authorize("admin", "owner"), deleteRestaurantById);
 
 // re-Routing to reservation router
 router.use("/:restaurantId/reservations", reservationRouter);
