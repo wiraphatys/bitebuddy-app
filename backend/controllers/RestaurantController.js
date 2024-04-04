@@ -6,7 +6,8 @@ const Review = require('../models/ReviewModel')
 // @access  Public
 exports.getRestaurants = async (req, res, next) => {
     try {
-        if (req.user.role === "user") {
+        // role : { user , admin }
+        if (req.user.role !== "owner") {
             const restaurants = await Restaurant.find({})
 
             for (let i = 0; i < restaurants.length; i++) {
@@ -28,7 +29,8 @@ exports.getRestaurants = async (req, res, next) => {
                 success: true,
                 data: restaurants
             })
-        } else if (req.user.role === "owner") {
+        // role : { owner }
+        } else {
             const restaurant = await Restaurant.findOne({ owner: req.user.id });
 
             if (!restaurant) {
@@ -203,19 +205,37 @@ exports.deleteRestaurantById = async (req, res, next) => {
         // Find before execute deleting process
         let restaurant = await Restaurant.findById(req.params.id);
 
-        // Ownership validation
-        if (restaurant && restaurant.owner.toString() === req.user.id) {
+        if (req.user.role === "owner") {
+            // Ownership validation
+            if (restaurant && restaurant.owner.toString() === req.user.id) {
+                // Execute deleting process
+                await restaurant.deleteOne();
+
+                return res.status(200).send({
+                    success: true,
+                    data: {}
+                })
+            } else {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to access this restaurant`
+                })
+            }
+        } else {
+
+            if (!restaurant) {
+                return res.status(404).json({
+                    success: false,
+                    message: `Not found restaurant ID of ${req.params.id}`
+                })
+            }
+
             // Execute deleting process
             await restaurant.deleteOne();
 
             return res.status(200).send({
                 success: true,
                 data: {}
-            })
-        } else {
-            return res.status(401).send({
-                success: false,
-                message: `This user ${req.user.id} is not authorized to access this restaurant`
             })
         }
 
