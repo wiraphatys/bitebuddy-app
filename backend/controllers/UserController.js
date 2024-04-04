@@ -96,7 +96,39 @@ exports.updateUserById = async (req, res, next) => {
     try {
         let user = await User.findById(req.params.id);
 
-        if (user && req.user.id === user._id.toString()) {
+        // role : { user , owner }
+        if (req.user.role !== "admin") {
+            if (req.body.role) {
+                return res.status(400).send({
+                    success: false,
+                    message: `This user ID of ${req.params.id} not allow to edit role`
+                })
+            }
+            if (user && req.user.id === user._id.toString()) {
+                user.set(req.body);
+                await user.save();
+
+                user = user.toObject();
+                delete user.password;
+
+                return res.status(200).send({
+                    success: true,
+                    data: user
+                })
+            } else {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ID of ${req.params.id} not authorized to update this user`
+                })
+            }
+        } else {
+            if (!user) {
+                return res.status(404).send({
+                    success: false,
+                    message: `Not found user ID of ${req.params.id}`
+                })
+            }
+
             user.set(req.body);
             await user.save();
 
@@ -106,11 +138,6 @@ exports.updateUserById = async (req, res, next) => {
             return res.status(200).send({
                 success: true,
                 data: user
-            })
-        } else {
-            return res.status(401).send({
-                success: false,
-                message: `This user ID of ${req.params.id} not authorized to update this user`
             })
         }
 
@@ -141,19 +168,35 @@ exports.deleteUserById = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
 
-        if (user && req.user.id === user._id.toString()) {
+        // role : { user , owner }
+        if (req.user.role !== "admin") {
+            if (user && req.user.id === user._id.toString()) {
+                await user.deleteOne();
+                return res.status(200).send({
+                    success: true,
+                    data: {}
+                })
+            } else {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ID of ${req.user.id} is not authorized to delete this user`
+                })
+            }
+        } else {
+            if (!user) {
+                return res.status(404).send({
+                    success: false,
+                    message: `Not found user ID of ${req.params.id}`
+                })
+            }
+
             await user.deleteOne();
+
             return res.status(200).send({
                 success: true,
                 data: {}
             })
-        } else {
-            return res.status(401).send({
-                success: false,
-                message: `This user ID of ${req.user.id} is not authorized to delete this user`
-            })
         }
-        
     } catch (err) {
         console.log(err.message);
         res.status(500).send({
