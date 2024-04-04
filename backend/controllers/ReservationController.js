@@ -159,22 +159,41 @@ exports.updateReservation = async (req, res, next) => {
     try {
         let reservation = await Reservation.findById(req.params.id);
 
-        if (reservation && req.user.id === reservation.user.toString()) {
+        if (req.user.role !== "admin") {
+            if (reservation && req.user.id === reservation.user.toString()) {
+                reservation = await Reservation.findByIdAndUpdate(req.params.id, req.body, {
+                    new: true,
+                    runValidators: true
+                })
+                return res.status(200).send({
+                    success: true,
+                    data: reservation
+                })
+            } else {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to update this reservation`
+                })
+            }
+        } else {
+            if (!reservation) {
+                return res.status(404).send({
+                    success: false,
+                    message: `Not found reservation ID of ${req.params.id}`
+                })
+            }
+
             reservation = await Reservation.findByIdAndUpdate(req.params.id, req.body, {
                 new: true,
                 runValidators: true
             })
+
             return res.status(200).send({
                 success: true,
                 data: reservation
             })
-        } else {
-            return res.status(401).send({
-                success: false,
-                message: `This user ${req.user.id} is not authorized to update this reservation`
-            })
-        }
 
+        }
     } catch (err) {
         console.log(err)
         return res.status(500).send({
@@ -191,19 +210,34 @@ exports.deleteReservation = async (req, res, next) => {
     try {
         let reservation = await Reservation.findById(req.params.id);
 
-        if (reservation && req.user.id === reservation.user.toString()) {
+        if (req.user.role !== "admin") {
+            if (reservation && req.user.id === reservation.user.toString()) {
+                await reservation.deleteOne();
+                return res.status(200).send({
+                    success: true,
+                    data: {}
+                })
+            } else {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to delete this reservation`
+                })
+            }
+        } else {
+            if (!reservation) {
+                return res.status(404).send({
+                    success: false,
+                    message: `Not found reservation ID of ${req.params.id}`
+                })
+            }
+
             await reservation.deleteOne();
+
             return res.status(200).send({
                 success: true,
                 data: {}
             })
-        } else {
-            return res.status(401).send({
-                success: false,
-                message: `This user ${req.user.id} is not authorized to delete this reservation`
-            })
         }
-        
     } catch (err) {
         console.log(err);
         return res.status(500).send({
