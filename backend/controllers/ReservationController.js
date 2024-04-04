@@ -46,6 +46,20 @@ exports.getReservations = async (req, res, next) => {
                 count: reservations.length,
                 data: reservations
             })
+        } else {
+            const reservations = await Reservation.find({}).populate({
+                path: "user",
+                select: "email"
+            }).populate({
+                path: "restaurant",
+                select: "name tel"
+            })
+
+            return res.status(200).json({
+                success: true,
+                count: reservations.length,
+                data: reservations
+            })
         }
     } catch (err) {
         console.log(err);
