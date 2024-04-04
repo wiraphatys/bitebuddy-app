@@ -25,7 +25,7 @@ exports.getMenus = async (req, res, next) => {
                     return res.status(200).json({
                         success: true,
                         count: 0,
-                        message: "Your restaurant has no menu, create now !"
+                        message: "Your restaurant doesn't have any menu. Create one now!"
                     })
                 }
 

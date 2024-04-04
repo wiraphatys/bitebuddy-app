@@ -21,9 +21,9 @@ router.route("/")
     .post(protect, authorize("owner"), createRestaurant);
 
 router.route("/:id")
-    .get(protect, authorize("user"), getRestaurantByID)
-    .put(protect, authorize("owner"), updateRestaurantById)
-    .delete(protect, authorize("admin", "owner"), deleteRestaurantById);
+    .get(protect, authorize("user", "admin"), getRestaurantByID)
+    .put(protect, authorize("owner", "admin"), updateRestaurantById)
+    .delete(protect, authorize("owner", "admin"), deleteRestaurantById);
 
 // re-Routing to reservation router
 router.use("/:restaurantId/reservations", reservationRouter);

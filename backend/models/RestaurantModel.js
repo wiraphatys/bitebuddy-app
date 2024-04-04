@@ -16,6 +16,10 @@ const RestaurantSchema = new Schema({
         type: String, 
         required: [true, "please fill a description."] 
     },
+    tel: {
+        type: String,
+        required: [true, "please fill a tel"]
+    },
     street: {
         type: String,
         required: [true, "please fill a street."]

@@ -36,7 +36,7 @@ exports.getRestaurants = async (req, res, next) => {
             if (!restaurant) {
                 return res.status(200).json({
                     success: true,
-                    message: "You have any restaurant, create one !"
+                    message: "You don't have any restaurants. Create one!"
                 })
             }
 
@@ -170,8 +170,32 @@ exports.updateRestaurantById = async (req, res, next) => {
         // Find before execute updating process
         let restaurant = await Restaurant.findById(req.params.id);
 
-        // Ownership validation
-        if (restaurant && restaurant.owner.toString() === req.user.id) {
+        if (req.user.role === "owner") {
+            // Ownership validation
+            if (restaurant && restaurant.owner.toString() === req.user.id) {
+                // Execute updating process
+                restaurant = await Restaurant.findByIdAndUpdate(req.params.id, req.body, {
+                    new: true,
+                    runValidators: true
+                })
+
+                res.status(200).send({
+                    success: true,
+                    data: restaurant
+                })
+            } else {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to access this restaurant`
+                })
+            }
+        } else {
+            if (!restaurant) {
+                return res.status(404).send({
+                    success: false,
+                    message: `Not found restaurant ID of ${req.params.id}`
+                })
+            }
             // Execute updating process
             restaurant = await Restaurant.findByIdAndUpdate(req.params.id, req.body, {
                 new: true,
@@ -181,11 +205,6 @@ exports.updateRestaurantById = async (req, res, next) => {
             res.status(200).send({
                 success: true,
                 data: restaurant
-            })
-        } else {
-            return res.status(401).send({
-                success: false,
-                message: `This user ${req.user.id} is not authorized to access this restaurant`
             })
         }
 

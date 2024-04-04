@@ -118,7 +118,7 @@ exports.updateUserById = async (req, res, next) => {
             } else {
                 return res.status(401).send({
                     success: false,
-                    message: `This user ID of ${req.params.id} not authorized to update this user`
+                    message: `This user ID of ${req.user.id} not authorized to update this user`
                 })
             }
         } else {
