@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const reservationRouter = require("./ReservationRouter");
 const menuRouter = require("./MenuRouter");
+const reviewRouter = require("./ReviewRouter")
 
 const {
     getRestaurants,
@@ -28,5 +29,6 @@ router.route("/:id")
 // re-Routing to reservation router
 router.use("/:restaurantId/reservations", reservationRouter);
 router.use("/:restaurantId/menus", menuRouter);
+router.use("/:restaurantId/reviews", reviewRouter);
 
 module.exports = router;

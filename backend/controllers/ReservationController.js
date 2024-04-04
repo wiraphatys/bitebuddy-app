@@ -16,6 +16,14 @@ exports.getReservations = async (req, res, next) => {
                     select: "email"
                 })
 
+                if (reservations.length === 0) {
+                    return res.status(200).json({
+                        success: true,
+                        count: 0,
+                        message: "Your restaurant don't have any reservation."
+                    })
+                }
+
                 return res.status(200).json({
                     success: true,
                     count: reservations.length,
@@ -37,7 +45,7 @@ exports.getReservations = async (req, res, next) => {
                 return res.status(200).json({
                     success: true,
                     count: 0,
-                    message: "You have no reservation, make a new one !"
+                    message: "You don't have any reservation, make a new one !"
                 })
             }
 
@@ -112,6 +120,26 @@ exports.getReservationByID = async (req, res, next) => {
                     message: `This user ${req.user.id} is not authorized to access this reservation`
                 })
             }
+        } else {
+            const reservation = await Reservation.findById(req.params.id).populate({
+                path: "user",
+                select: "email"
+            }).populate({
+                path: "restaurant",
+                select: "name tel"
+            })
+
+            if (!reservation) {
+                return res.status(404).json({
+                    success: false,
+                    message: `Not found reservation ID of ${req.params.id}`
+                })
+            }
+
+            return res.status(200).json({
+                success: true,
+                data: reservation
+            })
         }
 
     } catch (err) {

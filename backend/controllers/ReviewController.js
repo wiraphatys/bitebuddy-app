@@ -2,34 +2,80 @@ const Review = require("../models/ReviewModel")
 const Restaurant = require('../models/RestaurantModel')
 
 // @desc    Get all reviews
-// @route   GET /api/v1/reviews/
+// @route   GET /api/v1/reviews || GET /api/v1/restaurants/:restaurantId/reviews
 // @access  Private
 exports.getReviews = async (req, res, next) => {
-    let query;
-
-    if(req.params.restaurantId) {
-        console.log(req.params.restaurantId);
-
-        query = Review.find({
-            restaurant: req.params.restaurantId
-        }).populate({
-            path: 'restaurant',
-            select: 'name'
-        });
-    }else{
-        query = Review.find().populate({
-            path: 'restaurant',
-            select: 'name'
-        });
-    }
     try{
-        const reviews = await query;
-        res.status(200).json({
-            success: true,
-            count: reviews.length,
-            data: reviews
+        if (req.user.role === "owner") {
+            const restaurant = await Restaurant.findById(req.params.restaurantId)
 
-        });
+            // Ownership validation: restaurant owner
+            if (restaurant && restaurant.owner.toString() === req.user.id) {
+                const reviews = await Review.find( {restaurant: restaurant._id.toString() }).populate({
+                    path: "user",
+                    select: "email"
+                })
+
+                if (reviews.length === 0) {
+                    return res.status(200).json({
+                        success: true,
+                        count: 0,
+                        message: "Your restaurant don't have any review."
+                    })
+                }
+
+                return res.status(200).json({
+                    success: true,
+                    count: reviews.length,
+                    data: reviews
+                })
+            } else {
+                return res.status(401).json({
+                    success: false,
+                    message: "You are not authorized to get this reservations"
+                })
+            }
+        } else if (req.user.role === "user") {
+            const reviews = await Review.find({ user: req.user.id }).populate({
+                path: "restaurant",
+                select: "name tel"
+            })
+
+            if (reviews.length === 0) {
+                return res.status(200).json({
+                    success: true,
+                    count: 0,
+                    message: "You don't have any review, make a new one !"
+                })
+            }
+
+            return res.status(200).json({
+                success: true,
+                count: reviews.length,
+                data: reviews
+            })
+        } else {
+            const reviews = await Review.find({}).populate({
+                path: "user",
+                select: "email"
+            }).populate({
+                path: "restaurant",
+                select: "name tel"
+            })
+
+            if (!reviews) {
+                return res.status(404).json({
+                    success: false,
+                    message: `Not found review ID of ${req.params.id}`
+                })
+            }
+
+            return res.status(200).json({
+                success: true,
+                count: reviews.length,
+                data: reviews
+            })
+        }
     }catch(err){
         console.log(err);
         return res.status(500).json({
@@ -44,20 +90,63 @@ exports.getReviews = async (req, res, next) => {
 // @access  Private
 exports.getReviewById = async (req, res, next) => {
     try{
-        const review = await Review.findById(req.params.id).populate({
-            path: 'restaurant',
-            select: 'name'
-        });
+        if (req.user.role === "user") {
+            const review = await Review.findById(req.params.id).populate({
+                path: "restaurant",
+                select: "name tel"
+            });
 
+            if (review && review.user.toString() === req.user.id) {
+                return res.status(200).send({
+                    success: true,
+                    data: review
+                })
+            } else {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to access this review`
+                })
+            }
+        } else if (req.user.role === "owner") {
+            const review = await Review.findById(req.params.id).populate({
+                path: "user",
+                select: "email"
+            });
 
-        if(!review){
-            return res.status(404).json({success:false, message: `No review with the id of ${req.params.id}`});
+            const restaurant = await Restaurant.findById(review.restaurant)
+
+            if (restaurant && restaurant.owner.toString() === req.user.id) {
+                return res.status(200).send({
+                    success: true,
+                    data: review
+                })
+            } else {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to access this review`
+                })
+            }
+        } else {
+            const review = await Review.findById(req.params.id).populate({
+                path: "user",
+                select: "email"
+            }).populate({
+                path: "restaurant",
+                select: "name tel"
+            })
+
+            if (!review) {
+                return res.status(404).json({
+                    success: false,
+                    message: `Not found review ID of ${req.params.id}`
+                })
+            }
+
+            return res.status(200).json({
+                success: true,
+                data: review
+            })
         }
-
-        res.status(200).json({
-            success: true,
-            data: review
-        });
     }catch (error){
         console.log(error);
         return res.status(500).json({success: false, message: 'Cannot find Review'});
@@ -65,24 +154,33 @@ exports.getReviewById = async (req, res, next) => {
 };
 
 // @desc    Create reviews
-// @route   PUT /api/reviews/
+// @route   PUT /api/v1/restaurants/:restaurantId/reviews
 // @access  Private
 exports.createReview = async (req, res, next) => {
     try {
+        // parse { user , restaurant } to req.body
         req.body.restaurant = req.params.restaurantId;
+        req.body.user = req.user.id;
 
         const restaurant = await Restaurant.findById(req.params.restaurantId);
 
-        if(!restaurant){
-            return res.status(404).json({success: false, message: `No restaurant with the id of ${req.params.restaurantID}`});
+        if (!restaurant) {
+            return res.status(404).send({
+                success: false,
+                message: `Not found restaurant ID of ${req.params.restaurantId}`
+            })
         }
         
-        req.body.user = req.user.id;
-        
-        const existingReview = await Review.find({ user: req.body.user, restaurant: req.params.restaurantId });
+        const existingReviews = await Review.find({ 
+            user: req.user.id, 
+            restaurant: req.params.restaurantId 
+        });
 
-        if (existingReview.length >= 1 && req.user.role !== 'admin') {
-            return res.status(400).json({ success: false, message: `The user with ID ${req.user.id} has already made a review for this restaurant` });
+        if (existingReviews.length !== 0) {
+            return res.status(400).send({
+                success: false,
+                message: `You've already written the review for this restaurant.`
+            })
         }
 
         const review = await Review.create(req.body);
@@ -91,12 +189,21 @@ exports.createReview = async (req, res, next) => {
             success:true,
             data: review
         });
-    }catch(err){
+
+    } catch(err) {
         console.log(err);
+
         if(req.body.rating < 0 || req.body.rating > 5){
-            return res.status(400).json({ success: false, message: `rating value can only between 0-5`});
+            return res.status(400).json({ 
+                success: false, 
+                message: `rating value can only between 0-5`
+            });
         }
-        return res.status(500).json({success: false, message: 'Cannot create Review'});
+
+        return res.status(500).json({
+            success: false, 
+            message: 'Cannot create Review'
+        });
     }
 };
 
@@ -107,27 +214,48 @@ exports.updateReviewById = async (req, res, next) => {
     try{
         let review = await Review.findById(req.params.id);
 
-        if(!review){
-            return res.status(404).json({
-                success: false, message: `No review with the id of ${req.params.id}`
-            });
-        }
+        // role: user
+        if (req.user.role !== "admin") {
+            if (review && req.user.id === review.user.toString()) {
+                review = await Review.findByIdAndUpdate(req.params.id, req.body, {
+                    new: true,
+                    runValidators: true
+                })
+                return res.status(200).send({
+                    success: true,
+                    data: review
+                })
+            } else {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to update this review`
+                })
+            }
+        } else {
+            if (!review) {
+                return res.status(404).send({
+                    success: false,
+                    message: `Not found review ID of ${req.params.id}`
+                })
+            }
 
-        if(review.user.toString() !== req.user.id && req.user.role !== 'admin'){
-            return res.status(401).json({success: false, message: `User ${req.user.id} is not authorized to update this review`});
-        }
+            review = await Review.findByIdAndUpdate(req.params.id, req.body, {
+                new: true,
+                runValidators: true
+            })
 
-        review = await Review.findByIdAndUpdate(req.params.id, req.body,{
-            new:true,
-            runValidators: true
-        });
-        res.status(200).json({
-            success: true,
-            data: review
-        });
-    }catch (error){
+            return res.status(200).send({
+                success: true,
+                data: review
+            })
+
+        }
+    } catch (error) {
         console.log(error);
-        return res.status(500).json({success: false, message: 'Cannot update Review'});
+        return res.status(500).json({
+            success: false, 
+            message: 'Cannot update Review'
+        });
     }
 };
 
@@ -136,19 +264,40 @@ exports.updateReviewById = async (req, res, next) => {
 // @access  Private
 exports.deleteReviewById = async (req, res, next) => {
     try {
-        const review = await Review.findById(req.params.id);
-        if (!review) {
-            return res.status(404).json({ success: false, message: `No review with the id of ${req.params.id}`});
+        let review = await Review.findById(req.params.id);
+
+        if (req.user.role !== "admin") {
+            if (review && req.user.id === review.user.toString()) {
+                await review.deleteOne();
+                return res.status(200).json({
+                    success: true,
+                    data: {}
+                })
+            } else {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to delete this review`
+                })
+            }
+        } else {
+            if (!review) {
+                return res.status(404).send({
+                    success: false,
+                    message: `Not found review ID of ${req.params.id}`
+                })
+            }
+
+            await review.deleteOne();
+
+            return res.status(200).sjon({
+                success: true,
+                data: {}
+            })
         }
-
-        if(review.user.toString() !== req.user.id && req.user.role !== 'admin'){
-            return res.status(401).json({success: false, message: `User ${req.user.id} is not authorized to delete this review`});
-        }
-
-        await review.deleteOne();
-
-        res.status(200).json({ success: true, data: {} });
     } catch (err) {
-        res.status(500).json({ success: false, msg: 'Cannot delete Review' });
+        res.status(500).json({ 
+            success: false, 
+            message: 'Cannot delete Review' 
+        });
     }
 };
