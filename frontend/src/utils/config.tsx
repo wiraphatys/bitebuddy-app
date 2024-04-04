@@ -1,5 +1,5 @@
 const config = {
-    api: "http://localhost:4000/api/v1",
+    api: "https://se-api-test.vercel.app/api/v1",
     tokenName: 'token',
     headers: () => {
         return {
