@@ -20,7 +20,7 @@ router.route("/")
 
 router.route("/:id")
     .get(protect, getMenuById)
-    .put(protect, authorize("owner"), updateMenuById)
+    .put(protect, authorize("admin", "owner"), updateMenuById)
     .delete(protect, authorize("admin", "owner"), deleteMenuById);
 
 module.exports = router;

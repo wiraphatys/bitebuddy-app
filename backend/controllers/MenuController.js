@@ -40,7 +40,7 @@ exports.getMenus = async (req, res, next) => {
                     message: "You are not authorized to access this route."
                 })
             }
-        } else if (req.user.role === "user") {
+        } else {
 
             const restaurant = await Restaurant.findById(req.params.restaurantId)
 
@@ -163,10 +163,36 @@ exports.updateMenuById = async (req, res, next) => {
         // Find before execute updating process
         let menu = await Menu.findById(req.params.id);
 
-        const restaurant = await Restaurant.findById(menu?.restaurant)
+        if (req.user.role === "owner") {
 
-        // Ownership validation
-        if (menu && restaurant.owner.toString() === req.user.id) {
+            const restaurant = await Restaurant.findById(menu?.restaurant)
+
+            // Ownership validation
+            if (menu && restaurant.owner.toString() === req.user.id) {
+
+                menu = await Menu.findByIdAndUpdate(req.params.id, req.body, {
+                    new: true,
+                    runValidators: true
+                })
+
+                return res.status(200).json({
+                    success: true,
+                    data: menu
+                })
+            } else {
+                return res.status(401).json({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to update this menu`
+                })
+            }
+        } else if (req.user.role === "admin") {
+
+            if (!menu) {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to update this menu`
+                })
+            }
 
             menu = await Menu.findByIdAndUpdate(req.params.id, req.body, {
                 new: true,
@@ -176,11 +202,6 @@ exports.updateMenuById = async (req, res, next) => {
             return res.status(200).json({
                 success: true,
                 data: menu
-            })
-        } else {
-            return res.status(401).json({
-                success: false,
-                message: "You are not authorized to update this menu"
             })
         }
 
@@ -200,22 +221,39 @@ exports.deleteMenuById = async (req, res, next) => {
         // Find before execute deleting process
         let menu = await Menu.findById(req.params.id);
 
-        const restaurant = await Restaurant.findById(menu?.restaurant)
+        if (req.user.role === "owner") {
+            const restaurant = await Restaurant.findById(menu?.restaurant)
 
-        // Ownership validation
-        if (menu && restaurant.owner.toString() === req.user.id) {
+            // Ownership validation
+            if (menu && restaurant.owner.toString() === req.user.id) {
+                // Execute deleting process
+                await menu.deleteOne();
+
+                return res.status(200).send({
+                    success: true,
+                    data: {}
+                })
+
+            } else {
+                return res.status(401).json({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to delete this menu`
+                })
+            }
+        } else if (req.user.role === "admin") {
+            if (!menu) {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to delete this menu`
+                })
+            }
+
             // Execute deleting process
             await menu.deleteOne();
 
             return res.status(200).send({
                 success: true,
                 data: {}
-            })
-
-        } else {
-            return res.status(401).json({
-                success: false,
-                message: "You are not authorized to delete this menu"
             })
         }
 
