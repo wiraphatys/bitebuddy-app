@@ -1,4 +1,8 @@
 const User = require("../models/UserModel")
+const {
+    uploadImageToS3,
+    getImageUrl
+} = require("../config/aws-s3");
 
 // @desc    Get all users
 // @route   GET /api/v1/users/
@@ -12,6 +16,12 @@ exports.getUsers = async (req, res, next) => {
             })
         }
         const users = await User.find({});
+
+        for (const user of users) {
+            if (user.img) {
+                user.img = await getImageUrl(user.img)
+            }
+        }
 
         return res.status(200).send({
             success: true,
@@ -60,7 +70,7 @@ exports.getUserById = async (req, res, next) => {
 // @access  Public
 exports.createUser = (async (req, res, next) => {
     try {
-        const { email , password , firstName , lastName , tel , img } = req.body;
+        const { email , password , firstName , lastName , tel } = req.body;
         const role = req.params.role
 
         if (role !== "user" && role !== "owner" && role !== "admin") {
@@ -68,6 +78,11 @@ exports.createUser = (async (req, res, next) => {
                 success: false,
                 message: "invalid role"
             })
+        }
+        let img = ''
+        // validate file
+        if (req.file) {
+            img = await uploadImageToS3(req)
         }
 
         const user = await User.create({ email, password, firstName, lastName, tel, role , img })
