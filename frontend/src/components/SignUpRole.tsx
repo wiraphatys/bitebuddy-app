@@ -7,7 +7,7 @@ function SignUpRole(){
     const router = useRouter();
 
     const handleSelectClick = (role:string) =>{
-        router.push(`/signup/${role}`)
+        router.push(`/register/${role}`)
     }
 
     return(
