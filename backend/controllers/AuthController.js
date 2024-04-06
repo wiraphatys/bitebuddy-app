@@ -1,6 +1,4 @@
 // auth controller
-
-// import User model
 const User = require('../models/UserModel')
 
 // define function for send token response
