@@ -4,7 +4,9 @@ const config = {
     headers: () => {
         return {
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': "https://se-api-test.vercel.app/"
             }
         }
     }
