@@ -1,14 +1,24 @@
 // auth controller
 
 // import User model
-const User = require('../controllers/UserController')
+const { getImageUrl } = require('../config/aws-s3')
+const User = require('../models/UserModel')
 
 // define function for send token response
 const sendTokenResponse = ((user, statusCode, res) => {
     // Create token
     const token = user.getSignedJwtToken()
 
-    res.status(statusCode).json({
+    const options = {
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
+        httpOnly: true
+    }
+
+    if (process.env.NODE_ENV === 'production') {
+        options.secure = true
+    }
+
+    res.status(statusCode).cookie('token', token, options).send({
         success: true,
         token
     })
@@ -55,7 +65,7 @@ exports.login = (async (req, res, next) => {
     } catch (e) {
         return res.status(401).send({
             success: false,
-            msg: "Cannot convert email or password to string"
+            msg: e.message
         })
     }
 
@@ -67,6 +77,9 @@ exports.login = (async (req, res, next) => {
 exports.getMe = (async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id)
+
+        user.img = await getImageUrl(user.img)
+
         return res.status(200).send({
             success: true,
             data: user
@@ -84,6 +97,11 @@ exports.getMe = (async (req, res, next) => {
 // @route   GET /api/v1/auth/logout
 // @access  Public
 exports.logout = (async (req, res, next) => {
+    res.cookie('token', 'none', {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true
+    })
+
     return res.status(200).send({
         success: true,
         data: {}

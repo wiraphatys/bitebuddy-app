@@ -1,10 +1,26 @@
 const express = require("express");
-const router = express.Router();
+const router = express.Router({ mergeParams: true }); // Enable params merging
 
 const {
     getReservations,
-} = require('../controllers/ReservationController');
+    getReservationByID,
+    createReservation,
+    updateReservation,
+    deleteReservation
+} = require("../controllers/ReservationController");
 
-router.route("/").get(getReservations);
+const {
+    protect,
+    authorize
+} = require("../middlewares/AuthMiddleware");
+
+router.route("/")
+    .get(protect, getReservations)
+    .post(protect, authorize("user"), createReservation);
+
+router.route("/:id")
+    .get(protect, getReservationByID)
+    .put(protect, authorize("user", "admin"), updateReservation)
+    .delete(protect, authorize("user", "admin"), deleteReservation);
 
 module.exports = router;
