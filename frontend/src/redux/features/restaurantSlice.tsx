@@ -1,31 +1,26 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { ReservationItem } from "../../../interface"
+import { RestaurantItem, RestaurantJson } from "../../../interface"
 import getRestaurants from "@/libs/getRestaurants";
 
 type RestaurantState = {
     restaurantItems: RestaurantItem[];
 }
 
-const initialState: RestaurantState = { restaurantItems: getRestaurants()};
+const initialState: RestaurantState = { 
+    restaurantItems: []};
 
-export const reservationSlice = createSlice ({
+export const restaurantSlice = createSlice ({
     name: "cart",
     initialState,
     reducers: {
-        addReservation: (state, action:PayloadAction<ReservationItem>) => {
-            const remainItems = state.restaurantItems.findIndex(obj => obj.user === action.payload.user);
-            
-            if (remainItems !== -1) {
-                state.restaurantItems[remainItems] = action.payload;
-            } else {
-                state.restaurantItems.push(action.payload);
-            }
+        addRestaurant: (state, action: PayloadAction<RestaurantItem>) => {
+
         },
-        removeReservation: (state, action: PayloadAction<string>) => {
-            state.restaurantItems = state.restaurantItems.filter(obj => obj.user !== action.payload);
-        }   
+        removeRestaurant: (state, action: PayloadAction<RestaurantItem>) => {
+            
+        }
     }
 })
 
-export const { addReservation, removeReservation } = reservationSlice.actions
-export default reservationSlice.reducer
+export const { addRestaurant, removeRestaurant } = restaurantSlice.actions
+export default restaurantSlice.reducer

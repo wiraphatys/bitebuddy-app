@@ -1,5 +1,5 @@
 const config = {
-    api: "https://se-api-test.vercel.app/api/v1",
+    api: "https://bitebuddy-api.vercel.app/api/v1",
     tokenName: 'token',
     headers: () => {
         return {

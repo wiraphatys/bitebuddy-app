@@ -1,4 +1,11 @@
+import RestaurantSlider from "@/components/RestaurantSlider";
 import getRestaurants from "@/libs/getRestaurants";
 
-export default function RestaurantPage () {
+export default async function RestaurantsPage () {
+    const restaurants = await getRestaurants();
+    return (
+        <>
+            <RestaurantSlider restaurantsJson={restaurants}/>
+        </>
+    );
 }
