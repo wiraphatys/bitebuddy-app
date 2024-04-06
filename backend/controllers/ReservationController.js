@@ -163,10 +163,10 @@ exports.createReservation = async (req, res, next) => {
         
         const existedReservation = await Reservation.find({ user : req.user.id });
 
-        if (existedReservation.length >= 5) {
+        if (existedReservation.length >= 3) {
             return res.status(400).send({
                 success: false,
-                message: `The user with ID ${req.user.id} has already made 5 reservations`
+                message: `The user with ID ${req.user.id} has already made 3 reservations`
             })
         }
 

@@ -42,6 +42,12 @@ exports.getUsers = async (req, res, next) => {
 // @access  Private
 exports.getUserById = async (req, res, next) => {
     try {
+        if (req.user.role !== "admin") {
+            return res.status(401).send({
+                success: false,
+                message: `This user ID of ${req.user.id} not authorized to access this route`
+            })
+        }
         const user = await User.findById(req.params.id);
 
         user.img = await getImageUrl(user.img)
