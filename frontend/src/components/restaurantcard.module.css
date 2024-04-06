@@ -1,0 +1,14 @@
+.card {
+    width: 15vw;
+    height: 70vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+}
+
+.cardtext{
+    position: absolute;
+    color: white;
+    bottom: 0;
+}

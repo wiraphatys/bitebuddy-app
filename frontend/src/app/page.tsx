@@ -1,6 +1,8 @@
 import Image from "next/image";
 import styles from './page.module.css'
 import DateValidationShouldDisableDate from "@/components/Calendar";
+import MenuSlider from "@/components/MenuSlider";
+import RestaurantCard from "@/components/RestaurantCard";
 
 export default function Home() {
   return (
@@ -19,6 +21,8 @@ export default function Home() {
           <Image src="/img/logo.png" alt='icon' layout='fill' objectFit="contain"/>
         </div>
       </div>
+      <RestaurantCard/>
+      <MenuSlider/>
     </main>
   );
 }
