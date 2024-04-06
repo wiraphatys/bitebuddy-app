@@ -43,7 +43,7 @@ app.use(cors()); // Enable CORS
 app.get("/", (req, res) => {
     res.status(200).json({
         server: "bitebuddy-backend",
-        version: "0.1.0"
+        version: "2.1.0"
     })
 })
 
