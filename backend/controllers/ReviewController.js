@@ -55,26 +55,49 @@ exports.getReviews = async (req, res, next) => {
                 data: reviews
             })
         } else {
-            const reviews = await Review.find({}).populate({
-                path: "user",
-                select: "email"
-            }).populate({
-                path: "restaurant",
-                select: "name tel"
-            })
+            if (!req.params.restaurantId) {
+                const reviews = await Review.find({}).populate({
+                    path: "user",
+                    select: "email"
+                }).populate({
+                    path: "restaurant",
+                    select: "name tel"
+                })
 
-            if (!reviews) {
-                return res.status(404).json({
-                    success: false,
-                    message: `Not found review ID of ${req.params.id}`
+                if (!reviews) {
+                    return res.status(404).json({
+                        success: false,
+                        message: `Not found review ID of ${req.params.id}`
+                    })
+                }
+
+                return res.status(200).json({
+                    success: true,
+                    count: reviews.length,
+                    data: reviews
+                })
+            } else {
+                const reviews = await Review.find({ restaurant : req.params.restaurantId }).populate({
+                    path: "user",
+                    select: "email"
+                }).populate({
+                    path: "restaurant",
+                    select: "name tel"
+                })
+
+                if (!reviews) {
+                    return res.status(404).json({
+                        success: false,
+                        message: `Not found review ID of ${req.params.id}`
+                    })
+                }
+
+                return res.status(200).json({
+                    success: true,
+                    count: reviews.length,
+                    data: reviews
                 })
             }
-
-            return res.status(200).json({
-                success: true,
-                count: reviews.length,
-                data: reviews
-            })
         }
     }catch(err){
         console.log(err);
