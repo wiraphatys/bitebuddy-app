@@ -7,7 +7,8 @@ const MenuSchema = new Schema({
         required: [true, "please fill a name."]
     },
     img: {
-        type: String
+        type: String,
+        required: [true, "please fill an image"]
     },
     description: {
         type: String,

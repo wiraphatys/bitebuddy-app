@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true }); // Enable params merging
+const upload = require("../config/multerConfig")
 
 const {
     getMenus,
@@ -16,7 +17,7 @@ const {
 
 router.route("/")
     .get(protect, getMenus)
-    .post(protect, authorize("owner"), createMenu);
+    .post(protect, authorize("owner"),upload.single('img'), createMenu);
 
 router.route("/:id")
     .get(protect, getMenuById)

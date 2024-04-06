@@ -1,5 +1,9 @@
 const Restaurant = require("../models/RestaurantModel")
 const Review = require('../models/ReviewModel')
+const {
+    uploadImageToS3,
+    getImageUrl
+} = require("../config/aws-s3");
 
 // @desc    Get all restaurants
 // @route   GET /api/v1/restaurants/
@@ -9,6 +13,12 @@ exports.getRestaurants = async (req, res, next) => {
         // role : { user , admin }
         if (req.user.role !== "owner") {
             const restaurants = await Restaurant.find({})
+
+            for (const restaurant of restaurants) {
+                if (restaurant.img) {
+                    restaurant.img = await getImageUrl(restaurant.img)
+                }
+            }
 
             for (let i = 0; i < restaurants.length; i++) {
                 const avgRating = await Review.aggregate([
@@ -39,6 +49,8 @@ exports.getRestaurants = async (req, res, next) => {
                     message: "You don't have any restaurants. Create one!"
                 })
             }
+
+            restaurant.img = await getImageUrl(restaurant.img)
 
             const avgRating = await Review.aggregate([
                 {
@@ -82,6 +94,8 @@ exports.getRestaurantByID = async (req, res, next) => {
                 message: `Not found restaurant ID of ${req.params.id}`
             })
         }
+
+        restaurant.img = await getImageUrl(restaurant.img)
 
         const avgRating = await Review.aggregate([
             {
@@ -134,6 +148,11 @@ exports.createRestaurant = async (req, res, next) => {
                 success: false,
                 message: "You're already created restaurant."
             })
+        }
+
+        // validate file
+        if (req.file) {
+            req.body.img = await uploadImageToS3(req)
         }
 
         const restaurant = await Restaurant.create(req.body);

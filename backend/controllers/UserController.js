@@ -44,6 +44,8 @@ exports.getUserById = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
 
+        user.img = await getImageUrl(user.img)
+
         if (!user) {
             return res.status(404).send({
                 success: false,

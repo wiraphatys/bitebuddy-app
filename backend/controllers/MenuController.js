@@ -1,5 +1,9 @@
 const Menu = require("../models/MenuModel")
 const Restaurant = require("../models/RestaurantModel")
+const {
+    uploadImageToS3,
+    getImageUrl
+} = require("../config/aws-s3");
 
 // @desc    Get all menus
 // @route   GET /api/v1/restaurants/:restaurantId/menus
@@ -20,6 +24,12 @@ exports.getMenus = async (req, res, next) => {
             if (restaurant && restaurant.owner.toString() === req.user.id) {
 
                 const menus = await Menu.find({ restaurant: req.params.restaurantId })
+
+                for (const menu of menus) {
+                    if (menu.img) {
+                        menu.img = await getImageUrl(menu.img)
+                    }
+                }
 
                 if (menus.length === 0) {
                     return res.status(200).json({
@@ -52,6 +62,12 @@ exports.getMenus = async (req, res, next) => {
             }
 
             const menus = await Menu.find({ restaurant: req.params.restaurantId })
+
+            for (const menu of menus) {
+                if (menu.img) {
+                    menu.img = await getImageUrl(menu.img)
+                }
+            }
 
             if (menus.length === 0) {
                 return res.status(200).json({
@@ -90,6 +106,8 @@ exports.getMenuById = async (req, res, next) => {
             })
         }
 
+        menu.img = await getImageUrl(menu.img)
+
         return res.status(200).send({
             success: true,
             data: menu
@@ -123,6 +141,11 @@ exports.createMenu = async (req, res, next) => {
         const restaurant = await Restaurant.findById(req.params.restaurantId)
 
         if (restaurant && restaurant.owner.toString() === req.user.id) {
+
+            // validate file
+            if (req.file) {
+                req.body.img = await uploadImageToS3(req)
+            }
             const menu = await Menu.create(req.body);
 
             return res.status(201).send({

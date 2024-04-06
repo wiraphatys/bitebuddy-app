@@ -10,7 +10,7 @@ const RestaurantSchema = new Schema({
     },
     img: { 
         type: String, 
-        required: [true, "please fill a image."] 
+        required: [true, "please fill an image."] 
     },
     description: { 
         type: String, 
