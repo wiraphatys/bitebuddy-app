@@ -32,7 +32,7 @@ exports.getReviews = async (req, res, next) => {
             } else {
                 return res.status(401).json({
                     success: false,
-                    message: "You are not authorized to get this reservations"
+                    message: "You are not authorized to get this review"
                 })
             }
         } else if (req.user.role === "user") {
