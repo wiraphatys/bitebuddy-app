@@ -12,13 +12,18 @@ export interface RestaurantItem {
     open: string,
     close: string,
     owner: string,
+    averageRating: number,
 }
 
 export interface RestaurantJson {
     success: boolean,
     count: number,
-    data: RestaurantItem[],
-    averageRating: number,
+    data: RestaurantItem[]
+}
+
+export interface RestaurantOwnerJson {
+    success: boolean,
+    data: RestaurantItem
 }
 
 export interface MenuItem {

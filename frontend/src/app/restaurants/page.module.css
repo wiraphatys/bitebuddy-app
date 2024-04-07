@@ -3,7 +3,7 @@
     height: 90vh;
     margin-left: auto;
     margin-right: auto;
-    overflow-y: hidden;
+    /* overflow-y: hidden; */
 }
 
 .page > * {
