@@ -29,7 +29,11 @@ function SignInForm(){
                     icon:'success'
                 });
 
-                localStorage.setItem(config.tokenName,response.data.ok);
+                const token = response.data.token;
+                console.log('Token from API:', token);
+                localStorage.setItem(config.tokenName,token);
+                console.log(localStorage.getItem(config.tokenName)); // Log the token
+                console.log(config.headers());
 
                 setTimeout(() => {
                     router.push('/')
