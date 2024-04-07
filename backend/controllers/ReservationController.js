@@ -38,7 +38,7 @@ exports.getReservations = async (req, res, next) => {
         } else if (req.user.role === "user") {
             const reservations = await Reservation.find({ user: req.user.id }).populate({
                 path: "restaurant",
-                select: "name tel"
+                select: "name tel street locality district province zipcode"
             })
 
             if (reservations.length === 0) {
@@ -61,7 +61,7 @@ exports.getReservations = async (req, res, next) => {
                     select: "email"
                 }).populate({
                     path: "restaurant",
-                    select: "name tel"
+                    select: "name tel street locality district province zipcode"
                 })
 
                 return res.status(200).json({
@@ -76,7 +76,7 @@ exports.getReservations = async (req, res, next) => {
                     select: "email"
                 }).populate({
                     path: "restaurant",
-                    select: "name tel"
+                    select: "name tel street locality district province zipcode"
                 })
 
                 return res.status(200).json({
@@ -104,7 +104,7 @@ exports.getReservationByID = async (req, res, next) => {
         if (req.user.role === "user") {
             const reservation = await Reservation.findById(req.params.id).populate({
                 path: "restaurant",
-                select: "name tel"
+                select: "name tel street locality district province zipcode"
             });
 
             if (reservation && reservation.user.toString() === req.user.id) {
@@ -143,7 +143,7 @@ exports.getReservationByID = async (req, res, next) => {
                 select: "email"
             }).populate({
                 path: "restaurant",
-                select: "name tel"
+                select: "name tel street locality district province zipcode"
             })
 
             if (!reservation) {
