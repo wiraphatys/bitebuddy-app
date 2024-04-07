@@ -1,10 +1,12 @@
 const config = {
-    api: "http://localhost:4000/api/v1",
+    api: "https://bitebuddy-api.vercel.app/api/v1",
     tokenName: 'token',
     headers: () => {
         return {
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': "https://se-api-test.vercel.app/"
             }
         }
     }

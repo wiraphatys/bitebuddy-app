@@ -1,17 +1,60 @@
 const Restaurant = require("../models/RestaurantModel")
 const Review = require('../models/ReviewModel')
+const {
+    uploadImageToS3,
+    getImageUrl
+} = require("../config/aws-s3");
 
 // @desc    Get all restaurants
 // @route   GET /api/v1/restaurants/
 // @access  Public
 exports.getRestaurants = async (req, res, next) => {
     try {
-        const restaurants = await Restaurant.find({})
+        // role : { user , admin }
+        if (req.user.role !== "owner") {
+            const restaurants = await Restaurant.find({})
 
-        for (let i = 0; i < restaurants.length; i++) {
+            for (const restaurant of restaurants) {
+                if (restaurant.img) {
+                    restaurant.img = await getImageUrl(restaurant.img)
+                }
+            }
+
+            for (let i = 0; i < restaurants.length; i++) {
+                const avgRating = await Review.aggregate([
+                    {
+                        $match: { restaurant: restaurants[i]._id }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            averageRating: { $avg: "$rating" }
+                        }
+                    }
+                ]);
+                restaurants[i] = { ...restaurants[i]._doc, reservations: restaurants[i].reservations, averageRating: avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 'No Review' };
+            }
+
+            return res.status(200).send({
+                success: true,
+                data: restaurants
+            })
+        // role : { owner }
+        } else {
+            const restaurant = await Restaurant.findOne({ owner: req.user.id });
+
+            if (!restaurant) {
+                return res.status(200).json({
+                    success: true,
+                    message: "You don't have any restaurants. Create one!"
+                })
+            }
+
+            restaurant.img = await getImageUrl(restaurant.img)
+
             const avgRating = await Review.aggregate([
                 {
-                    $match: { restaurant: restaurants[i]._id }
+                    $match: { restaurant: restaurant._id }
                 },
                 {
                     $group: {
@@ -21,14 +64,14 @@ exports.getRestaurants = async (req, res, next) => {
                 }
             ]);
 
-            restaurants[i] = { ...restaurants[i]._doc, reservations: restaurants[i].reservations, averageRating: avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 'No Review' };
-        }
+            const averageRating = avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 'No Review';
+            restaurant.averageRating = averageRating;
 
-        return res.status(200).send({
-            success: true,
-            count: restaurants.length,
-            data: restaurants
-        })
+            return res.status(200).json({
+                success: true,
+                data: { ...restaurant._doc, averageRating: averageRating }
+            })
+        }
     } catch (err) {
         return res.status(500).json({
             success: false,
@@ -52,6 +95,8 @@ exports.getRestaurantByID = async (req, res, next) => {
             })
         }
 
+        restaurant.img = await getImageUrl(restaurant.img)
+
         const avgRating = await Review.aggregate([
             {
                 $match: { restaurant: restaurant._id }
@@ -62,12 +107,14 @@ exports.getRestaurantByID = async (req, res, next) => {
                     averageRating: { $avg: "$rating" }
                 }
             }
-        ])
+        ]);
 
-        return res.status(200).send({
+        const averageRating = avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 'No Review';
+        restaurant.averageRating = averageRating;
+
+        return res.status(200).json({
             success: true,
-            data: restaurant,
-            averageRating: avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 'No Review'
+            data: { ...restaurant._doc, averageRating: averageRating }
         })
 
     } catch (err) {
@@ -92,6 +139,22 @@ exports.getRestaurantByID = async (req, res, next) => {
 // @access  Private
 exports.createRestaurant = async (req, res, next) => {
     try {
+        req.body.owner = req.user.id;
+
+        const existedRestaurant = await Restaurant.find({ owner: req.user.id })
+
+        if (existedRestaurant.length !== 0) {
+            return res.status(400).json({
+                success: false,
+                message: "You're already created restaurant."
+            })
+        }
+
+        // validate file
+        if (req.file) {
+            req.body.img = await uploadImageToS3(req)
+        }
+
         const restaurant = await Restaurant.create(req.body);
         
         res.status(201).send({
@@ -121,28 +184,48 @@ exports.createRestaurant = async (req, res, next) => {
 // @desc    Update restaurant by id
 // @route   PUT /api/v1/restaurants/:id
 // @access  Private
-exports.updateRestaurant = async (req, res, next) => {
+exports.updateRestaurantById = async (req, res, next) => {
     try {
         // Find before execute updating process
         let restaurant = await Restaurant.findById(req.params.id);
 
-        if (!restaurant) {
-            return res.status(404).send({
-                success: false,
-                message: `Not found restaurant ID of ${req.params.id}`
+        if (req.user.role === "owner") {
+            // Ownership validation
+            if (restaurant && restaurant.owner.toString() === req.user.id) {
+                // Execute updating process
+                restaurant = await Restaurant.findByIdAndUpdate(req.params.id, req.body, {
+                    new: true,
+                    runValidators: true
+                })
+
+                res.status(200).send({
+                    success: true,
+                    data: restaurant
+                })
+            } else {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to access this restaurant`
+                })
+            }
+        } else {
+            if (!restaurant) {
+                return res.status(404).send({
+                    success: false,
+                    message: `Not found restaurant ID of ${req.params.id}`
+                })
+            }
+            // Execute updating process
+            restaurant = await Restaurant.findByIdAndUpdate(req.params.id, req.body, {
+                new: true,
+                runValidators: true
+            })
+
+            res.status(200).send({
+                success: true,
+                data: restaurant
             })
         }
-
-        // Execute updating process
-        restaurant = await Restaurant.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        })
-
-        res.status(200).send({
-            success: true,
-            data: restaurant
-        })
 
     } catch (err) {
         return res.status(500).send({
@@ -155,25 +238,44 @@ exports.updateRestaurant = async (req, res, next) => {
 // @desc    Delete restaurant by id
 // @route   DELETE /api/v1/restaurants/:id
 // @access  Private
-exports.deleteRestaurant = async (req, res, next) => {
+exports.deleteRestaurantById = async (req, res, next) => {
     try {
         // Find before execute deleting process
         let restaurant = await Restaurant.findById(req.params.id);
 
-        if (!restaurant) {
-            return res.status(404).send({
-                success: false,
-                message: `Not found restaurant ID of ${req.params.id}`  
+        if (req.user.role === "owner") {
+            // Ownership validation
+            if (restaurant && restaurant.owner.toString() === req.user.id) {
+                // Execute deleting process
+                await restaurant.deleteOne();
+
+                return res.status(200).send({
+                    success: true,
+                    data: {}
+                })
+            } else {
+                return res.status(401).send({
+                    success: false,
+                    message: `This user ${req.user.id} is not authorized to access this restaurant`
+                })
+            }
+        } else {
+
+            if (!restaurant) {
+                return res.status(404).json({
+                    success: false,
+                    message: `Not found restaurant ID of ${req.params.id}`
+                })
+            }
+
+            // Execute deleting process
+            await restaurant.deleteOne();
+
+            return res.status(200).send({
+                success: true,
+                data: {}
             })
         }
-
-        // Execute deleting process
-        await restaurant.deleteOne();
-
-        return res.status(200).send({
-            success: true,
-            data: {}
-        })
 
     } catch (err) {
         console.log(err.message);

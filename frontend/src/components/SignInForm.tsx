@@ -5,6 +5,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation'
 import config from '@/utils/config';
+import sessionStorage from "redux-persist/es/storage/session";
 
 function SignInForm(){
     const router = useRouter();
@@ -20,7 +21,8 @@ function SignInForm(){
             };
 
             const response = await axios.post(`${config.api}/auth/login`,user);
-
+            const token = response.data.token;
+            const role = response.data.role;
             if(response.data.success === true){
                 Swal.fire({
                     title:'Sign In',
@@ -29,17 +31,14 @@ function SignInForm(){
                     icon:'success'
                 });
 
-                const token = response.data.token;
-                console.log('Token from API:', token);
-                localStorage.setItem(config.tokenName,token);
-                console.log(localStorage.getItem(config.tokenName)); // Log the token
-                console.log(config.headers());
+                localStorage.setItem(config.tokenName, token);
+                localStorage.setItem('role', role);
 
                 setTimeout(() => {
                     router.push('/')
                 }, 1000)
             }else{
-                throw new Error('Sign Infailed.');
+                throw new Error('Sign In failed.');
             }
         }catch(error:any){
             Swal.fire({

@@ -4,7 +4,11 @@ const { Schema, model } = mongoose;
 const ReservationSchema = new Schema({
     datetime: {
         type: Date,
-        required: true
+        required: [true, "please fill the datetime to reserve the table."]
+    },
+    seat: {
+        type: Number,
+        required: [true, "please fill the number of seat."]
     },
     user: {
         type: Schema.ObjectId,

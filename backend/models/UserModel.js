@@ -36,6 +36,9 @@ const UserSchema = new Schema({
         enum: ['user', 'owner', 'admin'],
         default: 'user'
     },
+    img: {
+        type: String,
+    },
     createdAt: {
         type: Date, default: Date.now
     },
