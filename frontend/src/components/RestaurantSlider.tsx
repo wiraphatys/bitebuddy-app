@@ -33,7 +33,7 @@ export default function RestaurantSlider({restaurantsJson}: {restaurantsJson: Re
       {
         restaurants.data.map((restaurantItem: RestaurantItem) => (
           <div key={restaurantItem._id}>
-            <RestaurantCard name={restaurantItem.name} img={restaurantItem.img} open={restaurantItem.open} close={restaurantItem.close} avgRating={restaurants.averageRating} id={restaurantItem._id}/>
+            <RestaurantCard name={restaurantItem.name} img={restaurantItem.img} open={restaurantItem.open} close={restaurantItem.close} avgRating={restaurantItem.averageRating} id={restaurantItem._id}/>
           </div>
         ))
       }

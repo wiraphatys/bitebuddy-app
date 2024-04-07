@@ -8,8 +8,7 @@ import { RestaurantJson } from "../../../interface";
 export default function RestaurantsPage () {
     const [restaurants, setRestaurants] = useState<RestaurantJson>({success: false,
         count: 0,
-        data: [],
-        averageRating: 0});
+        data: []});
     useEffect( () => {
         fetchData()        
     },[])
