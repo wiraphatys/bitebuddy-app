@@ -32,7 +32,7 @@ exports.getRestaurants = async (req, res, next) => {
                         }
                     }
                 ]);
-                restaurants[i] = { ...restaurants[i]._doc, reservations: restaurants[i].reservations, averageRating: avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 'No Review' };
+                restaurants[i] = { ...restaurants[i]._doc, reservations: restaurants[i].reservations, averageRating: avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 0 };
             }
 
             return res.status(200).send({
@@ -65,7 +65,7 @@ exports.getRestaurants = async (req, res, next) => {
                 }
             ]);
 
-            const averageRating = avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 'No Review';
+            const averageRating = avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 0;
             restaurant.averageRating = averageRating;
 
             return res.status(200).json({
@@ -110,7 +110,7 @@ exports.getRestaurantByID = async (req, res, next) => {
             }
         ]);
 
-        const averageRating = avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 'No Review';
+        const averageRating = avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 0;
         restaurant.averageRating = averageRating;
 
         return res.status(200).json({
