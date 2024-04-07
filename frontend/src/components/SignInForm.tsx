@@ -20,7 +20,7 @@ function SignInForm(){
             };
 
             const response = await axios.post(`${config.api}/auth/login`,user);
-
+            const token = response.data.token;
             if(response.data.success === true){
                 Swal.fire({
                     title:'Sign In',
@@ -29,13 +29,13 @@ function SignInForm(){
                     icon:'success'
                 });
 
-                localStorage.setItem(config.tokenName,response.data.ok);
-
+                localStorage.setItem(config.tokenName, token);
+                console.log(localStorage.getItem(config.tokenName));
                 setTimeout(() => {
                     router.push('/')
                 }, 1000)
             }else{
-                throw new Error('Sign Infailed.');
+                throw new Error('Sign In failed.');
             }
         }catch(error:any){
             Swal.fire({

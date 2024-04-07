@@ -9,9 +9,6 @@ const ReviewSchema = new Schema({
     comment: {
         type: String,
     },
-    img: {
-        type: String,
-    },
     user: {
         type: Schema.ObjectId,
         ref: 'User',

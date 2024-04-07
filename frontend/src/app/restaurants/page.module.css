@@ -1,0 +1,17 @@
+.page {
+    width: 90vw;
+    height: 90vh;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-y: hidden;
+}
+
+.page > * {
+    margin-top: 24px;
+}
+
+.page > h1 {
+    font-family: "Poppins";
+    font-size: 48px;
+    font-weight: 500;
+}

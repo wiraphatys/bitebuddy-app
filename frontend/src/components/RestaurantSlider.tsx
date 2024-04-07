@@ -6,12 +6,13 @@ import "slick-carousel/slick/slick-theme.css";
 import { RestaurantItem, RestaurantJson } from "../../interface";
 import RestaurantCard from "./RestaurantCard";
 import styles from './restaurantcard.module.css'
+import { dot } from "node:test/reporters";
 
 export default function RestaurantSlider({restaurantsJson}: {restaurantsJson: RestaurantJson}) {
   const restaurants = restaurantsJson
   const settings = {
-    dots: true,
-    infinite: false,
+    dot: false,
+    infinite: restaurants.count > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1

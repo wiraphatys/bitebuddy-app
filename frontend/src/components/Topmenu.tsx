@@ -7,7 +7,7 @@ export default function TopMenu() {
         <div className={styles.menucontainer}>
             <div className={styles.containerleft}>
                 <Link href='/'>
-                    home
+                    <Image src="/img/logo.png" alt='icon' height={80} width={50}/>
                 </Link>
             </div>
             <div className={styles.containerright}>

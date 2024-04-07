@@ -1,4 +1,8 @@
 const User = require("../models/UserModel")
+const {
+    uploadImageToS3,
+    getImageUrl
+} = require("../config/aws-s3");
 
 // @desc    Get all users
 // @route   GET /api/v1/users/
@@ -12,6 +16,12 @@ exports.getUsers = async (req, res, next) => {
             })
         }
         const users = await User.find({});
+
+        for (const user of users) {
+            if (user.img) {
+                user.img = await getImageUrl(user.img)
+            }
+        }
 
         return res.status(200).send({
             success: true,
@@ -32,7 +42,15 @@ exports.getUsers = async (req, res, next) => {
 // @access  Private
 exports.getUserById = async (req, res, next) => {
     try {
+        if (req.user.role !== "admin") {
+            return res.status(401).send({
+                success: false,
+                message: `This user ID of ${req.user.id} not authorized to access this route`
+            })
+        }
         const user = await User.findById(req.params.id);
+
+        user.img = await getImageUrl(user.img)
 
         if (!user) {
             return res.status(404).send({
@@ -66,11 +84,16 @@ exports.createUser = (async (req, res, next) => {
         if (role !== "user" && role !== "owner" && role !== "admin") {
             return res.status(400).json({
                 success: false,
-                message: e.message
+                message: "invalid role"
             })
         }
+        let img = ''
+        // validate file
+        if (req.file) {
+            img = await uploadImageToS3(req)
+        }
 
-        const user = await User.create({ email, password, firstName, lastName, tel, role })
+        const user = await User.create({ email, password, firstName, lastName, tel, role , img })
 
         // Create token
         const token = user.getSignedJwtToken()
@@ -96,7 +119,14 @@ exports.updateUserById = async (req, res, next) => {
     try {
         let user = await User.findById(req.params.id);
 
+        // role : { user , owner }
         if (req.user.role !== "admin") {
+            if (req.body.role) {
+                return res.status(400).send({
+                    success: false,
+                    message: `This user ID of ${req.params.id} not allow to edit role`
+                })
+            }
             if (user && req.user.id === user._id.toString()) {
                 user.set(req.body);
                 await user.save();
@@ -111,7 +141,7 @@ exports.updateUserById = async (req, res, next) => {
             } else {
                 return res.status(401).send({
                     success: false,
-                    message: `This user ID of ${req.params.id} not authorized to update this user`
+                    message: `This user ID of ${req.user.id} not authorized to update this user`
                 })
             }
         } else {
@@ -161,6 +191,7 @@ exports.deleteUserById = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
 
+        // role : { user , owner }
         if (req.user.role !== "admin") {
             if (user && req.user.id === user._id.toString()) {
                 await user.deleteOne();

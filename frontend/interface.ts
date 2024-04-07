@@ -20,3 +20,17 @@ export interface RestaurantJson {
     data: RestaurantItem[],
     averageRating: number,
 }
+
+export interface MenuItem {
+    _id: string,
+    name: string,
+    img: string,
+    description: string,
+    restaurant: string,
+}
+
+export interface MenuJson {
+    success: boolean,
+    count: number,
+    data: MenuItem[],
+}

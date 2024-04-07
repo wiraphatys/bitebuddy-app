@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
+const timePattern = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
 const RestaurantSchema = new Schema({
     name: { 
         type: String, 
@@ -8,11 +10,15 @@ const RestaurantSchema = new Schema({
     },
     img: { 
         type: String, 
-        required: [true, "please fill a image."] 
+        required: [true, "please fill an image."] 
     },
     description: { 
         type: String, 
         required: [true, "please fill a description."] 
+    },
+    tel: {
+        type: String,
+        required: [true, "please fill a tel"]
     },
     street: {
         type: String,
@@ -42,6 +48,26 @@ const RestaurantSchema = new Schema({
                 return Array.isArray(arr) && arr.every(val => Number.isInteger(val) && val >= 0 && val <= 6);
             },
             message: "closeDate must be an array of numbers (0 - 6)."
+        }
+    },
+    open: {
+        type: String,
+        required: [true, "please fill a open time."],
+        validate: {
+            validator: function (value) {
+                return timePattern.test(value);
+            },
+            message: props => `${props.value} is not a valid time format (HH:MM).`
+        }
+    },
+    close: {
+        type: String,
+        required: [true, "please fill a close time."],
+        validate: {
+            validator: function (value) {
+                return timePattern.test(value);
+            },
+            message: props => `${props.value} is not a valid time format (HH:MM).`
         }
     },
     owner: {
