@@ -55,6 +55,7 @@ exports.getReservations = async (req, res, next) => {
                 data: reservations
             })
         } else {
+<<<<<<< HEAD
             const reservations = await Reservation.find({}).populate({
                 path: "user",
                 select: "email"
@@ -68,6 +69,38 @@ exports.getReservations = async (req, res, next) => {
                 count: reservations.length,
                 data: reservations
             })
+=======
+            if (!req.params.restaurantId) {
+                const reservations = await Reservation.find({}).populate({
+                    path: "user",
+                    select: "email"
+                }).populate({
+                    path: "restaurant",
+                    select: "name tel"
+                })
+
+                return res.status(200).json({
+                    success: true,
+                    count: reservations.length,
+                    data: reservations
+                })
+            } else {
+                // has params :restaurantId
+                const reservations = await Reservation.find({ restaurant: req.params.restaurantId }).populate({
+                    path: "user",
+                    select: "email"
+                }).populate({
+                    path: "restaurant",
+                    select: "name tel"
+                })
+
+                return res.status(200).json({
+                    success: true,
+                    count: reservations.length,
+                    data: reservations
+                })
+            }
+>>>>>>> 4f8a87de2d7cf92e12d72152f614a05620f90b7e
         }
     } catch (err) {
         console.log(err);
