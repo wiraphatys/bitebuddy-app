@@ -22,6 +22,7 @@ function SignInForm(){
 
             const response = await axios.post(`${config.api}/auth/login`,user);
             const token = response.data.token;
+            const role = response.data.role;
             if(response.data.success === true){
                 Swal.fire({
                     title:'Sign In',
@@ -29,9 +30,8 @@ function SignInForm(){
                     timer: 2000,
                     icon:'success'
                 });
-
                 localStorage.setItem(config.tokenName, token);
-                console.log(localStorage.getItem(config.tokenName));
+                localStorage.setItem('role', role);
                 setTimeout(() => {
                     router.push('/')
                 }, 1000)
