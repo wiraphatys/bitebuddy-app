@@ -10,9 +10,14 @@ import { dot } from "node:test/reporters";
 
 export default function RestaurantSlider({restaurantsJson}: {restaurantsJson: RestaurantJson}) {
   const restaurants = restaurantsJson
+  console.log(restaurantsJson)
+  let show = 3;
+  if(restaurants.count < 3){
+    show = restaurants.count
+  }
   const settings = {
     dot: false,
-    infinite: restaurants.count > 1,
+    infinite: restaurants.count > 4,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1
