@@ -1,20 +1,24 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import styles from './signuprole.module.css'
 
-function SignUpRole(){
+
+function SignUpRole() {
 
     const router = useRouter();
 
-    const handleSelectClick = (role:string) =>{
+    const handleSelectClick = (role: string) => {
         router.push(`/register/${role}`)
     }
 
-    return(
-        <div>
-            <div>WHO ARE YOU?</div>
-            <button onClick={()=>handleSelectClick('user')}>Customer</button>
-            <button onClick={()=>handleSelectClick('owner')}>Owner</button>
+    return (
+        <div className={styles.container}>
+            <div className={styles.title}>WHO ARE YOU?</div>
+            <div className={styles.buttonRow}>
+                <button className={styles.button} onClick={() => handleSelectClick('user')}>User</button>
+                <button className={styles.button} onClick={() => handleSelectClick('owner')}>Owner</button>
+            </div>
         </div>
     );
 }

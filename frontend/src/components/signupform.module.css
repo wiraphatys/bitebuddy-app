@@ -1,7 +1,64 @@
-.show {
-    display:contents;
+/* signupform.module.css */
+
+.register-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #f9f9f9;
 }
 
-.none {
-    display:none;
+.register-form h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-align: center;
+}
+
+.profile-picture {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 20px;
+    cursor: pointer; 
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: gray; /* Circle background color */
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%; /* Ensure image is rounded within circle */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3;
 }
