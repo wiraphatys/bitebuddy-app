@@ -13,7 +13,7 @@ exports.getReviews = async (req, res, next) => {
             if (restaurant && restaurant.owner.toString() === req.user.id) {
                 const reviews = await Review.find( {restaurant: restaurant._id.toString() }).populate({
                     path: "user",
-                    select: "email"
+                    select: "email img"
                 })
 
                 if (reviews.length === 0) {
@@ -22,6 +22,12 @@ exports.getReviews = async (req, res, next) => {
                         count: 0,
                         message: "Your restaurant don't have any review."
                     })
+                }
+
+                for (const review of reviews) {
+                    if (review.user.img) {
+                        review.user.img = await getImageUrl(review.user.img)
+                    }
                 }
 
                 return res.status(200).json({
@@ -38,7 +44,7 @@ exports.getReviews = async (req, res, next) => {
         } else if (req.user.role === "user") {
             const reviews = await Review.find({ user: req.user.id }).populate({
                 path: "restaurant",
-                select: "name tel"
+                select: "name tel img"
             })
 
             if (reviews.length === 0) {
@@ -47,6 +53,12 @@ exports.getReviews = async (req, res, next) => {
                     count: 0,
                     message: "You don't have any review, make a new one !"
                 })
+            }
+
+            for (const review of reviews) {
+                if (review.restaurant.img) {
+                    review.restaurant.img = await getImageUrl(review.restaurant.img)
+                }
             }
 
             return res.status(200).json({
@@ -58,10 +70,10 @@ exports.getReviews = async (req, res, next) => {
             if (!req.params.restaurantId) {
                 const reviews = await Review.find({}).populate({
                     path: "user",
-                    select: "email"
+                    select: "email img"
                 }).populate({
                     path: "restaurant",
-                    select: "name tel"
+                    select: "name tel img"
                 })
 
                 if (!reviews) {
@@ -69,6 +81,15 @@ exports.getReviews = async (req, res, next) => {
                         success: false,
                         message: `Not found review ID of ${req.params.id}`
                     })
+                }
+
+                for (const review of reviews) {
+                    if (review.user.img) {
+                        review.user.img = await getImageUrl(review.user.img)
+                    }
+                    if (review.restaurant.img) {
+                        review.restaurant.img = await getImageUrl(review.restaurant.img)
+                    }
                 }
 
                 return res.status(200).json({
@@ -120,6 +141,9 @@ exports.getReviewById = async (req, res, next) => {
             });
 
             if (review && review.user.toString() === req.user.id) {
+                if (review.restaurant.img) {
+                    review.restaurant.img = await getImageUrl(review.restaurant.img)
+                }
                 return res.status(200).send({
                     success: true,
                     data: review
@@ -139,6 +163,9 @@ exports.getReviewById = async (req, res, next) => {
             const restaurant = await Restaurant.findById(review.restaurant)
 
             if (restaurant && restaurant.owner.toString() === req.user.id) {
+                if (review.user.img) {
+                    review.user.img = await getImageUrl(review.user.img)
+                }
                 return res.status(200).send({
                     success: true,
                     data: review
@@ -163,6 +190,14 @@ exports.getReviewById = async (req, res, next) => {
                     success: false,
                     message: `Not found review ID of ${req.params.id}`
                 })
+            }
+
+            if (review.user.img) {
+                review.user.img = await getImageUrl(review.user.img)
+            }
+
+            if (review.restaurant.img) {
+                review.restaurant.img = await getImageUrl(review.restaurant.img)
             }
 
             return res.status(200).json({
