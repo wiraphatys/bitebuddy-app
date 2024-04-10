@@ -13,11 +13,6 @@ import { ReservationItem } from '../../../interface';
 import styles from './page.module.css'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
-interface setReservationListJSON {
-  success: boolean;
-  data: ReservationItem[];
-}
-
 interface DeleteJSON {
   success: boolean;
   data: Object
