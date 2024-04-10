@@ -104,7 +104,7 @@ exports.getReservationByID = async (req, res, next) => {
         if (req.user.role === "user") {
             const reservation = await Reservation.findById(req.params.id).populate({
                 path: "restaurant",
-                select: "name tel street locality district province zipcode"
+                select: "name tel img description"
             });
 
             if (reservation && reservation.user.toString() === req.user.id) {
@@ -143,7 +143,7 @@ exports.getReservationByID = async (req, res, next) => {
                 select: "email"
             }).populate({
                 path: "restaurant",
-                select: "name tel street locality district province zipcode"
+                select: "name tel img description"
             })
 
             if (!reservation) {
