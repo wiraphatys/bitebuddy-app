@@ -104,7 +104,7 @@ exports.getReservationByID = async (req, res, next) => {
         if (req.user.role === "user") {
             const reservation = await Reservation.findById(req.params.id).populate({
                 path: "restaurant",
-                select: "name tel img description"
+                select: "name tel img description close open"
             });
 
             if (reservation && reservation.user.toString() === req.user.id) {
