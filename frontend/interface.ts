@@ -2,6 +2,7 @@ export interface RestaurantItem {
     _id: string,
     name: string,
     img: string,
+    description: string,
     tel: string,
     street: string,
     locality: string,
@@ -68,3 +69,22 @@ export interface ReservationItem{
     success: boolean;
     data: Object
   }
+
+export interface UserItem {
+    email: string,
+    img: string,
+}
+
+export interface ReviewItem {
+    _id: string,
+    rating: number,
+    comment: string,
+    user: UserItem,
+    restaurant: RestaurantItem,
+}
+
+export interface ReviewJson {
+    success: boolean,
+    count: number,
+    data: ReviewItem[],
+}

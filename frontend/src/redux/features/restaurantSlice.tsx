@@ -6,9 +6,16 @@ type RestaurantState = {
     restaurantItems: RestaurantItem[];
 }
 
+async function fetchRestaurant() {
+    const restaurant:RestaurantJson = await getRestaurants();
+    return restaurant.data;
+}
+
 const initialState: RestaurantState = { 
     restaurantItems: []};
 
+
+    
 export const restaurantSlice = createSlice ({
     name: "cart",
     initialState,

@@ -17,7 +17,6 @@ export default function RestaurantsPage () {
         setRestaurants(await getRestaurants())
     }
 
-    console.log(restaurants);
     return (
         <div className={styles.page}>
             <h1>Restaurant</h1>
