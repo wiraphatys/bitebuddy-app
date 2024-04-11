@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
-import styles from './signupform.module.css';
+import defaultImage from '../img/userAnonymous.png';
 
 function SignUpForm({ role }: { role: string }) {
     const router = useRouter();
@@ -15,13 +15,17 @@ function SignUpForm({ role }: { role: string }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmPassword] = useState('');
-    const [img, setImg] = useState<File | null>(null); // State to store selected profile picture
+    const [img, setImg] = useState<File | null>(null) // State to store selected profile picture
     const fileInputRef = useRef<HTMLInputElement>(null); // Ref to file input element
 
 
     const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             setImg(e.target.files[0]);
+        }else{
+            setImg(null)
+            const defaultImagePath = '/img/userAnonymous.png';
+            setImg(new File([defaultImagePath], 'userAnonymous.png'))
         }
     };
     const handleProfilePictureClick = (e: React.MouseEvent<HTMLLabelElement>) => {
