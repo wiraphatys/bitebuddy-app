@@ -11,12 +11,12 @@ export default function TopMenu() {
                 </Link>
             </div>
             <div className={styles.containerright}>
-                <div>
-                    icon
-                </div>
-                <div>
-                    navbar
-                </div>
+                <Link href='/myreservation'>
+                    reservation
+                </Link>
+                <Link href='/profile'>
+                    account
+                </Link>
             </div>
         </div>
     );
