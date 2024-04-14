@@ -39,7 +39,7 @@ export default function MenuSlider({rid}: {rid: string}) {
       {
         menus?.map((menuItem: MenuItem) => (
           <div key={menuItem._id}>
-            <MenuCard name={menuItem.name} img={menuItem.img} description={menuItem.description}/>
+            <MenuCard name={menuItem.name} img={menuItem.img} description={menuItem.description} mid={menuItem._id}/>
           </div>
         ))
       }

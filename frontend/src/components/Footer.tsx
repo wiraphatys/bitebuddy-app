@@ -6,7 +6,7 @@ function Footer() {
         <>
             <footer className="footer footer-center p-10 bg-base-200 text-base-content rounded mt-20">
                 <nav>
-                    <h1 className='text-3xl mb-4'> Thanks for visit our site. </h1>
+                    <h1 className='text-3xl mb-4'> Thanks for visiting our site. </h1>
                     <p> We're grateful for your support in our mission to enhance your dining experiences. Explore, indulge, </p>
                     <p> and savor every moment. Cheers to culinary adventures ahead! </p>
                 </nav>

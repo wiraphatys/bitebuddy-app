@@ -103,7 +103,7 @@ export default function RestaurantCreate({ rid }: { rid: string }) {
     setProvince(event.target.value);
   };
 
-  const handleRestaurantCreate =async()=>{
+  const handleRestaurantChange =async()=>{
     try{
         if(name && openTime && closeTime && selectedDays && description && street && locality && district && province && zipcode && tel){
             const payload = {
@@ -214,7 +214,7 @@ export default function RestaurantCreate({ rid }: { rid: string }) {
           </div>
         </div>
         <div className={styles.buttonContainer}>
-          <button className={styles.button} onClick={handleRestaurantCreate}>Done</button>
+          <button className={styles.button} onClick={handleRestaurantChange}>Done</button>
         </div>
       </div>
     </div>
