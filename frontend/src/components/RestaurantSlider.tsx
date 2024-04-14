@@ -11,7 +11,7 @@ export default function RestaurantSlider({restaurantsJson}: {restaurantsJson: Re
   const router = useRouter()
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      if (localStorage.getItem('role') === "owner"){
+      if (localStorage.getItem('role') === "owner" || !localStorage.getItem('role')){
         router.push('/');
       }
     }

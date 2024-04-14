@@ -9,9 +9,10 @@ import axios from "axios";
 import config from "@/utils/config";
 import getRestaurants from "@/libs/getRestaurants";
 
-export default function RestaurantUpdate({ rid }: { rid: string }) {
+export default function RestaurantCreate({ rid }: { rid: string }) {
   const router = useRouter();
   const [restaurant, setRestaurant] = useState<RestaurantItem>();
+  const [name, setName] = useState("");
   const [openTime, setOpenTime] = useState("");
   const [closeTime, setCloseTime] = useState("");
   const [selectedDays, setSelectedDays] = useState<number[]>([]);
@@ -62,6 +63,10 @@ export default function RestaurantUpdate({ rid }: { rid: string }) {
     fetchRestaurant();
   }, [rid]);
 
+  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+  };
+
   const handleOpenTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
     setOpenTime(event.target.value);
   };
@@ -98,10 +103,11 @@ export default function RestaurantUpdate({ rid }: { rid: string }) {
     setProvince(event.target.value);
   };
 
-  const handleRestaurantChange =async()=>{
+  const handleRestaurantCreate =async()=>{
     try{
-        if(openTime && closeTime && selectedDays && description && street && locality && district && province && zipcode && tel){
+        if(name && openTime && closeTime && selectedDays && description && street && locality && district && province && zipcode && tel){
             const payload = {
+                name: name,
                 description: description,
                 tel: tel,
                 street: street,
@@ -112,12 +118,12 @@ export default function RestaurantUpdate({ rid }: { rid: string }) {
                 close: closeTime,
             };
 
-            const response = await axios.put(`${config.api}/restaurants/${rid}`, payload, config.headers());
+            const response = await axios.post(`${config.api}/restaurants`, payload, config.headers());
 
             if (response.data.success) {
                 Swal.fire({
                     title: "Confirmed",
-                    text: "Updated successfully",
+                    text: "Created successfully",
                     icon: "success",
                     timer: 2000
                 });
@@ -152,23 +158,23 @@ export default function RestaurantUpdate({ rid }: { rid: string }) {
       <div>
         <div className={styles.nameContainer}>
           <div className={styles.nameText}>
-            <h1>{restaurant?.name}</h1>
+            <input type="text" value={name} className={styles.name} onChange={handleNameChange} placeholder="Restaurant Name"/>
           </div>
           <h3>Description</h3>
-          <input type="text" value={description} className={styles.description} onChange={handleDescriptionChange}/>
+          <input type="text" value={description} className={styles.description} onChange={handleDescriptionChange} placeholder="Description"/>
         </div>
         <div className={styles.belowContainer}>
           <div className={styles.addressContainer}>
             <div className={styles.address}>
               <div>
-                <div><h1>Street :&ensp;</h1> <input type="text" value={street} onChange={handleStreetChange}/></div>
-                <div><h1>District :&ensp;</h1> <input type="text" value={district} onChange={handleDistrictChange}/></div>
-                <div><h1>Zip Code :&ensp;</h1> <input type="text" value={zipcode} onChange={handleZipcodeChange}/></div>
+                <div><h1>Street :&ensp;</h1> <input type="text" value={street} onChange={handleStreetChange} placeholder="Street"/></div>
+                <div><h1>District :&ensp;</h1> <input type="text" value={district} onChange={handleDistrictChange} placeholder="District"/></div>
+                <div><h1>Zip Code :&ensp;</h1> <input type="text" value={zipcode} onChange={handleZipcodeChange} placeholder="Zipcode"/></div>
               </div>
               <div>
-                <div><h1>Locality :&ensp;</h1> <input type="text" value={locality} onChange={handleLocalityChange}/></div>
-                <div><h1>Province :&ensp;</h1> <input type="text" value={province} onChange={handleProvinceChange}/></div>
-                <div><h1>Telephone :&ensp;</h1> <input type="text" value={tel} onChange={handleTelChange}/></div>
+                <div><h1>Locality :&ensp;</h1> <input type="text" value={locality} onChange={handleLocalityChange} placeholder="Locality"/></div>
+                <div><h1>Province :&ensp;</h1> <input type="text" value={province} onChange={handleProvinceChange} placeholder="Province"/></div>
+                <div><h1>Telephone :&ensp;</h1> <input type="text" value={tel} onChange={handleTelChange} placeholder="Telephone Number"/></div>
               </div>
             </div>
           </div>
@@ -208,7 +214,7 @@ export default function RestaurantUpdate({ rid }: { rid: string }) {
           </div>
         </div>
         <div className={styles.buttonContainer}>
-          <button className={styles.button} onClick={handleRestaurantChange}>Done</button>
+          <button className={styles.button} onClick={handleRestaurantCreate}>Done</button>
         </div>
       </div>
     </div>

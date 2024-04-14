@@ -4,13 +4,20 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { RestaurantItem, RestaurantJson } from "../../interface";
 import styles from "./restaurantdetail.module.css"
+import { useRouter } from "next/navigation";
 
 export default function RestaurantDetail({ rid }: { rid: string }) {
     const [restaurant, setRestaurant] = useState<RestaurantItem>();
+    const [role, setRole] = useState<string | null>();
+    const router = useRouter();
 
     useEffect(() => {
         const fetchRestaurant = async () => {
             try {
+                if(!localStorage.getItem('role')){
+                    router.push('/')
+                }
+                setRole(localStorage.getItem('role'))
                 const restaurantData = await getRestaurant(rid);
                 console.log(restaurantData);
                 setRestaurant(restaurantData.data);
@@ -30,7 +37,7 @@ export default function RestaurantDetail({ rid }: { rid: string }) {
       <div>
         <div className={styles.nameContainer}>
             <div className={styles.nameText}>
-                <h1>{restaurant?.name}</h1> <p>Tel : </p><span className="font-normal">&ensp;{restaurant?.tel}</span>{localStorage.getItem('role') !== 'owner' ? <button className={styles.button}>Reservation</button> : null}
+                <h1>{restaurant?.name}</h1> <p>Tel : </p><span className="font-normal">&ensp;{restaurant?.tel}</span>{role !== 'owner' ? <button className={styles.button}>Reservation</button> : null}
             </div> 
             <h3>Description</h3>
             <div className={styles.description}>
