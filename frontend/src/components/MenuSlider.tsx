@@ -4,8 +4,7 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { MenuItem, MenuJson } from "../../interface";
-import MenuCard from "./MenuCard";
-import styles from './menucard.module.css'
+import MenuCard from "./Menu";
 import getMenu from "@/libs/getMenus";
 
 export default function MenuSlider({rid}: {rid: string}) {
