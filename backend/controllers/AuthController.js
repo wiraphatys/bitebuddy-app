@@ -79,7 +79,9 @@ exports.getMe = (async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id)
 
-        user.img = await getImageUrl(user.img)
+        if (user.img !== "") {
+            user.img = await getImageUrl(user.img)
+        }
 
         return res.status(200).send({
             success: true,
