@@ -1,0 +1,63 @@
+.card{
+    border:#F0F0F0 solid;
+    border-radius: 20px;
+    background-color: #F0F0F0;
+    padding: 24px;
+    height: auto;
+    width: auto;
+    margin-left: 12px;
+    margin-right: 24px;
+    margin-bottom: 24px ;
+}
+.button{
+    position: absolute;
+    bottom: 0px;
+    border: #333 solid 2px;
+    border-radius: 20px;
+    text-align: center;
+    margin-right: 24px;
+    margin-bottom: 24px;
+    width: 82px;
+    height: 36px;
+    align-self: flex-end;
+}
+
+.button:hover{
+    background-color: #333;
+    color: #fff;
+}
+.information{
+    border: rgba(00, 00, 00,0.2) solid 1px;
+    border-radius: 5px;
+    padding: 12px;
+    color: rgba(00, 00, 00,0.6);
+    width: 100%;
+    height: auto;
+    margin-top: 8px;
+    align-content: center;
+    background-color: #F0F0F0;
+}
+.address{
+    border: rgba(00, 00, 00,0.2) solid;
+    color: rgba(00, 00, 00,0.6);
+    border-radius: 5px;
+    width: 270px;
+    height: 75%;
+    padding: 10px;
+}
+.container {
+    height: 90vh;
+    width: 100%;
+}
+.seat{
+    border: rgba(00, 00, 00,0.2) solid 1px;
+    border-radius: 5px;
+    padding: 12px;
+    color: rgba(00, 00, 00,0.6);
+    width: 100%;
+    height: auto;
+    margin-top: 8px;
+    align-content: center;
+    background-color: #F0F0F0;
+    margin-left: 12px;
+}
