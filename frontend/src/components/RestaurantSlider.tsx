@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { RestaurantItem, RestaurantJson, RestaurantOwnerJson } from "../../interface";
+import { RestaurantItem, RestaurantJson } from "../../interface";
 import RestaurantCard from "./RestaurantCard";
 import { useRouter } from "next/navigation";
 
@@ -17,16 +17,11 @@ export default function RestaurantSlider({restaurantsJson}: {restaurantsJson: Re
     }
   }, []);
   const restaurants = restaurantsJson
-  let show = 4;
-  if(restaurants.count < show){
-    show = restaurants.count
-  }
-  console.log(show);
   const settings = {
     dot: false,
     infinite: true,
     speed: 500,
-    slidesToShow: show,
+    slidesToShow: 4,
     slidesToScroll: 1,
     nextArrow: (
       <div>

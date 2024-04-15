@@ -1,7 +1,7 @@
 'use client'
 
 import Image from "next/image";
-import styles from "./menucard.module.css"
+import styles from "./menu.module.css"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
@@ -70,10 +70,10 @@ export default function MenuCard({name, img, description, mid} : {name: string, 
             <div className={styles.image}>
                 {/* <Image src="/img/logo.png" alt='icon' layout='fill' objectFit="contain"/> */}
                 {
-                    role === 'owner'?
-                    <button className={styles.circle} onClick={handleMenuDelete}><FontAwesomeIcon icon={faTrash} className="trash-icon"/></button>:null
-                }   
-            </div>
+                role === 'owner'?
+                <button className={styles.circle} onClick={handleMenuDelete}><FontAwesomeIcon icon={faTrash} className={styles.trashIcon}/></button>:null
+                }  
+            </div> 
             <div className={styles.text}>
                 <h1>
                     {name}
