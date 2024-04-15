@@ -2,7 +2,8 @@ const Restaurant = require("../models/RestaurantModel")
 const Review = require('../models/ReviewModel')
 const {
     uploadImageToS3,
-    getImageUrl
+    getImageUrl,
+    deleteImageInS3
 } = require("../config/aws-s3");
 
 // @desc    Get all restaurants
@@ -247,6 +248,9 @@ exports.deleteRestaurantById = async (req, res, next) => {
         if (req.user.role === "owner") {
             // Ownership validation
             if (restaurant && restaurant.owner.toString() === req.user.id) {
+                // delete img in s3
+                await deleteImageInS3(restaurant.img)
+                
                 // Execute deleting process
                 await restaurant.deleteOne();
 
@@ -268,6 +272,9 @@ exports.deleteRestaurantById = async (req, res, next) => {
                     message: `Not found restaurant ID of ${req.params.id}`
                 })
             }
+
+            // delete img in s3
+            await deleteImageInS3(restaurant.img)
 
             // Execute deleting process
             await restaurant.deleteOne();

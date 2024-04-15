@@ -2,7 +2,8 @@ const Menu = require("../models/MenuModel")
 const Restaurant = require("../models/RestaurantModel")
 const {
     uploadImageToS3,
-    getImageUrl
+    getImageUrl,
+    deleteImageInS3
 } = require("../config/aws-s3");
 
 // @desc    Get all menus
@@ -249,6 +250,9 @@ exports.deleteMenuById = async (req, res, next) => {
 
             // Ownership validation
             if (menu && restaurant.owner.toString() === req.user.id) {
+                // delete img in S3
+                await deleteImageInS3(menu.img)
+
                 // Execute deleting process
                 await menu.deleteOne();
 
@@ -270,6 +274,9 @@ exports.deleteMenuById = async (req, res, next) => {
                     message: `This user ${req.user.id} is not authorized to delete this menu`
                 })
             }
+
+            // delete img in S3
+            await deleteImageInS3(menu.img)
 
             // Execute deleting process
             await menu.deleteOne();
