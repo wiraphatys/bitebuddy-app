@@ -39,7 +39,7 @@ export default function HomePage() {
               <br />
               Our diverse selection ensures a culinary adventure like no other.
             </div>
-            <button className={styles.buttonExplore}>Explore now</button>
+            <a href="/restaurants"><button className={styles.buttonExplore}>Explore now</button></a>
           </div>
           <button className={styles.buttonLearn} onClick={handleClick}>
             Learn more about us
