@@ -1,0 +1,74 @@
+.profileContainer {
+  padding: 20px;
+}
+
+.accountHeader {
+  font-size: 48px;
+  margin-bottom: 20px;
+  font-weight: medium;
+}
+
+.userCard {
+  background-color: #b9b9b9;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height:350px;
+}
+
+.userContent {
+  height: 350px;
+  border-top-left-radius: 10px; 
+  border-bottom-left-radius: 10px; 
+  margin-left:15%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-left : 10px;
+  padding: 20px;
+  background: #f0f0f0;
+}
+
+.userImage {
+  border-radius: 50%;
+  margin-left: -120px; /* Adjusted margin-left */
+  margin-right: 20px;
+  z-index: 1;
+}
+
+.userInfo {
+  margin-right: 120px; /* Adjusted margin-right */
+  flex-grow: 1;
+  font-weight: medium;
+  font-size: 24px;
+  margin-left: 48px;
+}
+
+.username{
+  font-weight: medium;
+  font-size: 36px;
+}
+
+.editButton {
+  padding: 5px 25px; /* Adjusted horizontal padding */
+    font-size: 24px;
+    background-color: #f0f0f0; /* Set initial background color to white */
+    color: #000000; /* Set initial text color to black */
+    border: 2px solid #000000; /* Set border color to black */
+    border-radius: 25px; /* Make the border more rounded */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  margin-top: 250px;
+}
+.editButton:hover {
+  background-color: #000000; /* Change background color on hover to black */
+  color: #ffffff; /* Change text color on hover to white */
+  border-color: #ffffff; /* Change border color on hover to white */
+}
+
+.reviewHeader {
+  font-size: 24px;
+  font-weight: medium;
+  margin-top: 40px;
+}

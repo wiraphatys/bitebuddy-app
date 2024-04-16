@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import ReviewSlider from "@/components/ReviewSlider";
 import EditProfile from "@/components/EditProfile";
-
+import styles from './page.module.css'
 
 interface UserItem{
     email:string,
@@ -46,22 +46,34 @@ const ProfilePage = () => {
       };
   
     return (
-      <div>
-        <div>Account</div>
-        <Image src={user?.img ? user.img : '/img/userAnonymous.png'} alt="user picture" width={200} height={200} />
-        <div>
+      <div className={styles.profileContainer}>
+  <div className={styles.accountHeader}>Account</div>
+  <div className={styles.userCard}>
+    <div className={styles.userContent}>
+      <img
+        src={user?.img ? user.img : '/img/userAnonymous.png'}
+        alt="user picture"
+        width={200}
+        height={200}
+        className={styles.userImage}
+      />
+      <div className={styles.userInfo}>
+        <div className={styles.username}>
           {user?.firstName} {user?.lastName}
         </div>
-        <div>role: {user?.role}</div>
-        <div>email: {user?.email}</div>
-        <div>tel: {user?.tel}</div>
-        <button onClick={handleEdit}>Edit</button>
-        <div>
-          <div>My Review</div>
-          <ReviewSlider/>
-        </div>
-        {isEditing && user && <EditProfile user={user} onClose={handleCloseEdit} onUpdate={updateUserProfile} />}
+        <div>role : {user?.role}</div>
+        <div>email : {user?.email}</div>
+        <div>tel : {user?.tel}</div>
+        
       </div>
+      <button onClick={handleEdit} className={styles.editButton}>Edit</button>
+    </div>
+    {isEditing && user && <EditProfile user={user} onClose={handleCloseEdit} onUpdate={updateUserProfile} />}
+  </div>
+  <div className={styles.reviewHeader}>My Review</div>
+  <ReviewSlider />
+</div>
+
     );
   };
   
