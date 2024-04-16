@@ -122,6 +122,8 @@ export default function RestaurantCreate({ rid }: { rid: string }) {
           formData.append("street", street);
           formData.append("locality", locality);
           formData.append("district", district);
+          formData.append("province", province);
+          formData.append("zipcode", zipcode);
           formData.append("closeDate", JSON.stringify(selectedDays));
           formData.append("open", openTime);
           formData.append("close", closeTime);
@@ -132,6 +134,7 @@ export default function RestaurantCreate({ rid }: { rid: string }) {
               headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('token'),
                   'Content-Type': 'multipart/form-data',
+                  'Access-Control-Allow-Origin': "https://se-api-test.vercel.app/"
               }
           });
 
