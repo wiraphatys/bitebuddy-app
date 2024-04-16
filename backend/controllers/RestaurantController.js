@@ -145,9 +145,10 @@ exports.createRestaurant = async (req, res, next) => {
 
         const existedRestaurant = await Restaurant.find({ owner: req.user.id })
 
-        if (existedRestaurant) {
+        if (existedRestaurant.length !== 0) {
             return res.status(400).json({
                 success: false,
+                count: existedRestaurant.length,
                 message: "You're already created restaurant."
             })
         }
