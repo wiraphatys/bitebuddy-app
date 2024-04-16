@@ -23,6 +23,25 @@ export default function RestaurantCreate({ rid }: { rid: string }) {
   const [zipcode, setZipcode] = useState("");
   const [tel, setTel] = useState("");
   const [province, setProvince] = useState("");
+  const [imgFile, setImgFile] = useState<File | null>(null);
+  const [imgPreview, setImgPreview] = useState<string>('');
+
+
+    const handleImageChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        const selectedImg = e.target.files?.[0];
+        if (selectedImg) {
+            setImgFile(selectedImg);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              setImgPreview(reader.result as string);
+          };
+            reader.readAsDataURL(selectedImg);
+        } else {
+            // Handle case where no file is selected
+            setImgFile(null);
+            setImgPreview('');
+        }
+    };
 
   const handleCheckboxChange = (day: number) => {
     if (selectedDays.includes(day)) {
@@ -42,19 +61,6 @@ export default function RestaurantCreate({ rid }: { rid: string }) {
               router.push(`/restaurants/${rid}`);
             }
         }
-        const restaurantData = await getRestaurants();
-        console.log(restaurantData);
-        setRestaurant(restaurantData.data);
-        setOpenTime(restaurantData.data.open || "");
-        setCloseTime(restaurantData.data.close || "");
-        setSelectedDays(restaurantData.data.closeDate);
-        setDescription(restaurantData.data.description || "");
-        setStreet(restaurantData.data.street || "");
-        setLocality(restaurantData.data.locality || "");
-        setDistrict(restaurantData.data.district || "");
-        setProvince(restaurantData.data.province || "");
-        setZipcode(restaurantData.data.zipcode || "");
-        setTel(restaurantData.data.tel || "");
       } catch (error) {
         console.error("Error fetching restaurant data:", error);
       }
@@ -106,19 +112,28 @@ export default function RestaurantCreate({ rid }: { rid: string }) {
   const handleRestaurantChange =async()=>{
     try{
         if(name && openTime && closeTime && selectedDays && description && street && locality && district && province && zipcode && tel){
-            const payload = {
-                name: name,
-                description: description,
-                tel: tel,
-                street: street,
-                locality: locality,
-                district: district,
-                closeDate: selectedDays,
-                open: openTime,
-                close: closeTime,
-            };
-
-            const response = await axios.post(`${config.api}/restaurants`, payload, config.headers());
+          const formData = new FormData();
+          formData.append("name", name);
+          if(imgFile){
+            formData.append("img", imgFile);
+          }
+          formData.append("description", description);
+          formData.append("tel", tel);
+          formData.append("street", street);
+          formData.append("locality", locality);
+          formData.append("district", district);
+          formData.append("closeDate", JSON.stringify(selectedDays));
+          formData.append("open", openTime);
+          formData.append("close", closeTime);
+          formData.forEach((value, key) => {
+            console.log(key + ': ' + value);
+          });
+            const response = await axios.post(`${config.api}/restaurants/`, formData, {
+              headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                  'Content-Type': 'multipart/form-data',
+              }
+          });
 
             if (response.data.success) {
                 Swal.fire({
@@ -148,11 +163,19 @@ export default function RestaurantCreate({ rid }: { rid: string }) {
   return (
     <div className={styles.container}>
       <div className={styles.imgContainer}>
-        <Image
-          src="https://bitebuddycloud.s3.ap-southeast-1.amazonaws.com/39517f157d1b02bd08ea0b589cf46d83bb5a3a2828a043bb4e4df6a3e3c3c177?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAU6GDXBI3R753ZLH6%2F20240407%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Date=20240407T095316Z&X-Amz-Expires=900&X-Amz-Signature=76122dc02e91a55764ec0f0d35d60e91a1d65789ae63dad3a9590dadf27a1c62&X-Amz-SignedHeaders=host&x-id=GetObject"
-          alt="icon"
-          layout="fill"
-          objectFit="contain"
+      <label htmlFor="img" className="cursor-pointer">
+                    <img
+                        src={imgPreview || 'placeholder_image_url'}
+                        className="w-full h-full object-cover"
+                        style={{ maxWidth: '100%', maxHeight: '100%' }}
+                    />
+                </label>
+        <input
+          id="img"
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          style={{display:'none'}}
         />
       </div>
       <div>

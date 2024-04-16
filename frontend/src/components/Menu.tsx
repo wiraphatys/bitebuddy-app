@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { removeMenu } from "@/redux/features/menuSlice";
 
-export default function MenuCard({name, img, description, mid} : {name: string, img: string, description: string, mid: string}) {
+export default function Menu({name, img, description, mid} : {name: string, img: string, description: string, mid: string}) {
     const router = useRouter();
     const [role, setRole] = useState<string>();
     const dispatch = useDispatch<AppDispatch>();
@@ -74,7 +74,7 @@ export default function MenuCard({name, img, description, mid} : {name: string, 
     return (
         <div className={styles.container}>
             <div className={styles.image}>
-                {/* <Image src="/img/logo.png" alt='icon' layout='fill' objectFit="contain"/> */}
+                <Image src={img} alt='icon' layout='fill' objectFit="contain"/>
                 {
                 role === 'owner'?
                 <button className={styles.circle} onClick={handleMenuDelete}><DeleteOutlineIcon/></button>:null

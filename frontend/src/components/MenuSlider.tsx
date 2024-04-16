@@ -4,16 +4,18 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { MenuItem, MenuJson } from "../../interface";
-import MenuCard from "./Menu";
+import MenuCard from "./MenuCard";
 import getMenu from "@/libs/getMenus";
 import styles from './restaurantowner.module.css'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { setInitialMenuItems } from "@/redux/features/menuSlice"
+import Menu from "./Menu";
 
 export default function MenuSlider({rid}: {rid: string}) {
     const [role, setRole] = useState<string|null>();
+    const [create, setCreate] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
     const menuItems = useAppSelector((state) => state.menuSlice.menuItems);
 
@@ -61,7 +63,10 @@ export default function MenuSlider({rid}: {rid: string}) {
   return (
     <div>
       {
-        role == 'owner' ? <a href="/restaurants/owner/create"><button className={styles.createButton}><AddCircleOutlineIcon/> Add Your Menu</button></a> : null
+        role == 'owner' ? <button className={styles.createButton} onClick={() => setCreate(true)}><AddCircleOutlineIcon/> Add Your Menu</button> : null
+      }
+      {
+        create ? <MenuCard rid={rid} setCreate={setCreate}/> : null
       }
     {
         (menuItems && menuItems?.length > 0) ? 
@@ -69,7 +74,7 @@ export default function MenuSlider({rid}: {rid: string}) {
       {
         menuItems?.map((menuItem: MenuItem) => (
           <div key={menuItem._id} className="mt-5">
-            <MenuCard name={menuItem.name} img={menuItem.img} description={menuItem.description} mid={menuItem._id}/>
+            <Menu name={menuItem.name} img={menuItem.img} description={menuItem.description} mid={menuItem._id}/>
           </div>
         ))
       }

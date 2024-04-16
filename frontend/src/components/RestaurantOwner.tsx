@@ -55,6 +55,7 @@ export default function RestaurantOwner() {
               const response = await axios.delete(`${config.api}/restaurants/${restaurant?._id}`, config.headers());
 
               if (response.data.success) {
+                  setRestaurant(undefined);
                   Swal.fire({
                       title: 'Deleted!',
                       text: 'Restaurant has been deleted successfully.',
@@ -83,7 +84,7 @@ export default function RestaurantOwner() {
     <div className={styles.container}>
       <div className={styles.imgContainer}>
         <Image
-          src="https://bitebuddycloud.s3.ap-southeast-1.amazonaws.com/39517f157d1b02bd08ea0b589cf46d83bb5a3a2828a043bb4e4df6a3e3c3c177?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAU6GDXBI3R753ZLH6%2F20240407%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Date=20240407T095316Z&X-Amz-Expires=900&X-Amz-Signature=76122dc02e91a55764ec0f0d35d60e91a1d65789ae63dad3a9590dadf27a1c62&X-Amz-SignedHeaders=host&x-id=GetObject"
+          src={restaurant.img}
           alt="icon"
           layout="fill"
           objectFit="contain"

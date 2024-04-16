@@ -16,6 +16,12 @@
     margin-right: 12px;
 }
 
+.imgContainer > input {
+    display: flex;
+    justify-self: center;
+    align-self: center;
+}
+
 .nameContainer {
     height: 240px;
     width: 720px;
