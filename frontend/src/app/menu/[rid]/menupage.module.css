@@ -5,12 +5,9 @@
     margin-right: auto;
 }
 
-.page > * {
-    margin-top: 24px;
-}
-
 .page > h1 {
     margin-left: 15px;
+    margin-top: 24px;
     font-family: "Poppins";
     font-size: 48px;
     font-weight: 500;

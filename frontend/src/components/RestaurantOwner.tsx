@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import config from "@/utils/config";
 import getRestaurants from "@/libs/getRestaurants";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 export default function RestaurantOwner() {
   const router = useRouter();
@@ -144,7 +145,7 @@ export default function RestaurantOwner() {
           </div>
         </div>
       </div>
-      </div> : <a href="/restaurants/owner/create"><button className={styles.createButton}>Create Your Restaurant</button></a>
+      </div> : <a href="/restaurants/owner/create"><button className={styles.createButton}><AddCircleOutlineIcon/> Create Your Restaurant</button></a>
       }
     </div>
   );

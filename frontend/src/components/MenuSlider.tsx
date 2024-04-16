@@ -6,16 +6,25 @@ import "slick-carousel/slick/slick-theme.css";
 import { MenuItem, MenuJson } from "../../interface";
 import MenuCard from "./Menu";
 import getMenu from "@/libs/getMenus";
+import styles from './restaurantowner.module.css'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { useDispatch } from "react-redux";
+import { AppDispatch, useAppSelector } from "@/redux/store";
+import { setInitialMenuItems } from "@/redux/features/menuSlice"
 
 export default function MenuSlider({rid}: {rid: string}) {
-    const [menus, setMenus] = useState<MenuItem[]>();
+    const [role, setRole] = useState<string|null>();
+    const dispatch = useDispatch<AppDispatch>();
+    const menuItems = useAppSelector((state) => state.menuSlice.menuItems);
 
     useEffect(() => {
         const fetchMenu = async () => {
             try {
                 const menuData = await getMenu(rid);
+                setRole(localStorage.getItem('role'))
                 console.log(menuData);
-                setMenus(menuData.data);
+                dispatch(setInitialMenuItems(menuData.data))
+                
             } catch (error) {
                 console.error('Error fetching menu data:', error);
             }
@@ -23,21 +32,43 @@ export default function MenuSlider({rid}: {rid: string}) {
 
         fetchMenu();
     }, [rid]);
+
+    useEffect(() => {
+      console.log('menuItems:', menuItems);
+    }, [menuItems]);
     const settings = {
-    dots: true,
-    infinite: true,
+    dots: role !== 'owner',
+    infinite: role !== 'owner',
     speed: 500,
     slidesToShow: 5,
-    slidesToScroll: 1
+    slidesToScroll: 1,
+    nextArrow: (
+      <div>
+        <div className="next-slick-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" stroke="black" height="24" viewBox="0 -960 960 960" width="24"><path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z"/></svg>
+        </div>
+      </div>
+    ),
+
+    prevArrow: (
+      <div>
+        <div className="next-slick-arrow rotate-180">
+          <svg xmlns="http://www.w3.org/2000/svg" stroke="black" height="24" viewBox="0 -960 960 960" width="24"><path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z"/></svg>
+        </div>
+      </div>
+    ),
   };
   return (
     <div>
+      {
+        role == 'owner' ? <a href="/restaurants/owner/create"><button className={styles.createButton}><AddCircleOutlineIcon/> Add Your Menu</button></a> : null
+      }
     {
-        (menus && menus?.length > 0) ? 
+        (menuItems && menuItems?.length > 0) ? 
       <Slider {...settings}>
       {
-        menus?.map((menuItem: MenuItem) => (
-          <div key={menuItem._id}>
+        menuItems?.map((menuItem: MenuItem) => (
+          <div key={menuItem._id} className="mt-5">
             <MenuCard name={menuItem.name} img={menuItem.img} description={menuItem.description} mid={menuItem._id}/>
           </div>
         ))

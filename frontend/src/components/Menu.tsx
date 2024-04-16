@@ -7,12 +7,15 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import axios from "axios";
 import config from "@/utils/config";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { removeMenu } from "@/redux/features/menuSlice";
 
 export default function MenuCard({name, img, description, mid} : {name: string, img: string, description: string, mid: string}) {
     const router = useRouter();
     const [role, setRole] = useState<string>();
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() =>{
         if (typeof window !== 'undefined') {
@@ -22,7 +25,7 @@ export default function MenuCard({name, img, description, mid} : {name: string, 
         }
     })
 
-    const handleMenuDelete =async()=>{
+    const handleMenuDelete = async()=>{
         const confirmation = await Swal.fire({
             title: 'Are you sure?',
             text: 'You want to delete',
@@ -41,9 +44,12 @@ export default function MenuCard({name, img, description, mid} : {name: string, 
         // If user confirms the deletion
         if (!confirmation.isConfirmed) {
             try {
+
                 const response = await axios.delete(`${config.api}/menus/${mid}`, config.headers());
   
                 if (response.data.success) {
+                    dispatch(removeMenu(mid));
+
                     Swal.fire({
                         title: 'Deleted!',
                         text: 'Restaurant has been deleted successfully.',
@@ -71,7 +77,7 @@ export default function MenuCard({name, img, description, mid} : {name: string, 
                 {/* <Image src="/img/logo.png" alt='icon' layout='fill' objectFit="contain"/> */}
                 {
                 role === 'owner'?
-                <button className={styles.circle} onClick={handleMenuDelete}><FontAwesomeIcon icon={faTrash} className={styles.trashIcon}/></button>:null
+                <button className={styles.circle} onClick={handleMenuDelete}><DeleteOutlineIcon/></button>:null
                 }  
             </div> 
             <div className={styles.text}>
