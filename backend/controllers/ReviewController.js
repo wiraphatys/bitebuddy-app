@@ -1,6 +1,10 @@
 const Review = require("../models/ReviewModel")
 const Restaurant = require('../models/RestaurantModel')
 
+const {
+    getImageUrl
+} = require("../config/aws-s3");
+
 // @desc    Get all reviews
 // @route   GET /api/v1/reviews || GET /api/v1/restaurants/:restaurantId/reviews
 // @access  Private
