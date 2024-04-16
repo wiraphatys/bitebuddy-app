@@ -11,11 +11,10 @@ import getRestaurants from "@/libs/getRestaurants";
 
 export default function RestaurantCreate({ rid }: { rid: string }) {
   const router = useRouter();
-  const [restaurant, setRestaurant] = useState<RestaurantItem>();
   const [name, setName] = useState("");
   const [openTime, setOpenTime] = useState("");
   const [closeTime, setCloseTime] = useState("");
-  const [selectedDays, setSelectedDays] = useState<number[]>([]);
+  const [selectedDays, setSelectedDays] = useState<Number[]>([]);
   const [description, setDescription] = useState("");
   const [street, setStreet] = useState("");
   const [locality, setLocality] = useState("");
@@ -43,7 +42,7 @@ export default function RestaurantCreate({ rid }: { rid: string }) {
         }
     };
 
-  const handleCheckboxChange = (day: number) => {
+  const handleCheckboxChange = (day: Number) => {
     if (selectedDays.includes(day)) {
       setSelectedDays(
         selectedDays.filter((selectedDay) => selectedDay !== day)
@@ -124,7 +123,9 @@ export default function RestaurantCreate({ rid }: { rid: string }) {
           formData.append("district", district);
           formData.append("province", province);
           formData.append("zipcode", zipcode);
-          formData.append("closeDate", JSON.stringify(selectedDays));
+          selectedDays.map((day:Number) => {
+            formData.append("closeDate", JSON.stringify(day))
+          })
           formData.append("open", openTime);
           formData.append("close", closeTime);
           formData.forEach((value, key) => {
@@ -154,6 +155,7 @@ export default function RestaurantCreate({ rid }: { rid: string }) {
             throw new Error("Please try again");
         }
     } catch(error: any) {
+      console.log(error.response)
         Swal.fire({
             title: "Error",
             text: error.message,
