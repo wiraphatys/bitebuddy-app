@@ -42,30 +42,66 @@ exports.getReviews = async (req, res, next) => {
                 })
             }
         } else if (req.user.role === "user") {
-            const reviews = await Review.find({ user: req.user.id }).populate({
-                path: "restaurant",
-                select: "name tel img"
-            })
+            if (!req.params.restaurantId) {
+                const reviews = await Review.find({ user: req.user.id }).populate({
+                    path: "restaurant",
+                    select: "name tel img"
+                })
 
-            if (reviews.length === 0) {
+                if (reviews.length === 0) {
+                    return res.status(200).json({
+                        success: true,
+                        count: 0,
+                        message: "You don't have any review, make a new one !"
+                    })
+                }
+
+                for (const review of reviews) {
+                    if (review.restaurant.img) {
+                        review.restaurant.img = await getImageUrl(review.restaurant.img)
+                    }
+                }
+
                 return res.status(200).json({
                     success: true,
-                    count: 0,
-                    message: "You don't have any review, make a new one !"
+                    count: reviews.length,
+                    data: reviews
+                })
+            } else {
+                const restaurant = await Restaurant.findById(req.params.restaurantId)
+
+                if (!restaurant) {
+                    return res.status(404).json({
+                        success: false,
+                        message: "Not found this restaurant"
+                    })
+                }
+
+                const reviews = await Review.find({ restaurant: restaurant._id.toString() }).populate({
+                    path: "user",
+                    select: "email img"
+                })
+
+                if (reviews.length === 0) {
+                    return res.status(200).json({
+                        success: true,
+                        count: 0,
+                        message: "Your restaurant don't have any review."
+                    })
+                }
+
+                for (const review of reviews) {
+                    if (review.user.img) {
+                        review.user.img = await getImageUrl(review.user.img)
+                    }
+                }
+
+                return res.status(200).json({
+                    success: true,
+                    count: reviews.length,
+                    data: reviews
                 })
             }
-
-            for (const review of reviews) {
-                if (review.restaurant.img) {
-                    review.restaurant.img = await getImageUrl(review.restaurant.img)
-                }
-            }
-
-            return res.status(200).json({
-                success: true,
-                count: reviews.length,
-                data: reviews
-            })
         } else {
             if (!req.params.restaurantId) {
                 const reviews = await Review.find({}).populate({
