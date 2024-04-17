@@ -149,6 +149,11 @@ exports.createMenu = async (req, res, next) => {
             }
             const menu = await Menu.create(req.body);
 
+            // get image url
+            if (menu.img) {
+                menu.img = await getImageUrl(menu.img)
+            }
+
             return res.status(201).send({
                 success: true,
                 data: menu
