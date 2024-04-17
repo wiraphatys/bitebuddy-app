@@ -10,7 +10,7 @@ export default function RestaurantsPage () {
         count: 0,
         data: []});
     useEffect( () => {
-        fetchData()        
+        fetchData()
     },[])
 
     const fetchData = async () => {

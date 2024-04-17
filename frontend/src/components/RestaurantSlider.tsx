@@ -23,6 +23,7 @@ export default function RestaurantSlider({restaurantsJson}: {restaurantsJson: Re
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
+    swipeToSlide: true,
     nextArrow: (
       <div>
         <div className="next-slick-arrow">

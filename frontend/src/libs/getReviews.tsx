@@ -6,7 +6,7 @@ export default async function getReviews(id:string) {
     const response = await fetch(`${config.api}/restaurants/${id}/reviews`, config.headers());
 
     if (!response.ok) {
-        throw new Error('Failed to fetch menu: ' + response.statusText);
+        throw new Error('Failed to fetch review: ' + response.statusText);
     }
 
     return await response.json();

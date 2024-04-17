@@ -44,6 +44,7 @@ export default function MenuSlider({rid}: {rid: string}) {
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,
+    swipeToSlide: true,
     nextArrow: (
       <div>
         <div className="next-slick-arrow">

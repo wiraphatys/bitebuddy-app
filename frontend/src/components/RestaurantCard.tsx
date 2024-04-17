@@ -5,10 +5,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 
-export default function RestaurantCard({name, img, open, close, avgRating, id}: {name: string, img: string, open: string, close: string, avgRating: number, id: string}) {
-    if(avgRating == null){
-        avgRating = 0.0;
-    }
+export default function RestaurantCard({name, img, open, close, avgRating, id}: {name: string, img: string, open: string, close: string, avgRating: string|number, id: string}) {
     console.log(img)
     return (
         <Link href={`/restaurants/${id}`}>
@@ -20,7 +17,7 @@ export default function RestaurantCard({name, img, open, close, avgRating, id}: 
                 <p><FontAwesomeIcon icon={faClock}/> {open} - {close}</p>
                 </div>
                 <div className={styles.ratingbox}>
-                    <div className="pl-3">{avgRating.toFixed(1)} &#9733;</div>
+                    <div className="pl-3">{typeof avgRating === 'number' ? avgRating.toFixed(1) : avgRating} &#9733;</div>
                 </div>
             </div>
         </div>

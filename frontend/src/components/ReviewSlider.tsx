@@ -25,11 +25,28 @@ export default function ReviewSlider({rid}: {rid: string}) {
         fetchReview();
     }, [rid]);
     const settings = {
+    className: "center",
     dots: true,
-    infinite: true,
+    infinite: reviews && reviews?.length >= 5,
     speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    swipeToSlide: false,
+    nextArrow: (
+      <div>
+        <div className="next-slick-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" stroke="black" height="24" viewBox="0 -960 960 960" width="24"><path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z"/></svg>
+        </div>
+      </div>
+    ),
+
+    prevArrow: (
+      <div>
+        <div className="next-slick-arrow rotate-180">
+          <svg xmlns="http://www.w3.org/2000/svg" stroke="black" height="24" viewBox="0 -960 960 960" width="24"><path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z"/></svg>
+        </div>
+      </div>
+    ),
   };
   return (
     <div>
