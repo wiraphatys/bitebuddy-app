@@ -5,10 +5,12 @@ import getReviews from "@/libs/getReviews";
 import { useEffect, useState } from "react";
 import getRestaurant from "@/libs/getRestaurant";
 import { RestaurantItem, ReviewItem } from "../../interface";
+import getRestaurants from "@/libs/getRestaurants";
 
 export default function OverallRating ({rid}: {rid:string}) {
     const [restaurant, setRestaurant] = useState<RestaurantItem>();
     const [reviews, setReviews] = useState<ReviewItem[]>();
+    const [role, setRole] = useState('');
     const [rate5, setRate5] = useState<number>(0);
     const [rate4, setRate4] = useState<number>(0);
     const [rate3, setRate3] = useState<number>(0);
@@ -19,7 +21,13 @@ export default function OverallRating ({rid}: {rid:string}) {
     useEffect(() => {
         const fetchRestaurant = async () => {
             try {
-                const restaurantData = await getRestaurant(rid);
+                let restaurantData
+                if(localStorage.getItem('role') === 'owner'){
+                    setRole('owner');
+                    restaurantData = await getRestaurants();
+                }else {
+                    restaurantData = await getRestaurant(rid);
+                }
                 console.log(restaurantData);
                 setRestaurant(restaurantData.data);
             } catch (error) {
@@ -94,11 +102,13 @@ export default function OverallRating ({rid}: {rid:string}) {
                     <div><Rating value={1} readOnly /><div className={styles.line}><div className={styles.colorline} style={{width: `${rate1*100/(total === 0 ? 1 : total)}%`}}/></div><div className="ml-2">{rate1}</div></div>
                 </div>
             </div>
-            <div className={styles.center}>
+            {
+                role !== 'owner' ? <div className={styles.center}>
                 <button>
                     Rate now
                 </button>
-            </div>
+                </div> : null
+            }
         </div> : null
         }
         </div>

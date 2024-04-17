@@ -1,11 +1,12 @@
 .overallContainer {
     width: 900px;
-    height: 334px;
+    height: 340px;
     align-self: center;
     justify-self: center;
     background-color: #f0f0f0;
     border-radius: 24px;
     font-family: "Poppins";
+    padding-top: 1px;
 }
 
 .overallContainer > div > div > h1 {
@@ -16,7 +17,7 @@
 .overallContainer > h2 {
     font-size: 24px;
     font-weight: 400;
-    margin: 24px;
+    margin: 23px;
 }
 
 .overallContainer > div > div > h3 {

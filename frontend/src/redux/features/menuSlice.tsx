@@ -20,7 +20,7 @@ export const menuSlice = createSlice ({
         addMenu: (state, action: PayloadAction<MenuItem>) => {
             state.menuItems.push(action.payload);
         },
-        removeMenu: (state, action: PayloadAction<String>) => {
+        removeMenu: (state, action: PayloadAction<string>) => {
             state.menuItems = state.menuItems.filter(obj => obj._id !== action.payload);
         }
     }

@@ -8,8 +8,9 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import styles from "./menu.module.css"
+import { MenuItem } from "../../interface";
 
-export default function MenuCard({rid, setCreate}: {rid: string, setCreate: React.Dispatch<React.SetStateAction<boolean>>}): JSX.Element {
+export default function MenuCard({rid, setCreate, fetchMenu}: {rid: string, setCreate: React.Dispatch<React.SetStateAction<boolean>>, fetchMenu: () => {}}): JSX.Element {
     const dispatch = useDispatch<AppDispatch>();
     const [name, setName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
@@ -51,7 +52,7 @@ export default function MenuCard({rid, setCreate}: {rid: string, setCreate: Reac
         })
 
         if (respose.data.success === true) {
-            dispatch(addMenu(await respose.data.data))
+            fetchMenu();
             setCreate(false)
             Swal.fire({
                 title: "Create Menu",
@@ -59,10 +60,12 @@ export default function MenuCard({rid, setCreate}: {rid: string, setCreate: Reac
                 icon: "success",
                 timer: 2000
             })
+            
         }
     };
 
     return (
+        <div className={styles.overlay}>
         <div className={styles.create}>
         <form onSubmit={submit} className="w-[380px] md:w-[729px] h-[478px] md:h-[436px] bg-[#F0F0F0] rounded-[24px] flex flex-col md:flex-row items-center md:items-start">
             <div className="flex flex-col justify-center items-center">
@@ -104,14 +107,20 @@ export default function MenuCard({rid, setCreate}: {rid: string, setCreate: Reac
                 <div className="text-end mt-[10px] md:mt-[10px] md:mr-[20px]">
                     <button
                         type="submit"
-                        className="mt-[12px] md:mt-[70px] w-[78px] md:w-[138px] h-[28px] md:h-[43px] rounded-[40px] bg-transparent border-2 border-[#333333] text-[#333333] text-[11px] md:text-[18px] transition-all duration-300 ease-in-out hover:bg-[#333333] hover:text-white hover:border-[#333333] focus:outline-none focus:ring-2 focus:ring-[#333333] focus:ring-opacity-50"
+                        className="mr-[12px] mt-[12px] md:mt-[70px] w-[78px] md:w-[138px] h-[28px] md:h-[43px] rounded-[40px] bg-transparent border-2 border-[#333333] text-[#333333] text-[11px] md:text-[18px] transition-all duration-300 ease-in-out hover:bg-[#333333] hover:text-white hover:border-[#333333] focus:outline-none focus:ring-2 focus:ring-[#333333] focus:ring-opacity-50"
                     >
                         Done
                     </button>
-
+                    <button 
+                        className="mt-[12px] md:mt-[70px] w-[78px] md:w-[138px] h-[28px] md:h-[43px] rounded-[40px] bg-transparent border-2 border-[#333333] text-[#333333] text-[11px] md:text-[18px] transition-all duration-300 ease-in-out hover:bg-[#333333] hover:text-white hover:border-[#333333] focus:outline-none focus:ring-2 focus:ring-[#333333] focus:ring-opacity-50"
+                        onClick={() => setCreate(false)}
+                    >
+                        Cancel
+                    </button>
                 </div>
             </div>
         </form>
+        </div>
         </div>
     );
 }

@@ -20,27 +20,23 @@ export default function MenuSlider({rid}: {rid: string}) {
     const menuItems = useAppSelector((state) => state.menuSlice.menuItems);
 
     useEffect(() => {
-        const fetchMenu = async () => {
-            try {
-                const menuData = await getMenu(rid);
-                setRole(localStorage.getItem('role'))
-                console.log(menuData);
-                dispatch(setInitialMenuItems(menuData.data))
-                
-            } catch (error) {
-                console.error('Error fetching menu data:', error);
-            }
-        };
-
         fetchMenu();
     }, [rid]);
 
-    useEffect(() => {
-      console.log('menuItems:', menuItems);
-    }, [menuItems]);
+    const fetchMenu = async () => {
+      try {
+          const menuData = await getMenu(rid);
+          setRole(localStorage.getItem('role'))
+          console.log(menuData);
+          dispatch(setInitialMenuItems(menuData.data))
+          
+      } catch (error) {
+          console.error('Error fetching menu data:', error);
+      }
+  };
     const settings = {
     dots: role !== 'owner',
-    infinite: role !== 'owner',
+    infinite: role !== 'owner' && menuItems.length > 5,
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,
@@ -67,7 +63,7 @@ export default function MenuSlider({rid}: {rid: string}) {
         role == 'owner' ? <button className={styles.createButton} onClick={() => setCreate(true)}><AddCircleOutlineIcon/> Add Your Menu</button> : null
       }
       {
-        create ? <MenuCard rid={rid} setCreate={setCreate}/> : null
+        create ? <MenuCard rid={rid} setCreate={setCreate} fetchMenu={fetchMenu}/> : null
       }
     {
         (menuItems && menuItems?.length > 0) ? 
@@ -75,7 +71,7 @@ export default function MenuSlider({rid}: {rid: string}) {
       {
         menuItems?.map((menuItem: MenuItem) => (
           <div key={menuItem._id} className="mt-5">
-            <Menu name={menuItem.name} img={menuItem.img} description={menuItem.description} mid={menuItem._id}/>
+            <Menu name={menuItem.name} img={menuItem.img} description={menuItem.description} mid={menuItem._id} rid={rid}/>
           </div>
         ))
       }

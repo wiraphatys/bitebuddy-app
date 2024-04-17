@@ -11,8 +11,9 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { removeMenu } from "@/redux/features/menuSlice";
+import { MenuItem } from "../../interface";
 
-export default function Menu({name, img, description, mid} : {name: string, img: string, description: string, mid: string}) {
+export default function Menu({name, img, description, mid, rid} : {name: string, img: string, description: string, mid: string, rid:string}) {
     const router = useRouter();
     const [role, setRole] = useState<string>();
     const dispatch = useDispatch<AppDispatch>();
