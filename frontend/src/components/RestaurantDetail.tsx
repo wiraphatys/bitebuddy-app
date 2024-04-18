@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { RestaurantItem, RestaurantJson } from "../../interface";
 import styles from "./restaurantdetail.module.css"
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function RestaurantDetail({ rid }: { rid: string }) {

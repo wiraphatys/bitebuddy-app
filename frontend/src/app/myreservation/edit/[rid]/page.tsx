@@ -118,7 +118,7 @@ function EditReservationPage({params}:{params:{rid:string}}){
                 if (response.data.success) {
                     Swal.fire({
                         title: "Confirmed",
-                        text: "Booked successfully",
+                        text: "Reserved successfully",
                         icon: "success",
                         timer: 2000
                     });
