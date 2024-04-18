@@ -13,18 +13,15 @@ interface UserItem {
     img: string;
     _id: string;
 }
-
 interface EditProfileProps {
     user: UserItem;
     onClose: () => void;
     onUpdate: (updatedUser: UserItem) => void;
-}
-  
+}  
 const EditProfile = ({ user, onClose, onUpdate }: EditProfileProps) => {
     const [firstName, setFirstName] = useState(user.firstName);
     const [lastName, setLastName] = useState(user.lastName);
     const [tel, setTel] = useState(user.tel);
-  
     const handleSubmit = async () => {
         try {
             const payload = {
@@ -32,11 +29,8 @@ const EditProfile = ({ user, onClose, onUpdate }: EditProfileProps) => {
                 lastName,
                 tel,
             };
-
             const url: string = `${config.api}/users/${user._id}`;
-
             const response = await axios.put(url, payload, config.headers());
-
             if (response.data.success) {
                 Swal.fire({
                     title: 'Success',

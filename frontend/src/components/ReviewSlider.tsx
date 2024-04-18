@@ -8,7 +8,7 @@ import ReviewCard from "./ReviewCard";
 import styles from './reviewcard.module.css'
 import getReviews from "@/libs/getReviews";
 
-export default function ReviewSlider({rid}: {rid: string}) {
+export default function ReviewSlider({rid}: {rid?: string}) {
     const [reviews, setReviews] = useState<ReviewItem[]>();
 
     useEffect(() => {
