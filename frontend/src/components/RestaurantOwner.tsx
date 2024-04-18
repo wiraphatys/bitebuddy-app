@@ -131,6 +131,7 @@ export default function RestaurantOwner() {
                     <input
                       type="checkbox"
                       checked={!restaurant?.closeDate.includes(index)}
+                      style={{accentColor: "#333333"}}
                     />
                   </div>
                 )

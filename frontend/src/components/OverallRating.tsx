@@ -95,11 +95,11 @@ export default function OverallRating ({rid}: {rid:string}) {
                     <h3>Based on {reviews?.length == null ? 0 : reviews.length} reviews</h3>
                 </div>
                 <div className={styles.rating}>
-                    <div><Rating value={5} readOnly /><div className={styles.line}><div className={styles.colorline} style={{width: `${rate5*100/(total === 0 ? 1 : total)}%`}}/></div><div className="ml-2">{rate5}</div></div>
-                    <div><Rating value={4} readOnly /><div className={styles.line}><div className={styles.colorline} style={{width: `${rate4*100/(total === 0 ? 1 : total)}%`}}/></div><div className="ml-2">{rate4}</div></div>
-                    <div><Rating value={3} readOnly /><div className={styles.line}><div className={styles.colorline} style={{width: `${rate3*100/(total === 0 ? 1 : total)}%`}}/></div><div className="ml-2">{rate3}</div></div>
-                    <div><Rating value={2} readOnly /><div className={styles.line}><div className={styles.colorline} style={{width: `${rate2*100/(total === 0 ? 1 : total)}%`}}/></div><div className="ml-2">{rate2}</div></div>
-                    <div><Rating value={1} readOnly /><div className={styles.line}><div className={styles.colorline} style={{width: `${rate1*100/(total === 0 ? 1 : total)}%`}}/></div><div className="ml-2">{rate1}</div></div>
+                    <div><Rating value={5} readOnly style={{ color: 'black' }}/><div className={styles.line}><div className={styles.colorline} style={{width: `${rate5*100/(total === 0 ? 1 : total)}%`}}/></div><div className="ml-2">{rate5}</div></div>
+                    <div><Rating value={4} readOnly style={{ color: 'black' }}/><div className={styles.line}><div className={styles.colorline} style={{width: `${rate4*100/(total === 0 ? 1 : total)}%`}}/></div><div className="ml-2">{rate4}</div></div>
+                    <div><Rating value={3} readOnly style={{ color: 'black' }}/><div className={styles.line}><div className={styles.colorline} style={{width: `${rate3*100/(total === 0 ? 1 : total)}%`}}/></div><div className="ml-2">{rate3}</div></div>
+                    <div><Rating value={2} readOnly style={{ color: 'black' }}/><div className={styles.line}><div className={styles.colorline} style={{width: `${rate2*100/(total === 0 ? 1 : total)}%`}}/></div><div className="ml-2">{rate2}</div></div>
+                    <div><Rating value={1} readOnly style={{ color: 'black' }}/><div className={styles.line}><div className={styles.colorline} style={{width: `${rate1*100/(total === 0 ? 1 : total)}%`}}/></div><div className="ml-2">{rate1}</div></div>
                 </div>
             </div>
             {

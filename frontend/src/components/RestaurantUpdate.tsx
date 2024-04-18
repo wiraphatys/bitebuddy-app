@@ -199,6 +199,7 @@ export default function RestaurantUpdate({ rid }: { rid: string }) {
                       type="checkbox"
                       checked={!selectedDays.includes(index)}
                       onChange={() => handleCheckboxChange(index)}
+                      style={{accentColor: "#333333"}}
                     />
                   </div>
                 )

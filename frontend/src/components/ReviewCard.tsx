@@ -16,7 +16,7 @@ export default function MenuCard({name, img, comment, rating} : {name: string, i
                 <p className={styles.descriptionText}>
                     {comment}
                 </p>
-                <div className={styles.rating}>{rating.toFixed(1)} <Rating value={parseFloat(rating.toFixed(1))} readOnly/></div>
+                <div className={styles.rating}>{rating.toFixed(1)} <Rating value={parseFloat(rating.toFixed(1))} readOnly style={{ color: 'black' }}/></div>
         </div>
     );
 }

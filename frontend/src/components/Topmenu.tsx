@@ -22,12 +22,12 @@ export default function TopMenu() {
         };
         if (typeof window !== 'undefined') {
             if (localStorage.getItem('role') === "owner" || !localStorage.getItem('role')){
-              setRole('owner');
               fetchRestaurant();
+              setRole('owner');
             }
         }
     },[])
-
+    
     return (
         <div className={styles.menucontainer}>
             <div className={styles.containerleft}>
