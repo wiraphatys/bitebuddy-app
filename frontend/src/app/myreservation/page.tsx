@@ -1,6 +1,6 @@
 "use client"
 
-import config from '@/utils/config';
+import config from '../../utils/config';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
@@ -47,7 +47,7 @@ function MyReservationPage() {
 
   const fetchData = async () => {
     try {
-        const response = await getReservations();
+        const response = await getReservations({ rid: undefined });
         console.log(response.data)
       
       if (response.success === true) {
@@ -109,7 +109,7 @@ function MyReservationPage() {
     })
   }
   return (
-    <>
+
         <div>
           
           <p className='text-center text-gray-600 text-[36px] md:text-[48px] py-6'>My reservation</p>
@@ -162,41 +162,14 @@ function MyReservationPage() {
                   
                 </div> : ''
               ))
-            ):(
-              (reservationList.length === 0)? (
-                <div className="border border-gray-200 p-4 px-8 mt-4  hover:bg-gray-100  bg-white block text-left">
-                  <p className='font-semibold mt-1'>Reservation in history is empty.</p>
-
-                </div>
-              ) : reservationList.map((reservation) => (
-                reservation.restaurant !== null ?
-                <div key={reservation._id} className = {styles.card}>
-                  <div className='flex flex-row justify-between'>
-                    <div className='flex flex-row items-center'>
-                      <PersonIcon/> 
-                      <div className={styles.information}>{reservation.user.email}</div>
-                    </div>
-                  </div>
-                  <p className='flex flex-row items-center'>
-                    <AccessTimeIcon/> <p className={styles.information}>{formatDate (reservation.datetime)}</p>
-                  </p>
-                  
-                  <div className='flex flex-row items-center'>
-                    <CalendarMonthIcon />
-                    <div className={styles.information}>{formatTime (reservation.datetime)}</div>
-                  </div>
-                  
-                  
-                </div> : ''
-              ))
-            )}
+            ):''}
 
             
           
     </div>
       
     
-    </>
+    
     
   );
 }

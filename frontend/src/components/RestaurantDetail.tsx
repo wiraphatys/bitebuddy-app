@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { RestaurantItem, RestaurantJson } from "../../interface";
 import styles from "./restaurantdetail.module.css"
+import Link from "next/link";
 
 export default function RestaurantDetail({ rid }: { rid: string }) {
     const [restaurant, setRestaurant] = useState<RestaurantItem>();
@@ -30,7 +31,7 @@ export default function RestaurantDetail({ rid }: { rid: string }) {
       <div>
         <div className={styles.nameContainer}>
             <div className={styles.nameText}>
-                <h1>{restaurant?.name}</h1> <p>Tel : </p><span className="font-normal">&ensp;{restaurant?.tel}</span>{localStorage.getItem('role') !== 'owner' ? <button className={styles.button}>Reservation</button> : null}
+                <h1>{restaurant?.name}</h1> <p>Tel : </p><span className="font-normal">&ensp;{restaurant?.tel}</span>{localStorage.getItem('role') !== 'owner' ? <Link href={`/reservation/${restaurant?._id}`}><button className={styles.button}>Reservation</button></Link> : null}
             </div> 
             <h3>Description</h3>
             <div className={styles.description}>

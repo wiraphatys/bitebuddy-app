@@ -15,23 +15,19 @@ function SignUpForm({ role }: { role: string }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmPassword] = useState('');
-    const [img, setImg] = useState<File | null>(null) // State to store selected profile picture
-    const fileInputRef = useRef<HTMLInputElement>(null); // Ref to file input element
+    const [img, setImg] = useState<File | null>(null) 
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
 
     const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             setImg(e.target.files[0]);
-        }else{
-            setImg(null)
-            const defaultImagePath = '/img/userAnonymous.png';
-            setImg(new File([defaultImagePath], 'userAnonymous.png'))
         }
     };
     const handleProfilePictureClick = (e: React.MouseEvent<HTMLLabelElement>) => {
         e.preventDefault();
         if (fileInputRef.current) {
-            fileInputRef.current.click(); // Trigger file input click
+            fileInputRef.current.click(); 
         }
     };
 
@@ -43,18 +39,23 @@ function SignUpForm({ role }: { role: string }) {
                 throw new Error('Password and Confirm Password do not match');
             }
 
-            const user = {
-                firstName,
-                lastName,
-                tel,
-                email,
-                password,
-                img
-            };
+            const formData = new FormData();
+            formData.append('firstName', firstName);
+            formData.append('lastName', lastName);
+            formData.append('tel', tel);
+            formData.append('email', email);
+            formData.append('password', password);
+            if (img) {
+                formData.append('img', img);
+            }
 
             const url: string = `${config.api}/users/${role}`;
 
-            const response = await axios.post(url, user);
+            const response = await axios.post(url, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
             console.log('working');
             if (response.data.success === true) {
                 Swal.fire({
