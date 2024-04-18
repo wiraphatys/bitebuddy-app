@@ -41,6 +41,35 @@ export interface MenuJson {
     data: MenuItem[],
 }
 
+export interface ReservationItem{
+    restaurant:{
+        name:string,
+        tel:string,
+        street:string,
+        locality:string,
+        district:string,
+        province:string,
+        img:string
+    },
+    user:{
+        email:string
+    },
+    datetime:string,
+    _id:string,
+    count:number
+  }
+  
+  export interface ReservationListJSON {
+    success: boolean,
+    count: number,
+    data: ReservationItem[]
+  }
+  
+  export interface DeleteJSON {
+    success: boolean;
+    data: Object
+  }
+
 export interface UserItem {
     email: string,
     img: string,

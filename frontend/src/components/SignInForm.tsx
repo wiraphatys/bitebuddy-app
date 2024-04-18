@@ -33,6 +33,7 @@ function SignInForm() {
 
                 localStorage.setItem(config.tokenName, token);
                 localStorage.setItem('role', role);
+
                 setTimeout(() => {
                     router.push('/')
                 }, 1000)
