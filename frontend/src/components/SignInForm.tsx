@@ -24,6 +24,7 @@ function SignInForm() {
             const token = response.data.token;
             const role = response.data.role;
             if(response.data.success === true){
+
                 Swal.fire({
                     title: 'Sign In',
                     text: 'Sign in successful.',
@@ -33,6 +34,7 @@ function SignInForm() {
 
                 localStorage.setItem(config.tokenName, token);
                 localStorage.setItem('role', role);
+
 
                 setTimeout(() => {
                     router.push('/')
