@@ -6,7 +6,7 @@ const config = {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': "https://se-api-test.vercel.app/"
+                'Access-Control-Allow-Origin': "https://bitebuddy-api.vercel.app/"
             }
         }
     }
