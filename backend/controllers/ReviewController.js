@@ -55,28 +55,6 @@ exports.getReviews = async (req, res, next) => {
                 data: reviews
             })
         } else {
-<<<<<<< HEAD
-            const reviews = await Review.find({}).populate({
-                path: "user",
-                select: "email"
-            }).populate({
-                path: "restaurant",
-                select: "name tel"
-            })
-
-            if (!reviews) {
-                return res.status(404).json({
-                    success: false,
-                    message: `Not found review ID of ${req.params.id}`
-                })
-            }
-
-            return res.status(200).json({
-                success: true,
-                count: reviews.length,
-                data: reviews
-            })
-=======
             if (!req.params.restaurantId) {
                 const reviews = await Review.find({}).populate({
                     path: "user",
@@ -120,7 +98,6 @@ exports.getReviews = async (req, res, next) => {
                     data: reviews
                 })
             }
->>>>>>> 4f8a87de2d7cf92e12d72152f614a05620f90b7e
         }
     }catch(err){
         console.log(err);

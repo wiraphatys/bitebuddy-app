@@ -37,10 +37,7 @@ exports.getRestaurants = async (req, res, next) => {
 
             return res.status(200).send({
                 success: true,
-<<<<<<< HEAD
-=======
                 count: restaurants.length,
->>>>>>> 4f8a87de2d7cf92e12d72152f614a05620f90b7e
                 data: restaurants
             })
         // role : { owner }
