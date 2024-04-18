@@ -1,0 +1,67 @@
+'use client'
+import Image from "next/image";
+import styles from "./topmenu.module.css"
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { RestaurantItem } from "../../interface";
+import getRestaurants from "@/libs/getRestaurants";
+
+export default function TopMenu() {
+    const [role,setRole] = useState('');
+    const [restaurant, setRestaurant] = useState<RestaurantItem>();
+
+    useEffect(() =>{
+        const fetchRestaurant = async () => {
+            try {
+              const restaurantData = await getRestaurants();
+              console.log(restaurantData);
+              setRestaurant(restaurantData.data);
+            } catch (error) {
+              console.error("Error fetching restaurant data:", error);
+            }
+        };
+        if (typeof window !== 'undefined') {
+            if (localStorage.getItem('role') === "owner" || !localStorage.getItem('role')){
+              fetchRestaurant();
+              setRole('owner');
+            }
+        }
+    },[])
+    
+    return (
+        <div className={styles.menucontainer}>
+            <div className={styles.containerleft}>
+                <Link href='/'>
+                    <Image src="/img/logo.png" alt='icon' height={80} width={50}/>
+                </Link>
+            </div>
+            <div className={styles.containerright}>
+                {
+                role !== 'owner' ? 
+                <div>
+                <Link href='/myreservation'>
+                    reservation
+                </Link>
+                <Link href='/profile'>
+                    account
+                </Link>
+                </div> : 
+                <div>
+                <Link href='/myreservation'>
+                    reservation
+                </Link>
+                <Link href={`/menu/${restaurant?._id}`}>
+                    menu
+                </Link>
+                <Link href={`/review/${restaurant?._id}`}>
+                    review
+                </Link>
+                <Link href='/profile'>
+                    account
+                </Link>
+                </div>
+                }
+            </div>
+        </div>
+    );
+}

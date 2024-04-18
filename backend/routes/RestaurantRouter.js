@@ -2,13 +2,15 @@ const express = require("express");
 const router = express.Router();
 const reservationRouter = require("./ReservationRouter");
 const menuRouter = require("./MenuRouter");
+const reviewRouter = require("./ReviewRouter")
+const upload = require("../config/multerConfig")
 
 const {
     getRestaurants,
     getRestaurantByID,
     createRestaurant,
-    updateRestaurant,
-    deleteRestaurant
+    updateRestaurantById,
+    deleteRestaurantById
 } = require('../controllers/RestaurantController');
 
 const {
@@ -17,16 +19,17 @@ const {
 } = require("../middlewares/AuthMiddleware");
 
 router.route("/")
-    .get(getRestaurants)
-    .post(protect, authorize("admin", "owner"), createRestaurant);
+    .get(protect, getRestaurants)
+    .post(protect, authorize("owner"), upload.single('img'), createRestaurant);
 
 router.route("/:id")
-    .get(getRestaurantByID)
-    .put(protect, authorize("admin", "owner"), updateRestaurant)
-    .delete(protect, authorize("admin", "owner"), deleteRestaurant);
+    .get(protect, authorize("user", "admin"), getRestaurantByID)
+    .put(protect, authorize("owner", "admin"), updateRestaurantById)
+    .delete(protect, authorize("owner", "admin"), deleteRestaurantById);
 
 // re-Routing to reservation router
 router.use("/:restaurantId/reservations", reservationRouter);
 router.use("/:restaurantId/menus", menuRouter);
+router.use("/:restaurantId/reviews", reviewRouter);
 
 module.exports = router;

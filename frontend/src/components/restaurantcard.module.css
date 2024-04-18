@@ -1,0 +1,65 @@
+.card {
+    font-family: "Poppins";
+    margin-top: 10px;
+    width: 300px;
+    height: 60vh;
+    position: relative;
+    background-color: #F0F0F0;
+    border-radius: 24px;
+    transition: background-color 0.3s ease-in-out;
+    overflow: hidden;
+    /* overflow-y: hidden; */
+}
+
+.card:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.cardtext {
+    padding-top: 10px;
+    position: absolute;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    bottom: 0;
+    height: 30%;
+    width: 100%;
+    background: linear-gradient(0deg, rgb(0, 0, 0), transparent);
+}
+
+.ratingbox {
+    color: black;
+    border-radius: 24px;
+    background-color: white;
+    display: flex;
+    justify-self: center;
+    align-items: center;
+    height: 30%;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.text {
+    margin-bottom: 5px;
+    margin-top: 15px;
+    margin-left: 15px;
+}
+
+.text > h1 {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.text > p {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+
+.slider {
+    display: flex;
+    justify-self: center;
+    width: 80vw;
+    height: 100vh;
+}
