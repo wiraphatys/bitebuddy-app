@@ -61,9 +61,12 @@ const ProfilePage = () => {
             <div className={styles.username}>
               {user?.firstName} {user?.lastName}
             </div>
-            <div>role : {user?.role}</div>
-            <div>email : {user?.email}</div>
-            <div>tel : {user?.tel}</div>
+            <div className="user-detail">
+              <div>role : {user?.role}</div>
+              <div>email : {user?.email}</div>
+              <div>tel : {user?.tel}</div>
+            </div>
+
 
           </div>
           <button onClick={handleEdit} className={styles.editButton}>Edit</button>

@@ -11,7 +11,7 @@
 }
 
 .accountHeader {
-  margin-right: 64%;
+  margin-right: 1210px;
   font-size: 48px;
   margin-bottom: 20px;
   font-weight: 500;
@@ -39,6 +39,7 @@
   padding-left : 10px;
   padding: 20px;
   background: #f0f0f0;
+
 }
 
 .userImage {
@@ -61,6 +62,10 @@
 .username{
   font-weight: medium;
   font-size: 36px;
+}
+
+.user-detail{
+  margin-left: 60%;
 }
 
 .editButton {
@@ -87,5 +92,7 @@
   font-size: 24px;
   font-weight: medium;
   margin-top: 40px;
-  margin-right: 68.75%;
+  margin-right: 1290px;
+  display: inline;
+  white-space: nowrap;
 }
