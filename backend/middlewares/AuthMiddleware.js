@@ -7,18 +7,8 @@ exports.protect = async (req, res, next) => {
     let token;
 
     // //checking header of request
-<<<<<<< HEAD
-    // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    //     token = req.headers.authorization.split(' ')[1];
-    // }
-
-    // Check if the token is stored in the cookie named "token"
-    if (req.cookies.token) {
-        token = req.cookies.token;
-=======
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1];
->>>>>>> 4f8a87de2d7cf92e12d72152f614a05620f90b7e
     }
 
     // Check if the token is stored in the cookie named "token"

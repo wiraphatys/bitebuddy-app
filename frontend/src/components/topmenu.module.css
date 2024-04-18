@@ -29,6 +29,6 @@
     margin-right: 15px;
 }
 
-.containerright > * {
+.containerright > * > * {
     margin-right: 10px;
 }

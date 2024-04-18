@@ -1,19 +1,23 @@
 const Review = require("../models/ReviewModel")
 const Restaurant = require('../models/RestaurantModel')
 
+const {
+    getImageUrl
+} = require("../config/aws-s3");
+
 // @desc    Get all reviews
 // @route   GET /api/v1/reviews || GET /api/v1/restaurants/:restaurantId/reviews
 // @access  Private
 exports.getReviews = async (req, res, next) => {
-    try{
+    try {
         if (req.user.role === "owner") {
             const restaurant = await Restaurant.findById(req.params.restaurantId)
 
             // Ownership validation: restaurant owner
             if (restaurant && restaurant.owner.toString() === req.user.id) {
-                const reviews = await Review.find( {restaurant: restaurant._id.toString() }).populate({
+                const reviews = await Review.find({ restaurant: restaurant._id.toString() }).populate({
                     path: "user",
-                    select: "email"
+                    select: "email img"
                 })
 
                 if (reviews.length === 0) {
@@ -22,6 +26,12 @@ exports.getReviews = async (req, res, next) => {
                         count: 0,
                         message: "Your restaurant don't have any review."
                     })
+                }
+
+                for (const review of reviews) {
+                    if (review.user.img) {
+                        review.user.img = await getImageUrl(review.user.img)
+                    }
                 }
 
                 return res.status(200).json({
@@ -36,61 +46,24 @@ exports.getReviews = async (req, res, next) => {
                 })
             }
         } else if (req.user.role === "user") {
-            const reviews = await Review.find({ user: req.user.id }).populate({
-                path: "restaurant",
-                select: "name tel"
-            })
-
-            if (reviews.length === 0) {
-                return res.status(200).json({
-                    success: true,
-                    count: 0,
-                    message: "You don't have any review, make a new one !"
-                })
-            }
-
-            return res.status(200).json({
-                success: true,
-                count: reviews.length,
-                data: reviews
-            })
-        } else {
-<<<<<<< HEAD
-            const reviews = await Review.find({}).populate({
-                path: "user",
-                select: "email"
-            }).populate({
-                path: "restaurant",
-                select: "name tel"
-            })
-
-            if (!reviews) {
-                return res.status(404).json({
-                    success: false,
-                    message: `Not found review ID of ${req.params.id}`
-                })
-            }
-
-            return res.status(200).json({
-                success: true,
-                count: reviews.length,
-                data: reviews
-            })
-=======
             if (!req.params.restaurantId) {
-                const reviews = await Review.find({}).populate({
-                    path: "user",
-                    select: "email"
-                }).populate({
+                const reviews = await Review.find({ user: req.user.id }).populate({
                     path: "restaurant",
-                    select: "name tel"
+                    select: "name tel img"
                 })
 
-                if (!reviews) {
-                    return res.status(404).json({
-                        success: false,
-                        message: `Not found review ID of ${req.params.id}`
+                if (reviews.length === 0) {
+                    return res.status(200).json({
+                        success: true,
+                        count: 0,
+                        message: "You don't have any review, make a new one !"
                     })
+                }
+
+                for (const review of reviews) {
+                    if (review.restaurant.img) {
+                        review.restaurant.img = await getImageUrl(review.restaurant.img)
+                    }
                 }
 
                 return res.status(200).json({
@@ -99,7 +72,73 @@ exports.getReviews = async (req, res, next) => {
                     data: reviews
                 })
             } else {
-                const reviews = await Review.find({ restaurant : req.params.restaurantId }).populate({
+                const restaurant = await Restaurant.findById(req.params.restaurantId)
+
+                if (!restaurant) {
+                    return res.status(404).json({
+                        success: false,
+                        message: "Not found this restaurant"
+                    })
+                }
+
+                const reviews = await Review.find({ restaurant: restaurant._id.toString() }).populate({
+                    path: "user",
+                    select: "email img"
+                })
+
+                if (reviews.length === 0) {
+                    return res.status(200).json({
+                        success: true,
+                        count: 0,
+                        message: "Your restaurant don't have any review."
+                    })
+                }
+
+                for (const review of reviews) {
+                    if (review.user.img) {
+                        review.user.img = await getImageUrl(review.user.img)
+                    }
+                }
+
+                return res.status(200).json({
+                    success: true,
+                    count: reviews.length,
+                    data: reviews
+                })
+            }
+        } else {
+            if (!req.params.restaurantId) {
+                const reviews = await Review.find({}).populate({
+                    path: "user",
+                    select: "email img"
+                }).populate({
+                    path: "restaurant",
+                    select: "name tel img"
+                })
+
+                if (!reviews) {
+                    return res.status(404).json({
+                        success: false,
+                        message: `Not found review ID of ${req.params.id}`
+                    })
+                }
+
+                for (const review of reviews) {
+                    if (review.user.img) {
+                        review.user.img = await getImageUrl(review.user.img)
+                    }
+                    if (review.restaurant.img) {
+                        review.restaurant.img = await getImageUrl(review.restaurant.img)
+                    }
+                }
+
+                return res.status(200).json({
+                    success: true,
+                    count: reviews.length,
+                    data: reviews
+                })
+            } else {
+                const reviews = await Review.find({ restaurant: req.params.restaurantId }).populate({
                     path: "user",
                     select: "email"
                 }).populate({
@@ -120,13 +159,12 @@ exports.getReviews = async (req, res, next) => {
                     data: reviews
                 })
             }
->>>>>>> 4f8a87de2d7cf92e12d72152f614a05620f90b7e
         }
-    }catch(err){
+    } catch (err) {
         console.log(err);
         return res.status(500).json({
             success: false,
-            message: 'Cannot find Review'
+            message: err.message
         });
     }
 };
@@ -135,7 +173,7 @@ exports.getReviews = async (req, res, next) => {
 // @route   GET /api/v1/reviews/:id
 // @access  Private
 exports.getReviewById = async (req, res, next) => {
-    try{
+    try {
         if (req.user.role === "user") {
             const review = await Review.findById(req.params.id).populate({
                 path: "restaurant",
@@ -143,6 +181,9 @@ exports.getReviewById = async (req, res, next) => {
             });
 
             if (review && review.user.toString() === req.user.id) {
+                if (review.restaurant.img) {
+                    review.restaurant.img = await getImageUrl(review.restaurant.img)
+                }
                 return res.status(200).send({
                     success: true,
                     data: review
@@ -162,6 +203,9 @@ exports.getReviewById = async (req, res, next) => {
             const restaurant = await Restaurant.findById(review.restaurant)
 
             if (restaurant && restaurant.owner.toString() === req.user.id) {
+                if (review.user.img) {
+                    review.user.img = await getImageUrl(review.user.img)
+                }
                 return res.status(200).send({
                     success: true,
                     data: review
@@ -188,14 +232,22 @@ exports.getReviewById = async (req, res, next) => {
                 })
             }
 
+            if (review.user.img) {
+                review.user.img = await getImageUrl(review.user.img)
+            }
+
+            if (review.restaurant.img) {
+                review.restaurant.img = await getImageUrl(review.restaurant.img)
+            }
+
             return res.status(200).json({
                 success: true,
                 data: review
             })
         }
-    }catch (error){
+    } catch (error) {
         console.log(error);
-        return res.status(500).json({success: false, message: 'Cannot find Review'});
+        return res.status(500).json({ success: false, message: 'Cannot find Review' });
     }
 };
 
@@ -216,10 +268,10 @@ exports.createReview = async (req, res, next) => {
                 message: `Not found restaurant ID of ${req.params.restaurantId}`
             })
         }
-        
-        const existingReviews = await Review.find({ 
-            user: req.user.id, 
-            restaurant: req.params.restaurantId 
+
+        const existingReviews = await Review.find({
+            user: req.user.id,
+            restaurant: req.params.restaurantId
         });
 
         if (existingReviews.length !== 0) {
@@ -232,22 +284,22 @@ exports.createReview = async (req, res, next) => {
         const review = await Review.create(req.body);
 
         res.status(200).json({
-            success:true,
+            success: true,
             data: review
         });
 
-    } catch(err) {
+    } catch (err) {
         console.log(err);
 
-        if(req.body.rating < 0 || req.body.rating > 5){
-            return res.status(400).json({ 
-                success: false, 
+        if (req.body.rating < 0 || req.body.rating > 5) {
+            return res.status(400).json({
+                success: false,
                 message: `rating value can only between 0-5`
             });
         }
 
         return res.status(500).json({
-            success: false, 
+            success: false,
             message: 'Cannot create Review'
         });
     }
@@ -257,7 +309,7 @@ exports.createReview = async (req, res, next) => {
 // @route   PUT /api/reviews/:id
 // @access  Private
 exports.updateReviewById = async (req, res, next) => {
-    try{
+    try {
         let review = await Review.findById(req.params.id);
 
         // role: user
@@ -299,7 +351,7 @@ exports.updateReviewById = async (req, res, next) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            success: false, 
+            success: false,
             message: 'Cannot update Review'
         });
     }
@@ -341,9 +393,9 @@ exports.deleteReviewById = async (req, res, next) => {
             })
         }
     } catch (err) {
-        res.status(500).json({ 
-            success: false, 
-            message: 'Cannot delete Review' 
+        res.status(500).json({
+            success: false,
+            message: 'Cannot delete Review'
         });
     }
 };
