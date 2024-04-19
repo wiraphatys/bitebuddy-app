@@ -53,7 +53,7 @@ export default function Menu({name, img, description, mid, rid} : {name: string,
 
                     Swal.fire({
                         title: 'Deleted!',
-                        text: 'Restaurant has been deleted successfully.',
+                        text: 'Menu has been deleted successfully.',
                         icon: 'success',
                         timer: 2000
                     });
@@ -64,7 +64,7 @@ export default function Menu({name, img, description, mid, rid} : {name: string,
             } catch (error: any) {
                 Swal.fire({
                     title: 'Error',
-                    text: error.message || 'An error occurred while deleting the restaurant.',
+                    text: error.message || 'An error occurred while deleting the menu.',
                     icon: 'error',
                     timer: 2000
                 });

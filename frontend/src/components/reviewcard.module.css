@@ -53,3 +53,15 @@
     align-items: center;
 }
 
+.delete {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    background-color: white;
+    border-radius: 50%;
+    top: 12px;
+    right: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

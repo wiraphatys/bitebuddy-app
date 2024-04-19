@@ -45,8 +45,12 @@ const ProfilePage = () => {
     setIsEditing(false);
   };
 
+  const handleLogout = () => {
+    localStorage.clear();
+  }
+
   return (
-    <div className={styles.profileContainer}>
+    <div className={styles.page}>
       <div className={styles.accountHeader}>Account</div>
       <div className={styles.userCard}>
         <div className={styles.userContent}>
@@ -62,23 +66,28 @@ const ProfilePage = () => {
               {user?.firstName} {user?.lastName}
             </div>
             <div className="user-detail">
-              <div>role : {user?.role}</div>
-              <div>email : {user?.email}</div>
-              <div>tel : {user?.tel}</div>
+              <div>Role : {user?.role}</div>
+              <div>Email : {user?.email}</div>
+              <div>Telephone : {user?.tel}</div>
             </div>
 
 
           </div>
-          <button onClick={handleEdit} className={styles.editButton}>Edit</button>
+          <div>
+            <a href="/"><button className={styles.editButton} onClick={handleLogout}>Logout</button></a>
+            <button onClick={handleEdit} className={styles.editButton}>Edit</button>
+          </div>
         </div>
         <div>
-          {isEditing && user && <EditProfile user={user} onClose={handleCloseEdit} onUpdate={updateUserProfile} />}
+          
+          {isEditing && user ? <EditProfile user={user} onClose={handleCloseEdit} onUpdate={updateUserProfile} /> : null}
         </div>
       </div>
       <div className={styles.reviewHeader}>My Review</div>
-      <ReviewSlider />
+      <div className="mt-[12px]">
+        <ReviewSlider />
+      </div>
     </div>
-
   );
 };
 

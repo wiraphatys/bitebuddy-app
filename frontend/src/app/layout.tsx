@@ -22,7 +22,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <ReduxProvider>
         <TopMenu/>
+        <div className="min-h-[50vh]">
         {children}
+        </div>
         <Footer/>
         </ReduxProvider>
       </body>

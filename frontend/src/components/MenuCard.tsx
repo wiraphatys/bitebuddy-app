@@ -11,7 +11,6 @@ import styles from "./menu.module.css"
 import { MenuItem } from "../../interface";
 
 export default function MenuCard({rid, setCreate, fetchMenu}: {rid: string, setCreate: React.Dispatch<React.SetStateAction<boolean>>, fetchMenu: () => {}}): JSX.Element {
-    const dispatch = useDispatch<AppDispatch>();
     const [name, setName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [imgPreview, setImgPreview] = useState<string>('');

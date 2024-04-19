@@ -6,6 +6,7 @@ import RestaurantDetail from "@/components/RestaurantDetail";
 import OverallRating from "@/components/OverallRating";
 import Link from "next/link";
 import ReviewSlider from "@/components/ReviewSlider";
+import CreateReview from "@/components/CreateReview";
 
 export default async function RestaurantPage({params}: {params : {rid: string}}) {
 

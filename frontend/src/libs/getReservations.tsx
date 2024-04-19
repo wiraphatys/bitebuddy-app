@@ -10,7 +10,7 @@ export default async function getReservations({ rid }: { rid?: string }) {
     }else{
         response = await fetch(`${config.api}/restaurants/${rid}/reservations`, config.headers());
     }
-    console.log(response)
+    console.log(await response.json())
     if (!response.ok) {
         throw new Error('Failed to fetch reservations: ' + response.statusText);
     }

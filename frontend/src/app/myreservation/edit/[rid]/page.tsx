@@ -12,7 +12,6 @@ import { FormControl } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { TimePicker } from "@mui/x-date-pickers";
-// import { datepickerLocalization } from "@mui/x-date-pickers";
 import datepickerLocalization from "@/components/DatepickerLocalization";
 
 interface ReservationItem{

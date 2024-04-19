@@ -7,27 +7,34 @@ import { ReviewItem, ReviewJson } from "../../interface";
 import ReviewCard from "./ReviewCard";
 import styles from './reviewcard.module.css'
 import getReviews from "@/libs/getReviews";
+import { useDispatch } from "react-redux";
+import { AppDispatch, useAppSelector } from "@/redux/store";
+import { setInitialReviewItems } from "@/redux/features/reviewSlice";
 
-export default function ReviewSlider({rid}: {rid?: string}) {
-    const [reviews, setReviews] = useState<ReviewItem[]>();
-
-    useEffect(() => {
-        const fetchReview = async () => {
-            try {
-                const reviewData = await getReviews(rid);
-                console.log(reviewData);
-                setReviews(reviewData.data);
-            } catch (error) {
-                console.error('Error fetching review data:', error);
-            }
-        };
-
-        fetchReview();
-    }, [rid]);
+export default function ReviewSlider({rid}:{rid?:string}) {
+  const dispatch = useDispatch<AppDispatch>()
+    const reviewItems = useAppSelector((state) => state.reviewSlice.reviewItems);
+    const fetchReviews = async () => {
+      try {
+        let reviewsData;
+        if(rid){
+          reviewsData = await getReviews(rid);
+        }else{
+          reviewsData = await getReviews();
+        }
+          console.log(reviewsData.data);
+          dispatch(setInitialReviewItems(reviewsData.data))
+      } catch (error) {
+          console.error('Error fetching reviews data:', error);
+      }
+  };
+  useEffect(() => {
+    fetchReviews();
+  },[])
     const settings = {
     className: "center",
     dots: true,
-    infinite: reviews && reviews?.length >= 5,
+    infinite: reviewItems && reviewItems.length >= 5,
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,
@@ -51,12 +58,12 @@ export default function ReviewSlider({rid}: {rid?: string}) {
   return (
     <div>
     {
-        (reviews && reviews?.length > 0) ? 
+        (reviewItems && reviewItems.length > 0) ? 
       <Slider {...settings}>
       {
-        reviews?.map((reviewItem: ReviewItem) => (
+        reviewItems?.map((reviewItem: ReviewItem) => (
           <div key={reviewItem._id}>
-            <ReviewCard name={reviewItem.user.email} img={reviewItem.user.img} comment={reviewItem.comment} rating={reviewItem.rating}/>
+            <ReviewCard name={reviewItem.user.email} img={reviewItem.user.img} comment={reviewItem.comment} rating={reviewItem.rating} rid={reviewItem._id}/>
           </div>
         ))
       }

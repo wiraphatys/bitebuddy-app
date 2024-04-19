@@ -1,8 +1,9 @@
 'use clent'
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import Swal from 'sweetalert2';
 import config from '@/utils/config';
+import styles from './menu.module.css';
 
 interface UserItem {
     email: string;
@@ -22,7 +23,9 @@ const EditProfile = ({ user, onClose, onUpdate }: EditProfileProps) => {
     const [firstName, setFirstName] = useState(user.firstName);
     const [lastName, setLastName] = useState(user.lastName);
     const [tel, setTel] = useState(user.tel);
-    const handleSubmit = async () => {
+    const handleSubmit = async (event: FormEvent) => {
+        event.preventDefault();
+
         try {
             const payload = {
                 firstName,
@@ -55,7 +58,8 @@ const EditProfile = ({ user, onClose, onUpdate }: EditProfileProps) => {
     };
 
     return (
-        <div className="edit-popup">
+        <div className={styles.overlay}>
+        <div className={styles.create}>
     <form onSubmit={handleSubmit} className="edit-form">
         <h2>Edit Profile</h2>
         <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
@@ -121,7 +125,7 @@ const EditProfile = ({ user, onClose, onUpdate }: EditProfileProps) => {
 `}</style>
 
 </div>
-
+</div>
         
     );
 };

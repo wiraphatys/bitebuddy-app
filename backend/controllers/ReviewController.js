@@ -50,6 +50,9 @@ exports.getReviews = async (req, res, next) => {
                 const reviews = await Review.find({ user: req.user.id }).populate({
                     path: "restaurant",
                     select: "name tel img"
+                }).populate({
+                    path: "user",
+                    select: "email img"
                 })
 
                 if (reviews.length === 0) {

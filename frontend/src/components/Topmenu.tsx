@@ -7,7 +7,7 @@ import { RestaurantItem } from "../../interface";
 import getRestaurants from "@/libs/getRestaurants";
 
 export default function TopMenu() {
-    const [role,setRole] = useState('');
+    const [role,setRole] = useState<string|undefined>();
     const [restaurant, setRestaurant] = useState<RestaurantItem>();
 
     useEffect(() =>{
@@ -21,13 +21,17 @@ export default function TopMenu() {
             }
         };
         if (typeof window !== 'undefined') {
-            if (localStorage.getItem('role') === "owner" || !localStorage.getItem('role')){
+            if (localStorage.getItem('role') === "owner"){
               fetchRestaurant();
               setRole('owner');
+            }else if(localStorage.getItem('role')){
+                setRole('user');
+            }else{
+                setRole(undefined)
             }
         }
     },[])
-    
+
     return (
         <div className={styles.menucontainer}>
             <div className={styles.containerleft}>
@@ -39,15 +43,15 @@ export default function TopMenu() {
                 {
                 role !== 'owner' ? 
                 <div>
-                <Link href='/myreservation'>
+                <Link href='/myreservation/'>
                     reservation
                 </Link>
-                <Link href='/profile'>
+                <Link  href={role ? '/profile' : '/signin'}>
                     account
                 </Link>
                 </div> : 
                 <div>
-                <Link href='/myreservation'>
+                <Link href={`/myreservation/${restaurant?._id}`}>
                     reservation
                 </Link>
                 <Link href={`/menu/${restaurant?._id}`}>
@@ -56,7 +60,7 @@ export default function TopMenu() {
                 <Link href={`/review/${restaurant?._id}`}>
                     review
                 </Link>
-                <Link href='/profile'>
+                <Link href={role ? '/profile' : '/signin'}>
                     account
                 </Link>
                 </div>
