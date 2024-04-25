@@ -19,5 +19,6 @@ export default function MenuCard({name, img, comment, rating} : {name: string, i
                 <div>{rating} <Rating value={rating} readOnly/></div>
             </div>
         </div>
+
     );
 }
