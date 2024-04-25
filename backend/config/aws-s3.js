@@ -1,5 +1,5 @@
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
-const { S3Client, GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const crpyto = require("node:crypto");
 const sharp = require('sharp');
 
@@ -45,4 +45,15 @@ exports.getImageUrl = async (imgName) => {
     const url = await getSignedUrl(this.s3, command, { expiresIn: 900 });
 
     return url
+}
+
+exports.deleteImageInS3 = async (imgName) => {
+    const params = {
+        Bucket: bucketName,
+        Key: imgName
+    }
+
+    const command = new DeleteObjectCommand(params)
+    
+    await this.s3.send(command)
 }

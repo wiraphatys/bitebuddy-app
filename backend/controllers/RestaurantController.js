@@ -2,7 +2,8 @@ const Restaurant = require("../models/RestaurantModel")
 const Review = require('../models/ReviewModel')
 const {
     uploadImageToS3,
-    getImageUrl
+    getImageUrl,
+    deleteImageInS3
 } = require("../config/aws-s3");
 
 // @desc    Get all restaurants
@@ -10,9 +11,16 @@ const {
 // @access  Public
 exports.getRestaurants = async (req, res, next) => {
     try {
+        const searchQuery = req.query.search || '';
+        const searchRegex = new RegExp(searchQuery, 'i');
         // role : { user , admin }
         if (req.user.role !== "owner") {
-            const restaurants = await Restaurant.find({})
+            const restaurants = await Restaurant.find({
+                $or: [
+                    { name: { $regex: searchRegex } },
+                    { description: { $regex: searchRegex } }
+                ]
+            });
 
             for (const restaurant of restaurants) {
                 if (restaurant.img) {
@@ -32,11 +40,12 @@ exports.getRestaurants = async (req, res, next) => {
                         }
                     }
                 ]);
-                restaurants[i] = { ...restaurants[i]._doc, reservations: restaurants[i].reservations, averageRating: avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 'No Review' };
+                restaurants[i] = { ...restaurants[i]._doc, reservations: restaurants[i].reservations, averageRating: avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 0 };
             }
 
             return res.status(200).send({
                 success: true,
+                count: restaurants.length,
                 data: restaurants
             })
         // role : { owner }
@@ -64,7 +73,7 @@ exports.getRestaurants = async (req, res, next) => {
                 }
             ]);
 
-            const averageRating = avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 'No Review';
+            const averageRating = avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 0;
             restaurant.averageRating = averageRating;
 
             return res.status(200).json({
@@ -109,7 +118,7 @@ exports.getRestaurantByID = async (req, res, next) => {
             }
         ]);
 
-        const averageRating = avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 'No Review';
+        const averageRating = avgRating.length > 0 ? avgRating[0].averageRating.toFixed(1) : 0;
         restaurant.averageRating = averageRating;
 
         return res.status(200).json({
@@ -146,6 +155,7 @@ exports.createRestaurant = async (req, res, next) => {
         if (existedRestaurant.length !== 0) {
             return res.status(400).json({
                 success: false,
+                count: existedRestaurant.length,
                 message: "You're already created restaurant."
             })
         }
@@ -246,6 +256,9 @@ exports.deleteRestaurantById = async (req, res, next) => {
         if (req.user.role === "owner") {
             // Ownership validation
             if (restaurant && restaurant.owner.toString() === req.user.id) {
+                // delete img in s3
+                await deleteImageInS3(restaurant.img)
+                
                 // Execute deleting process
                 await restaurant.deleteOne();
 
@@ -267,6 +280,9 @@ exports.deleteRestaurantById = async (req, res, next) => {
                     message: `Not found restaurant ID of ${req.params.id}`
                 })
             }
+
+            // delete img in s3
+            await deleteImageInS3(restaurant.img)
 
             // Execute deleting process
             await restaurant.deleteOne();

@@ -1,0 +1,96 @@
+.container{
+    width: 525px;
+    height: 525px;
+    border-radius: 24px;
+    background-color: #F0F0F0;
+    padding-top: 1px;
+    font-family: 'Poppins';
+}
+
+.container > * {
+    margin-left: 24px;
+}
+
+.container > div {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-content: space-between;
+    margin-right: 24px;
+    align-items: center;
+}
+
+.container > div > h1 {
+    font-size: 45px;
+    margin-top: 24px;
+    font-weight: 500;
+    color: #575757;
+}
+
+.input {
+    margin-top: 24px;
+    position: relative;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    width: 476px;
+    padding-top: 12px;
+    padding-bottom: 230px;
+    padding-left: 12px;
+    padding-right: 20px;
+    border-width: 1px;
+    border-radius: 4px;
+    border-color: rgba(17, 17, 19, 0.2);
+    align-items: flex-start;
+    background-color: transparent;
+}
+
+.placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px;
+    color: rgba(17, 17, 19, 0.6);
+}
+
+.container > button {
+    margin-top: 24px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 476px;
+    height: 48px;
+    border-radius: 4px;
+    color: #F0F0F0;
+    background-color: #575757;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: ease-in-out 0.2s;
+}
+
+.container > button:hover {
+    background-color: #F0F0F0;
+    border-color: #575757;
+    color: #575757;
+    border-width: 2px;
+}
+
+.create {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 24px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity as needed */
+    z-index: 1000; /* Make sure the overlay is behind the .create element */
+}
