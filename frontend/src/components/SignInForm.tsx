@@ -64,7 +64,7 @@ function SignInForm() {
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Password' required />
                 </div>
                 <button type="submit">Sign In &#8594;</button>
-                <div className="create-account">Not a member? <a href="/signup">Create an account.</a></div>
+                <div className="create-account">Not a member? <a href="/register">Create an account.</a></div>
             </form>
             <style jsx>{`
                 .signin-container {
