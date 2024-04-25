@@ -1,7 +1,8 @@
 const User = require("../models/UserModel")
 const {
     uploadImageToS3,
-    getImageUrl
+    getImageUrl,
+    deleteImageInS3
 } = require("../config/aws-s3");
 
 // @desc    Get all users
@@ -194,6 +195,12 @@ exports.deleteUserById = async (req, res, next) => {
         // role : { user , owner }
         if (req.user.role !== "admin") {
             if (user && req.user.id === user._id.toString()) {
+                if (user.img !== "") {
+                    // delete img in S3
+                    await deleteImageInS3(user.img)
+                }
+
+                // delete process
                 await user.deleteOne();
                 return res.status(200).send({
                     success: true,
@@ -213,6 +220,12 @@ exports.deleteUserById = async (req, res, next) => {
                 })
             }
 
+            if (user.img !== "") {
+                // delete img in S3
+                await deleteImageInS3(user.img)
+            }
+            
+            // delete process
             await user.deleteOne();
 
             return res.status(200).send({

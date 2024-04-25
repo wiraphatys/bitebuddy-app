@@ -13,7 +13,7 @@ export interface RestaurantItem {
     open: string,
     close: string,
     owner: string,
-    averageRating: number,
+    averageRating: string|number,
 }
 
 export interface RestaurantJson {

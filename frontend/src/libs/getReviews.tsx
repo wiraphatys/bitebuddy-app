@@ -11,7 +11,7 @@ export default async function getReviews(id?:string) {
     }
     
     if (!response.ok) {
-        throw new Error('Failed to fetch menu: ' + response.statusText);
+        throw new Error('Failed to fetch review: ' + response.statusText);
     }
 
     return await response.json();

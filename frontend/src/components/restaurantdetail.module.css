@@ -16,6 +16,12 @@
     margin-right: 12px;
 }
 
+.imgContainer > input {
+    display: flex;
+    justify-self: center;
+    align-self: center;
+}
+
 .nameContainer {
     height: 240px;
     width: 720px;
@@ -170,11 +176,15 @@
     align-items: center;
 }
 
-.date > div > input[type="checkbox"] {
-    background-color: white;
+.date > div > input {
+    background-color: #f0f0f0;
     border-color: #333333;
     pointer-events: none;
     cursor: not-allowed;
+}
+
+.date > div > input:checked {
+    accent-color: #333;
 }
 
 .date > div > input{

@@ -12,9 +12,7 @@ import { FormControl } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { TimePicker } from "@mui/x-date-pickers";
-// import { datepickerLocalization } from "@mui/x-date-pickers";
 import datepickerLocalization from "@/components/DatepickerLocalization";
-import { parseISO, getHours, getMinutes,parse, format } from 'date-fns';
 
 interface ReservationItem{
     restaurant:{
@@ -71,11 +69,8 @@ function EditReservationPage({params}:{params:{rid:string}}){
             if(response.success === true){
                 setReservation(response.data);
                 console.log(response.data)
-                const openTime = parse(response.data.restaurant.open, 'HH:mm', new Date());
-                const closeTime = parse(response.data.restaurant.close, 'HH:mm', new Date());
-                console.log("Open Time:", openTime);
-                setMinTime(openTime);
-                setMaxTime(closeTime);
+                setMinTime(response.data.data.restaurant.openTime);
+                setMaxTime(response.data.data.restaurant.closeTime);
                 console.log("Min Time (After setting):", minTime); // Move this log here
             }
             
@@ -122,7 +117,7 @@ function EditReservationPage({params}:{params:{rid:string}}){
                 if (response.data.success) {
                     Swal.fire({
                         title: "Confirmed",
-                        text: "Booked successfully",
+                        text: "Reserved successfully",
                         icon: "success",
                         timer: 2000
                     });
