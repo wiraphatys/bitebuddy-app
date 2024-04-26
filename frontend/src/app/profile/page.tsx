@@ -82,9 +82,16 @@ const ProfilePage = () => {
           
           {isEditing && user ? <EditProfile user={user} onClose={handleCloseEdit} onUpdate={updateUserProfile} /> : null}
         </div>
-        {isEditing && user && <EditProfile user={user} onClose={handleCloseEdit} onUpdate={updateUserProfile} />}
       </div>
-    );
-  };
-  
-  export default ProfilePage;
+      {
+        localStorage.getItem('role') !== 'user' ? null : <div><div className={styles.reviewHeader}>My Review</div>
+        <div className="mt-[12px]">
+          <ReviewSlider />
+        </div>
+        </div>
+      }
+    </div>
+  );
+};
+
+export default ProfilePage;
