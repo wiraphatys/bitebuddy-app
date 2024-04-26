@@ -46,43 +46,16 @@ export default function OverallRating ({rid}: {rid:string}) {
         fetchRestaurant();
     }, [reviewItems]);
 
-    const fetchReviews = async () => {
-        try {
-            const reviewsData = await getReviews(rid);
-            console.log(reviewsData.data);
-            dispatch(setInitialReviewItems(reviewsData.data))
-            if (reviewItems) {
-                let count5 = 0;
-                let count4 = 0;
-                let count3 = 0;
-                let count2 = 0;
-                let count1 = 0;
-        
-                reviewItems.forEach((review) => {
-                    if (review.rating === 5) {
-                        count5++;
-                    } else if (review.rating === 4) {
-                        count4++;
-                    } else if (review.rating === 3) {
-                        count3++;
-                    } else if (review.rating === 2) {
-                        count2++;
-                    } else {
-                        count1++;
-                    }
-                });
-        
-                setRate5(count5);
-                setRate4(count4);
-                setRate3(count3);
-                setRate2(count2);
-                setRate1(count1);
-                setTotal(reviewItems.length);
+    useEffect(() => {
+        const fetchReviews = async () => {
+            try {
+                const reviewsData = await getReviews(rid);
+                console.log(reviewsData);
+                setReviews(reviewsData.data);
+            } catch (error) {
+                console.error('Error fetching reviews data:', error);
             }
-        } catch (error) {
-            console.error('Error fetching reviews data:', error);
-        }
-    };
+        };
 
 
 

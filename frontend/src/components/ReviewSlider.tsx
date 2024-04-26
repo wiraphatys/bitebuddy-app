@@ -11,30 +11,26 @@ import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { setInitialReviewItems } from "@/redux/features/reviewSlice";
 
-export default function ReviewSlider({rid}:{rid?:string}) {
-  const dispatch = useDispatch<AppDispatch>()
-    const reviewItems = useAppSelector((state) => state.reviewSlice.reviewItems);
-    const fetchReviews = async () => {
-      try {
-        let reviewsData;
-        if(rid){
-          reviewsData = await getReviews(rid);
-        }else{
-          reviewsData = await getReviews();
-        }
-          console.log(reviewsData.data);
-          dispatch(setInitialReviewItems(reviewsData.data))
-      } catch (error) {
-          console.error('Error fetching reviews data:', error);
-      }
-  };
-  useEffect(() => {
-    fetchReviews();
-  },[])
+export default function ReviewSlider({rid}: {rid: string}) {
+    const [reviews, setReviews] = useState<ReviewItem[]>();
+
+    useEffect(() => {
+        const fetchReview = async () => {
+            try {
+                const reviewData = await getReviews(rid);
+                console.log(reviewData);
+                setReviews(reviewData.data);
+            } catch (error) {
+                console.error('Error fetching review data:', error);
+            }
+        };
+
+        fetchReview();
+    }, [rid]);
     const settings = {
     className: "center",
     dots: true,
-    infinite: reviewItems && reviewItems.length >= 5,
+    infinite: true,
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,

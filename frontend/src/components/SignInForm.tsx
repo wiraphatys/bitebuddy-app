@@ -37,7 +37,11 @@ function SignInForm() {
 
 
                 setTimeout(() => {
-                    router.push('/')
+                    if(role === 'user' || 'admin'){
+                        router.push('/restaurants')
+                    }else {
+                        router.push('/restaurants/owner')
+                    }
                 }, 1000)
             }else{
                 throw new Error('Sign In failed.');
@@ -64,7 +68,7 @@ function SignInForm() {
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Password' required />
                 </div>
                 <button type="submit">Sign In &#8594;</button>
-                <div className="create-account">Not a member? <a href="/signup">Create an account.</a></div>
+                <div className="create-account">Not a member? <a href="/register">Create an account.</a></div>
             </form>
             <style jsx>{`
                 .signin-container {

@@ -1,5 +1,8 @@
 const Reservation = require("../models/ReservationModel")
 const Restaurant = require("../models/RestaurantModel")
+const {
+    getImageUrl
+} = require("../config/aws-s3");
 
 // @desc    Get all reservations
 // @route   GET /api/v1/reservations/ || GET /api/v1/restaurants/:restaurantId/reservations
@@ -107,6 +110,8 @@ exports.getReservationByID = async (req, res, next) => {
                 select: "name tel img description close open"
             });
 
+            reservation.restaurant.img = await getImageUrl(reservation.restaurant.img)
+
             if (reservation && reservation.user.toString() === req.user.id) {
                 return res.status(200).send({
                     success: true,
@@ -127,6 +132,7 @@ exports.getReservationByID = async (req, res, next) => {
             const restaurant = await Restaurant.findById(reservation.restaurant)
 
             if (restaurant && restaurant.owner.toString() === req.user.id) {
+                reservation.restaurant.img = await getImageUrl(reservation.restaurant.img)
                 return res.status(200).send({
                     success: true,
                     data: reservation
@@ -145,6 +151,8 @@ exports.getReservationByID = async (req, res, next) => {
                 path: "restaurant",
                 select: "name tel img description"
             })
+
+            reservation.restaurant.img = await getImageUrl(reservation.restaurant.img)
 
             if (!reservation) {
                 return res.status(404).json({

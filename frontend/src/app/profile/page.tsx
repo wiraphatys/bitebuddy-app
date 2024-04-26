@@ -82,13 +82,9 @@ const ProfilePage = () => {
           
           {isEditing && user ? <EditProfile user={user} onClose={handleCloseEdit} onUpdate={updateUserProfile} /> : null}
         </div>
+        {isEditing && user && <EditProfile user={user} onClose={handleCloseEdit} onUpdate={updateUserProfile} />}
       </div>
-      <div className={styles.reviewHeader}>My Review</div>
-      <div className="mt-[12px]">
-        <ReviewSlider />
-      </div>
-    </div>
-  );
-};
-
-export default ProfilePage;
+    );
+  };
+  
+  export default ProfilePage;
