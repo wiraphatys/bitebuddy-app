@@ -11,9 +11,16 @@ const {
 // @access  Public
 exports.getRestaurants = async (req, res, next) => {
     try {
+        const searchQuery = req.query.search || '';
+        const searchRegex = new RegExp(searchQuery, 'i');
         // role : { user , admin }
         if (req.user.role !== "owner") {
-            const restaurants = await Restaurant.find({})
+            const restaurants = await Restaurant.find({
+                $or: [
+                    { name: { $regex: searchRegex } },
+                    { description: { $regex: searchRegex } }
+                ]
+            });
 
             for (const restaurant of restaurants) {
                 if (restaurant.img) {
