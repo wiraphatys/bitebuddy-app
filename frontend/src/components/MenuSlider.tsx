@@ -36,7 +36,7 @@ export default function MenuSlider({rid}: {rid: string}) {
   };
     const settings = {
     dots: role !== 'owner',
-    infinite: role !== 'owner' && menuItems.length > 5,
+    infinite: false,
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,

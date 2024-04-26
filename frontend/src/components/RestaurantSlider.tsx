@@ -19,7 +19,7 @@ export default function RestaurantSlider({restaurantsJson}: {restaurantsJson: Re
   const restaurants = restaurantsJson
   const settings = {
     dot: false,
-    infinite: true,
+    infinite: false,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
