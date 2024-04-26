@@ -48,9 +48,6 @@ export default function OverallRating ({rid}: {rid:string}) {
 
     const fetchReviews = async () => {
         try {
-            const reviewsData = await getReviews(rid);
-            console.log(reviewsData.data);
-            dispatch(setInitialReviewItems(reviewsData.data))
             if (reviewItems) {
                 let count5 = 0;
                 let count4 = 0;

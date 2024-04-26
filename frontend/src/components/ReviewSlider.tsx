@@ -30,11 +30,10 @@ export default function ReviewSlider({rid}:{rid?:string}) {
   };
   useEffect(() => {
     fetchReviews();
-  },[])
+  },[reviewItems])
     const settings = {
-    className: "center",
     dots: true,
-    infinite: reviewItems && reviewItems.length >= 5,
+    infinite: false,
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,
