@@ -10,9 +10,16 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { FormControl } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { TimePicker } from "@mui/x-date-pickers";
-import datepickerLocalization from "@/components/DatepickerLocalization";
+import { DatePicker, DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
+// const timestamp = "2014-06-01 12:00"
+const tz = "Asia/Bangkok"
 
 interface ReservationItem{
     restaurant:{
@@ -54,8 +61,16 @@ function EditReservationPage({params}:{params:{rid:string}}){
     )
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [selectedTime, setSelectedTime] = useState<Date | null>(null);
-    const [minTime, setMinTime] = useState<Date | null>(null);
-    const [maxTime, setMaxTime] = useState<Date | null>(null);
+    const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
+    
+    // const [opent, setOpent] = useState<string>('');
+    // const [opent1, setOpent1] = useState<number>(0);
+    // const [opent2, setOpent2] = useState<number>(0);
+    // const [closet, setCloset] = useState<string>('');
+    // const [closet1, setCloset1] = useState<number>(0);
+    // const [closet2, setCloset2] = useState<number>(0);
+    // const [minTime, setMinTime] = useState<String | null>(null);
+    // const [maxTime, setMaxTime] = useState<String | null>(null);
 
     useEffect(()=>{
         setRole(localStorage.getItem('role'));
@@ -68,23 +83,29 @@ function EditReservationPage({params}:{params:{rid:string}}){
 
             if(response.success === true){
                 setReservation(response.data);
-                console.log(response.data)
-                setMinTime(response.data.data.restaurant.openTime);
-                setMaxTime(response.data.data.restaurant.closeTime);
-                console.log("Min Time (After setting):", minTime); // Move this log here
+                // console.log(response.data)
+                // console.log(response.data.restaurant)
+                // console.log(response.data.restaurant.open)
+                // console.log(response.data.restaurant.close)
+                // setOpent(response.data.restaurant.open);
+                // setOpent1(parseInt(opent.split(':')[0]));
+                // setOpent2(parseInt(opent.split(':')[1]));
+                // setCloset(response.data.restaurant.close);
+                // setCloset1(parseInt(closet.split(':')[0]));
+                // setCloset2(parseInt(closet.split(':')[1]));
+                // setMinTime(response.data.restaurant.openTime);
+                // setMaxTime(response.data.restaurant.closeTime);
+                // // console.log("Min Time (After setting):", minTime); // Move this log here
+                // console.log(minTime + " - " + maxTime)
             }
             
         }catch(error:any){
             console.log("Error: ", error);
         }
     };
-
-    const handleDateTimeChange = (newDate: Date | null) => {
-        setSelectedDate(newDate);
-    };
-
-    const handleTimeChange = (newTime: Date | null) => {
-        setSelectedTime(newTime);
+    
+    const handleDateTimeChange = (newTime: Date | null) => {
+        setSelectedDateTime(newTime);
     };
     const formatDateTime = (dateTimeString: string) => {
         const dateTime = new Date(dateTimeString);
@@ -103,14 +124,117 @@ function EditReservationPage({params}:{params:{rid:string}}){
 
     const handleReservationChange =async()=>{
         try{
-            if(selectedDate && selectedTime){
-                const formattedDate: string = selectedDate.toISOString();
-                const formattedTime: string = selectedTime.toISOString().split('T')[1]; // Extracting time portion
-                const dateTime: string = formattedDate.split('T')[0] + 'T' + formattedTime;
+            if(selectedDateTime){
+                console.log(selectedDateTime)
+                console.log(new Date())
+                if(selectedDateTime<new Date()){
+                    throw new Error("Cannot set reservation datetime to a past datetime.");
+                }
+                // console.log(selectedTime)
+                // selectedTime.getTime();
+                // console.log(selectedDate);
+                // const sd = dayjs.tz(selectedDate, 'Asia/Bangkok')
+                // console.log('sd');
+                // console.log(sd);
+                // console.log(selectedTime);
+                // const st = dayjs.tz(selectedTime, 'Asia/Bangkok')
+                // console.log('st');
+                // console.log(st);
+
+                // // selectedTime.setDate(selectedDate);
+                // console.log('hee');
+                // // Ensure selectedTime is not null
+                // const hours = selectedTime.getHours();
+                // const minutes = selectedTime.getMinutes();
+
+                // Create a new Date object with selectedDate
+                // const checkedDate = new Date(selectedDate);
+
+                // Set the hours and minutes of the selectedDateTime
+                // checkedDate.setHours(hours);
+                // checkedDate.setMinutes(minutes);
+                // const d = new Date();
+                // const dd = dayjs.tz(d, 'Asia/Bangkok')
+                // console.log("sltD: " + selectedDate.toISOString());
+                // console.log("sltT: " + selectedTime.toISOString());
+                // const ddd = dd.toISOString();
+                // console.log(ddd);
+                
+
+                // const formattedDate: string = sd.toISOString();
+                // console.log('fd');
+                // console.log(formattedDate);
+                // const formattedTime: string = st.toISOString().split('T')[1]; // Extracting time portion
+                // console.log('ft');
+                // console.log(formattedTime);
+                // // const formattedDate: string = selectedDate.toISOString();
+                // // const formattedTime: string = selectedTime.toISOString().split('T')[1]; // Extracting time portion
+                // const dateTime: string = formattedDate.split('T')[0] + 'T' + formattedTime;
+                // console.log(dateTime);
+                // const dtt = dayjs(dateTime)
+                // console.log('dt');
+                // const dt = dayjs.tz(dtt, 'Asia/Bangkok')
+                // console.log(dt);
+                // console.log('diff')
+                // console.log(dd.diff(dt))
+                // const dttt = dt.toISOString();
+
+                // const nowY = ddd.split('-')[0];
+                // const nowM = ddd.split('-')[1];
+                // const temp1 = ddd.split('-')[2];
+                // var nowD = temp1.split('T')[0];
+                // const temp2 = temp1.split('T')[1];
+                // var nowH = temp2.split(':')[0];
+                // const nowMi = temp2.split(':')[1];
+                // const temp3 = temp2.split(':')[2];
+                // const nowS = temp3.split('.')[0];
+
+                // const rY = dttt.split('-')[0];
+                // const rM = dttt.split('-')[1];
+                // const temp11 = dttt.split('-')[2];
+                // var rD = temp11.split('T')[0];
+                // const temp22 = temp11.split('T')[1];
+                // var rH = temp22.split(':')[0];
+                // const rMi = temp22.split(':')[1];
+                // const temp33 = temp22.split(':')[2];
+                // const rS = temp33.split('.')[0];
+                
+                // const intrH = parseInt(rH);
+                // if(intrH > 16){
+                //     rD= (parseInt(rD)+1).toString();
+                // }
+                // rH = intrH.toString();
+
+                
+
+                // if(rY < nowY){
+                //     throw new Error("Y");
+                // }else if(rM < nowM){
+                //     throw new Error("M");
+                // }else if(rD < nowD){
+                //     throw new Error("D");
+                // }else if(rH < nowH){
+                //     throw new Error("H");
+                // }else if(rMi < nowMi){
+                //     throw new Error("Mi");
+                // }else if(rS < nowS){
+                //     throw new Error("S");
+                // }
+
+                
+
+
+                // if (selectedDate < d) {
+                //     throw new Error("Cannot set reservation datetime to a past datetime.");
+                // }
+                // else if(selectedDate.toISOString() == dd){
+                //     throw new Error("HEE");
+                // }
 
                 const payload = {
-                    datetime: dateTime
+                    datetime: selectedDateTime
                 };
+                console.log(payload)
 
                 const response = await axios.put(`${config.api}/reservations/${params.rid}`, payload, config.headers());
 
@@ -140,7 +264,7 @@ function EditReservationPage({params}:{params:{rid:string}}){
     }
 
     return(
-        <LocalizationProvider dateAdapter={AdapterDayjs} dateFormats={datepickerLocalization}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div className={styles.container}>
                 <div className="flex flex-row">
                     <div className='text-gray-400 text-[36px] md:text-[48px] py-6 pl-[72px]'>Reservation </div>
@@ -149,7 +273,7 @@ function EditReservationPage({params}:{params:{rid:string}}){
 
                 <div className="flex flex-row h-[84%]" >
                     <div className="w-[50%] h-auto ml-[24px] mr-[12px] mb-[24px] relative rounded-[24px] overflow-hidden">
-                        <Image src="/img/kfc.jpg" alt="icon" layout="fill" objectFit="cover" className="rounded-[24px]" />
+                        <Image src={reservation.restaurant.img? reservation.restaurant.img:"/img/kfc.jpg"} alt="icon" layout="fill" objectFit="cover" className="rounded-[24px]" />
                     </div>
 
                     <div className="flex flex-col w-[50%] h-full">
@@ -186,18 +310,15 @@ function EditReservationPage({params}:{params:{rid:string}}){
                             <div className="w-full">
                                 <form>
                                     <FormControl className="w-full">
-                                        <DatePicker
-                                            value={selectedDate}
-                                            onChange={handleDateTimeChange}
-                                            className="mt-[12px]"
-                                        />
-                                        <TimePicker
-                                            value={selectedTime}
-                                            onChange={handleTimeChange}
-                                            className="mt-[12px]"
-                                            minTime={minTime|| undefined}
-                                            maxTime={maxTime|| undefined}
-                                        />
+                                        <div className="mt-[12px] w-full">
+                                            <DateTimePicker
+                                                disablePast={true}
+                                                value={selectedDateTime}
+                                                onChange={(value) => {handleDateTimeChange(value)}}
+                                                className="w-full"
+                                            />
+                                        </div>
+                                       
                                     </FormControl>
                                 </form>
                             </div>

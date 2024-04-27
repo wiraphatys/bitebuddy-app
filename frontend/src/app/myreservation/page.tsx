@@ -47,11 +47,11 @@ function MyReservationPage() {
 
   const fetchData = async () => {
     try {
-        const response = await getReservations({ rid: undefined });
-        console.log(response.data)
-      
-      if (response.success === true) {
-        setReservationList(response.data);
+      const response = await getReservations({ rid: undefined });
+      console.log(response.data); // Make sure response.data contains the expected data
+  
+      if (response.success === true) { // Access success from response.data
+        setReservationList(response.data); // Set reservationList from response.data.data
       }
     } catch (err: any) {
       console.log(err.message);
@@ -69,6 +69,10 @@ function MyReservationPage() {
     const options = { hour: '2-digit' as const, minute: '2-digit' as const };
     return dateTime.toLocaleTimeString(undefined, options);
 };
+  const isExpired = (dateTimeString: string) => {
+    const dateTime = new Date(dateTimeString);
+    return dateTime < new Date(); // Check if reservation datetime is less than current datetime
+  };
 
   const handleEditClick = (rid: string) => {
     router.push(`/myreservation/edit/${rid}`)
@@ -121,46 +125,61 @@ function MyReservationPage() {
                   {role==='user'?(<button className="hover:bg-gray-400 hover:text-white text-gray-400 my-2 py-1 px-4 border border-gray-400" onClick={(e)=>{e.stopPropagation; router.push("/restaurants")}}>make new reservation</button>):''}
                 </div>
               ) : reservationList.map((reservation) => (
-                reservation.restaurant !== null ?
-                <div key={reservation._id} className={styles.card}>
-                  <div className='flex flex-row justify-between'>
-                    <div className='text-3xl font-semibold'>{reservation.restaurant.name}</div>
-                    <div>
+                reservation.restaurant !== null ? 
+                <div key={reservation._id} className='relative'>
+                  {
+                    isExpired(reservation.datetime) ?
+                    <div className='flex flex-col items-center absolute top-[35%] left-[38%] z-30'>
+                      <p className='text-[28px] font-semibold'>Reservation has expired!!</p>
                       <button className={styles.button} 
-                        onClick={() => handleEditClick(reservation._id)}
-                      >Edit</button>
-                      <button className={styles.button} 
-                        onClick={() => handleDelete(reservation._id)}
-                      >Delete</button>
-                    </div>
-                  </div>
-                  <div className='flex flex-row justify-between'>
-                    <div>
-                      <div className='font-medium text-xl my-[13px]'>Address</div> 
-                      <div className={styles.address}>{reservation.restaurant.street} {reservation.restaurant.locality} {reservation.restaurant.district} {reservation.restaurant.province}</div>
-                    </div>
-                    <div>
-                      <div className='flex flex-row items-center'>
-                        <CalendarMonthIcon/><div className={styles.information}>{formatDate (reservation.datetime)}</div>
-                      </div>
-                      <div className='flex flex-row items-center'>
-                        <AccessTimeIcon/> <div className={styles.information}>{formatTime (reservation.datetime)}</div>
-                      </div>
-                      <div className='flex flex-row items-center'>
-                        <LocalPhoneIcon/><div className={styles.information}>{reservation.restaurant.tel}</div> 
-                      </div>
+                            onClick={() => handleDelete(reservation._id)}
+                          >Delete
+                      </button>
+                    </div> : ''
+                  }
+
+                  <div className={isExpired(reservation.datetime) ? styles.expiredCard : styles.card}>
+                    <div className='flex flex-row justify-between'>
+                      <div className='text-3xl font-semibold'>{reservation.restaurant.name}</div>
                       {
-                        role === 'admin'?(
-                          <div className='flex flex-row items-center'>
-                            <PersonIcon/><div className={styles.information}>{reservation.user.email}</div>
-                          </div>
-                        ):''
+                        !isExpired(reservation.datetime) ? 
+                        <div>
+                          <button className={styles.button} 
+                            onClick={() => handleEditClick(reservation._id)}
+                          >Edit</button>
+                          <button className={styles.button} 
+                            onClick={() => handleDelete(reservation._id)}
+                          >Delete</button>
+                        </div> : ''
                       }
+                      
                     </div>
-                  </div>
-                  
-                  
-                </div> : ''
+                    <div className='flex flex-row justify-between'>
+                      <div>
+                        <div className='font-medium text-xl my-[13px]'>Address</div> 
+                        <div className={styles.address}>{reservation.restaurant.street} {reservation.restaurant.locality} {reservation.restaurant.district} {reservation.restaurant.province}</div>
+                      </div>
+                      <div>
+                        <div className='flex flex-row items-center'>
+                          <CalendarMonthIcon/><div className={styles.information}>{formatDate (reservation.datetime)}</div>
+                        </div>
+                        <div className='flex flex-row items-center'>
+                          <AccessTimeIcon/> <div className={styles.information}>{formatTime (reservation.datetime)}</div>
+                        </div>
+                        <div className='flex flex-row items-center'>
+                          <LocalPhoneIcon/><div className={styles.information}>{reservation.restaurant.tel}</div> 
+                        </div>
+                        {
+                          role === 'admin'?(
+                            <div className='flex flex-row items-center'>
+                              <PersonIcon/><div className={styles.information}>{reservation.user.email}</div>
+                            </div>
+                          ):''
+                        }
+                      </div>
+                    </div>  
+                  </div> 
+                </div>: ''
               ))
             ):''}
 

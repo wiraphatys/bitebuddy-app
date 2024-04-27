@@ -9,12 +9,10 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { FormControl } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { TimePicker } from "@mui/x-date-pickers";
-import datepickerLocalization from "@/components/DatepickerLocalization";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import getRestaurant from "@/libs/getRestaurant";
-import DateValidationShouldDisableDate from "@/components/Calendar";
 import dayjs, { Dayjs } from "dayjs";
+import { DateTimePicker } from "@mui/x-date-pickers";
 
 interface RestaurantItem {
     _id: string,
@@ -33,9 +31,8 @@ function ReservationPage({params}:{params:{rid:string}}){
     const router = useRouter();
     
     const [restaurant, setRestaurant] = useState<RestaurantItem>()
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-    const [selectedTime, setSelectedTime] = useState<Date | null>(null);
     const [seat, setSeat] = useState<number>(1);
+    const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
 
     useEffect(() => {
         const fetchRestaurant = async () => {
@@ -43,7 +40,7 @@ function ReservationPage({params}:{params:{rid:string}}){
                 const response = await getRestaurant(params.rid);
                 console.log(response);
                 setRestaurant(response.data);
-                console.log(response)
+                console.log(response.success)
             } catch (error) {
                 console.error('Error fetching restaurant data:', error);
             }
@@ -67,29 +64,22 @@ function ReservationPage({params}:{params:{rid:string}}){
     
         return false;
     };
-    
-    const handleDateTimeChange = (newDate: Date | null) => {
-        setSelectedDate(newDate);
-    };
-
-    const handleTimeChange = (newTime: Date | null) => {
-        setSelectedTime(newTime);
+    const handleDateTimeChange = (newTime: Date | null) => {
+        setSelectedDateTime(newTime);
     };
    
 
     const handleReservation =async()=>{
         try{
-            if(selectedDate && selectedTime){
-                const formattedDate: string = selectedDate.toISOString();
-                const formattedTime: string = selectedTime.toISOString().split('T')[1]; // Extracting time portion
-                const dateTime: string = formattedDate.split('T')[0] + 'T' + formattedTime;
-
+            if(selectedDateTime){
+                
                 const payload = {
-                    datetime: dateTime,
-                    seat:0
+                    datetime: selectedDateTime,
+                    seat:seat
                 };
-
+                console.log(payload)
                 const response = await axios.post(`${config.api}/restaurants/${params.rid}/reservations`, payload, config.headers());
+                console.log(response)
 
                 if (response.data.success) {
                     Swal.fire({
@@ -117,7 +107,7 @@ function ReservationPage({params}:{params:{rid:string}}){
         
     }
     return(
-        <LocalizationProvider dateAdapter={AdapterDayjs} dateFormats={datepickerLocalization}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div className={styles.container}>
                 <div className="flex flex-row">
                     <div className='text-gray-400 text-[28px] md:text-[42px] py-6 pl-[72px]'>Restaurant &gt; Detail</div>
@@ -126,7 +116,7 @@ function ReservationPage({params}:{params:{rid:string}}){
 
                 <div className="flex flex-row h-[84%]" >
                     <div className="w-[50%] h-auto ml-[24px] mr-[12px] mb-[24px] relative rounded-[24px] overflow-hidden">
-                        <Image src={restaurant ? restaurant.img : '/img/logo'} alt="icon" layout="fill" objectFit="cover" className="rounded-[24px]" />
+                        <Image src={restaurant?.img ? restaurant?.img:'/img/userAnonymous.png'} alt="icon" layout="fill" objectFit="cover" className="rounded-[24px]" />
                     </div>
 
                     <div className="flex flex-col w-[50%] h-full">
@@ -150,23 +140,19 @@ function ReservationPage({params}:{params:{rid:string}}){
                                 <form>
                                     <FormControl className="w-full">
                                         <div className="flex flex-row items-center">
-                                            <p>Date</p>
-                                            <DatePicker
-                                                value={selectedDate}
-                                                onChange={handleDateTimeChange}
-                                                className="mt-[8px] ml-[12px] w-full"
-                                                shouldDisableDate={isCloseDate}
-                                                views={['year', 'month', 'day']}
-                                            />
-                                        </div>
-                                        <div className="flex flex-row items-center">
                                             <p>Time</p>
-                                            <TimePicker
-                                                value={selectedTime}
-                                                onChange={handleTimeChange}
-                                                className="mt-[8px] ml-[12px] w-full"
+                                            <div className="mt-[8px] ml-[12px] w-full">
+                                            <DateTimePicker
+                                                disablePast={true}
+                                                value={selectedDateTime}
+                                                onChange={(value) => {handleDateTimeChange(value)}}
+                                                className="w-full"
+                                                shouldDisableDate={isCloseDate}
+                                                views={['year', 'month', 'day','hours','minutes']}
                                             />
-                                        </div>
+                                            </div>
+                                            
+                                        </div> 
                                         <div className="flex flex-row items-center">
                                             <p>Seat</p>
                                             <input
