@@ -13,17 +13,25 @@ import config from "@/utils/config";
 import { removeReview } from "@/redux/features/reviewSlice";
 import getUser from "@/libs/getUser";
 import { UserItem } from "../../interface";
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import ReviewUpdate from "./ReviewUpdate";
 
-export default function MenuCard({name, img, comment, rating, rid} : {name: string, img: string, comment: string, rating:number, rid:string}) {
+export default function ReviewCard({name, img, comment, rating, rid} : {name: string, img: string, comment: string, rating:number, rid:string}) {
 
     const [role, setRole] = useState<string>();
     const [user, setUser] = useState<UserItem>();
+    const [create, setCreate] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() =>{
         if (typeof window !== 'undefined') {
             if (localStorage.getItem('role') === "owner" || !localStorage.getItem('role')){
               setRole('owner')
+            }else if(localStorage.getItem('role') == 'admin'){
+                setRole('admin')
+            }else{
+                setRole('user')
             }
         }
         const fetchUser = async () => {
@@ -87,9 +95,13 @@ export default function MenuCard({name, img, comment, rating, rid} : {name: stri
     return (
         <div className={styles.container}>
             {
-                role === 'admin' || user?.email == name?
+                ( role == 'admin' || user?.email == name )?
                 <button className={styles.delete} onClick={handleReviewDelete}><DeleteOutlineIcon/></button>:null
             }  
+            {
+                ( role == 'admin' || user?.email == name )?
+                <button className={styles.update} onClick={() => setCreate(true)}><MoreHorizIcon/></button>:null
+            }
             <div className={styles.circle}>
                 <img src={img ? img : '/img/userAnonymous.png'} className="w-full h-full"/>
             </div>
@@ -100,6 +112,9 @@ export default function MenuCard({name, img, comment, rating, rid} : {name: stri
                     {comment}
                 </p>
                 <div className={styles.rating}>{rating.toFixed(1)} <Rating value={parseFloat(rating.toFixed(1))} readOnly style={{ color: 'black' }}/></div>
+                            {
+                create ? <ReviewUpdate rid={rid} rate={rating} des={comment} setCreate={setCreate} /> : null
+            }
         </div>
     );
 }

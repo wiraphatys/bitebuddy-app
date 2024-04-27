@@ -59,8 +59,8 @@ export default function CreateReview({
     } catch (error: any) {
       console.log(error.response);
       Swal.fire({
-        title: "Error",
-        text: error.message,
+        title: "Failed to make review",
+        text: "You already made a review of this restaurant",
         icon: "error",
         timer: 2000,
       });

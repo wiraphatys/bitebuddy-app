@@ -43,7 +43,7 @@ export default function TopMenu() {
                 {
                 role !== 'owner' ? 
                 <div>
-                <Link href='/myreservation/'>
+                <Link href={role ? '/myreservation/' : '/signin'}>
                     reservation
                 </Link>
                 <Link  href={role ? '/profile' : '/signin'}>
