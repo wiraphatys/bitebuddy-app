@@ -38,7 +38,7 @@ export default function RestaurantDetail({ rid }: { rid: string }) {
       <div>
         <div className={styles.nameContainer}>
             <div className={styles.nameText}>
-                <h1>{restaurant?.name}</h1> <p>Tel : </p><span className="font-normal">&ensp;{restaurant?.tel}</span>{role !== 'owner' ? <a href={`/myreservation/${rid}`} className="ml-auto"><button className={styles.button}>Reservation</button></a> : null}
+                <h1>{restaurant?.name}</h1> <p>Tel : </p><span className="font-normal">&ensp;{restaurant?.tel}</span>{role !== 'owner' ? <a href={`/reservation/${rid}`} className="ml-auto"><button className={styles.button}>Reservation</button></a> : null}
             </div> 
             <h3>Description</h3>
             <div className={styles.description}>

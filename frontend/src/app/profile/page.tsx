@@ -83,10 +83,13 @@ const ProfilePage = () => {
           {isEditing && user ? <EditProfile user={user} onClose={handleCloseEdit} onUpdate={updateUserProfile} /> : null}
         </div>
       </div>
-      <div className={styles.reviewHeader}>My Review</div>
-      <div className="mt-[12px]">
-        <ReviewSlider />
-      </div>
+      {
+        localStorage.getItem('role') !== 'user' ? null : <div><div className={styles.reviewHeader}>My Review</div>
+        <div className="mt-[12px]">
+          <ReviewSlider />
+        </div>
+        </div>
+      }
     </div>
   );
 };
