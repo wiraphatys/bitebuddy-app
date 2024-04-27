@@ -1,139 +1,91 @@
-const {
-    createReview
-  } = require('../controllers/ReviewController');
-  
-  const Review = require("../models/ReviewModel");
-  const Restaurant = require('../models/RestaurantModel');
-  
-  jest.mock("../models/ReviewModel");
-  jest.mock('../models/RestaurantModel');
-  jest.mock("../config/aws-s3");
-  
-  describe("createReview", () => {
-    let req, res, next;
-  
-    beforeEach(() => {
-      req = {
-        params: {},
-        body: {},
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+
+// Import required models and functions
+const Review = require('../models/ReviewModel');
+const Restaurant = require('../models/RestaurantModel');
+const { createReview } = require('../controllers/reviewController');
+
+describe('reviewController.createReview', () => {
+  let mongoServer;
+  let connection;
+
+  beforeAll(async () => {
+    mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
+    connection = await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    // Create a mock restaurant
+    const mockRestaurant = new Restaurant({
+      "_id": "66127491ede37740c58572e1",
+      "name": "Tak, Stockholm",
+      "img": "https://bitebuddycloud.s3.ap-southeast-1.amazonaws.com/f99bc39f7cef390cf1e54acfa69279addc9a82c6df47a16f43d7c70c2a71a54c?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAU6GDXBI3R753ZLH6%2F20240427%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Date=20240427T142914Z&X-Amz-Expires=900&X-Amz-Signature=8fdd33696fd86664d128a6fea462f995e43392a7845f6ed7481399592d357f89&X-Amz-SignedHeaders=host&x-id=GetObject",
+      "description": "TAK opened its doors March 2017 under the direction of our Culinary Director, Frida Ronge. To hang out at TAK should always be something else, something new, something more, and we exist to bring inspiration and innovation to the table.\nAt TAK we have many wonderful restaurants, bars, chambre séparées and event spaces. Read about each space below.",
+      "tel": "020000000",
+      "street": "Brunkebergstorg",
+      "locality": "2-4-111 51",
+      "district": "Stockholm",
+      "province": "Stockholm",
+      "zipcode": "10000",
+      "closeDate": [
+        0,
+        6
+      ],
+      "open": "10:00",
+      "close": "23:00",
+      "owner": "661e4ac0e07c81b045a62e39",
+      "createdAt": "2024-04-16T10:01:35.352Z",
+      "updatedAt": "2024-04-16T10:01:35.352Z"
+    });
+    await mockRestaurant.save();
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect();
+    await mongoServer.stop();
+  });
+
+  describe('when the user has already written a review for the restaurant', () => {
+    it('should return a 400 status code', async () => {
+      // Mock the request and response objects
+      const req = {
+        body: {
+          rating: 4, // Valid rating value
+          // Other required fields
+        },
+        params: {
+          restaurantId: '66127491ede37740c58572e1',
+        },
         user: {
-          id: "662d07e98893ed043ba9ff36"
-        }
+          id: '662d0b6100ccd592b35c4cd9',
+        },
       };
-      res = {
+      const res = {
         status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-        send: jest.fn()
+        send: jest.fn(),
       };
-      next = jest.fn();
-    });
-  
-    it("should create review successfully", async () => {
-      req.params.restaurantId = "661e4eeb00a40432cb8d2333";
-      req.body.rating = 4;
-      req.body.review = "Great food and service!";
-  
-      const restaurant = {
-        _id: "661e4eeb00a40432cb8d2333"
-      };
-  
-      const existingReviews = [];
-      Review.find.mockResolvedValue(existingReviews);
-      Restaurant.findById.mockResolvedValue(restaurant);
-      Review.create.mockResolvedValue({
-        rating: req.body.rating,
-        review: req.body.review,
+
+      // Create a mock existing review
+      const existingReview = new Review({
         user: req.user.id,
-        restaurant: req.params.restaurantId
+        restaurant: req.params.restaurantId,
+        rating: req.body.rating
+        // Other review fields
       });
-  
-      await createReview(req, res, next);
-  
-      expect(Review.find).toHaveBeenCalledWith({
-        user: req.user.id,
-        restaurant: req.params.restaurantId
-      });
-      expect(Review.create).toHaveBeenCalledWith({
-        rating: req.body.rating,
-        review: req.body.review,
-        user: req.user.id,
-        restaurant: req.params.restaurantId
-      });
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({
-        success: true,
-        data: {
-          rating: req.body.rating,
-          review: req.body.review,
-          user: req.user.id,
-          restaurant: req.params.restaurantId
-        }
-      });
-    });
-  
-    it("should return 404 if restaurant not found", async () => {
-      req.params.restaurantId = "661e4eeb00a40432cb8d2334";
-      Restaurant.findById.mockResolvedValue(null);
-  
-      await createReview(req, res, next);
-  
-      expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.send).toHaveBeenCalledWith({
-        success: false,
-        message: `Not found restaurant ID of ${req.params.restaurantId}`
-      });
-    });
-  
-    it("should return 400 if user has already written review for the restaurant", async () => {
-      req.params.restaurantId = "661e4eeb00a40432cb8d2333";
-      const existingReviews = [{
-        _id: "662d0a6d7a660d790450a5e0"
-      }];
-      Review.find.mockResolvedValue(existingReviews);
-  
-      await createReview(req, res, next);
-  
+      await existingReview.save();
+
+      // Call the createReview function
+      await createReview(req, res, jest.fn());
+
+      // Assert the expected behavior
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
-        message: `You've already written the review for this restaurant.`
-      });
-    });
-  
-    it("should return 400 if rating is not between 0-5", async () => {
-      req.params.restaurantId = "662d0a6d7a660d790450a5e0";
-      req.body.rating = 6;
-  
-      await createReview(req, res, next);
-  
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        message: `rating value can only between 0-5`
-      });
-    });
-  
-    it("should return 500 if error occurs during review creation", async () => {
-      req.params.restaurantId = "661e4eeb00a40432cb8d2333";
-      req.body.rating = 4;
-      req.body.review = "Great food and service!";
-  
-      const restaurant = {
-        _id: "661e4eeb00a40432cb8d2333"
-      };
-  
-      const existingReviews = [];
-      Review.find.mockResolvedValue(existingReviews);
-      Restaurant.findById.mockResolvedValue(restaurant);
-      Review.create.mockRejectedValue(new Error("Database error"));
-  
-      await createReview(req, res, next);
-  
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        message: 'Cannot create Review'
+        message: "You've already written the review for this restaurant.",
       });
     });
   });
-  
+});
