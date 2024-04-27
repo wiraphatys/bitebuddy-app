@@ -6,10 +6,6 @@ import { faUser , faUtensils} from "@fortawesome/free-solid-svg-icons"
 import { useEffect, useState } from "react";
 
 export default function HomePage() {
-  const [role, setRole] = useState<string|null>()
-  useEffect(() => {
-    setRole(localStorage.getItem('role'))
-  })
   const handleClick = () => {
     const scrollStep = window.innerHeight / 20; // Adjust the step size as needed
     let scrolled = 0;
@@ -44,7 +40,7 @@ export default function HomePage() {
               <br />
               Our diverse selection ensures a culinary adventure like no other.
             </div>
-            <a href={role ? role === 'owner' ? "/restaurants/owner" : "/restaurants" : '/signin'}><button className={styles.buttonExplore}>Explore now</button></a>
+            <button className={styles.buttonExplore}>Explore now</button>
           </div>
           <button className={styles.buttonLearn} onClick={handleClick}>
             Learn more about us

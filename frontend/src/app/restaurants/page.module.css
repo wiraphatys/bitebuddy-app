@@ -16,3 +16,25 @@
     font-size: 48px;
     font-weight: 500;
 }
+
+.searchBar{
+    background-color: #f0f0f0;
+    padding: 4px;
+    border-radius: 30px;
+    height: 40px;
+    width: 300px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.input {
+    background-color: #f0f0f0;
+    padding-left: 16px;
+    padding-right: 8px;
+    border-radius: 30px;
+}
+
+.input:focus {
+    outline: none;
+}

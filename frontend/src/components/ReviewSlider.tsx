@@ -1,43 +1,29 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { ReviewItem, ReviewJson } from "../../interface";
-import ReviewCard from "./ReviewCard";
-import styles from './reviewcard.module.css'
-import getReviews from "@/libs/getReviews";
-import { useDispatch } from "react-redux";
-import { AppDispatch, useAppSelector } from "@/redux/store";
-import { setInitialReviewItems } from "@/redux/features/reviewSlice";
+import { RestaurantItem, RestaurantJson } from "../../interface";
+import RestaurantCard from "./RestaurantCard";
+import { useRouter } from "next/navigation";
 
-export default function ReviewSlider({rid}:{rid?:string}) {
-  const dispatch = useDispatch<AppDispatch>()
-    const reviewItems = useAppSelector((state) => state.reviewSlice.reviewItems);
-    const fetchReviews = async () => {
-      try {
-        let reviewsData;
-        if(rid){
-          reviewsData = await getReviews(rid);
-        }else{
-          reviewsData = await getReviews();
-        }
-          console.log(reviewsData.data);
-          dispatch(setInitialReviewItems(reviewsData.data))
-      } catch (error) {
-          console.error('Error fetching reviews data:', error);
-      }
-  };
+export default function RestaurantSlider({restaurantsJson}: {restaurantsJson: RestaurantJson}) {
+  const router = useRouter()
   useEffect(() => {
-    fetchReviews();
-  },[reviewItems])
-    const settings = {
-    dots: true,
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem('role') === "owner" || !localStorage.getItem('role')){
+        router.push('/');
+      }
+    }
+  }, []);
+  const restaurants = restaurantsJson
+  const settings = {
+    dot: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 5,
+    slidesToShow: 4,
     slidesToScroll: 1,
-    swipeToSlide: false,
+    swipeToSlide: true,
     nextArrow: (
       <div>
         <div className="next-slick-arrow">
@@ -56,18 +42,13 @@ export default function ReviewSlider({rid}:{rid?:string}) {
   };
   return (
     <div>
-    {
-        (reviewItems && reviewItems.length > 0) ? 
       <Slider {...settings}>
       {
-        reviewItems?.map((reviewItem: ReviewItem) => (
-          <div key={reviewItem._id}>
-            <ReviewCard name={reviewItem.user.email} img={reviewItem.user.img} comment={reviewItem.comment} rating={reviewItem.rating} rid={reviewItem._id}/>
-          </div>
+        restaurants.data.map((restaurantItem: RestaurantItem) => (
+          <RestaurantCard name={restaurantItem.name} img={restaurantItem.img} open={restaurantItem.open} close={restaurantItem.close} avgRating={restaurantItem.averageRating} id={restaurantItem._id}/>
         ))
       }
-      </Slider> : ''
-    }
+      </Slider>
     </div>
   );
 }
