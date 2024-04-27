@@ -834,6 +834,30 @@ const options = {
               "Restaurants"
             ],
             "summary": "Get all restaurants",
+            "parameters": [
+              {
+                "name": "name",
+                "in": "query",
+                "description": "Name of the restaurant to search for",
+                "required": false,
+                "style": "form",
+                "explode": true,
+                "schema": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "menu",
+                "in": "query",
+                "description": "Name of the menu to search for",
+                "required": false,
+                "style": "form",
+                "explode": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
             "responses": {
               "200": {
                 "description": "Successful response",
