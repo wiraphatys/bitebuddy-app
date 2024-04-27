@@ -833,23 +833,12 @@ const options = {
             "tags": [
               "Restaurants"
             ],
-            "summary": "Get all restaurants",
+            "summary": "Get restaurants filtered by search query",
             "parameters": [
               {
-                "name": "name",
+                "name": "search",
                 "in": "query",
-                "description": "Name of the restaurant to search for",
-                "required": false,
-                "style": "form",
-                "explode": true,
-                "schema": {
-                  "type": "string"
-                }
-              },
-              {
-                "name": "menu",
-                "in": "query",
-                "description": "Name of the menu to search for",
+                "description": "Search query to filter restaurants by name.",
                 "required": false,
                 "style": "form",
                 "explode": true,
