@@ -17,7 +17,7 @@ const {
         params: {},
         body: {},
         user: {
-          id: "userId"
+          id: "662d07e98893ed043ba9ff36"
         }
       };
       res = {
@@ -29,12 +29,12 @@ const {
     });
   
     it("should create review successfully", async () => {
-      req.params.restaurantId = "restaurantId";
+      req.params.restaurantId = "661e4eeb00a40432cb8d2333";
       req.body.rating = 4;
       req.body.review = "Great food and service!";
   
       const restaurant = {
-        _id: "restaurantId"
+        _id: "661e4eeb00a40432cb8d2333"
       };
   
       const existingReviews = [];
@@ -72,7 +72,7 @@ const {
     });
   
     it("should return 404 if restaurant not found", async () => {
-      req.params.restaurantId = "restaurantId";
+      req.params.restaurantId = "661e4eeb00a40432cb8d2334";
       Restaurant.findById.mockResolvedValue(null);
   
       await createReview(req, res, next);
@@ -85,9 +85,9 @@ const {
     });
   
     it("should return 400 if user has already written review for the restaurant", async () => {
-      req.params.restaurantId = "restaurantId";
+      req.params.restaurantId = "661e4eeb00a40432cb8d2333";
       const existingReviews = [{
-        _id: "existingReviewId"
+        _id: "662d0a6d7a660d790450a5e0"
       }];
       Review.find.mockResolvedValue(existingReviews);
   
@@ -101,7 +101,7 @@ const {
     });
   
     it("should return 400 if rating is not between 0-5", async () => {
-      req.params.restaurantId = "restaurantId";
+      req.params.restaurantId = "662d0a6d7a660d790450a5e0";
       req.body.rating = 6;
   
       await createReview(req, res, next);
@@ -114,12 +114,12 @@ const {
     });
   
     it("should return 500 if error occurs during review creation", async () => {
-      req.params.restaurantId = "restaurantId";
+      req.params.restaurantId = "661e4eeb00a40432cb8d2333";
       req.body.rating = 4;
       req.body.review = "Great food and service!";
   
       const restaurant = {
-        _id: "restaurantId"
+        _id: "661e4eeb00a40432cb8d2333"
       };
   
       const existingReviews = [];
