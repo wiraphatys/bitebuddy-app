@@ -390,7 +390,7 @@ exports.deleteReviewById = async (req, res, next) => {
 
             await review.deleteOne();
 
-            return res.status(200).sjon({
+            return res.status(200).json({
                 success: true,
                 data: {}
             })
