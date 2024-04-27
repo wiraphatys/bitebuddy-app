@@ -295,7 +295,7 @@ exports.createReview = async (req, res, next) => {
         console.log(err);
 
         if (req.body.rating < 0 || req.body.rating > 5) {
-            return res.status(400).json({
+            return res.status(400).send({
                 success: false,
                 message: `rating value can only between 0-5`
             });
