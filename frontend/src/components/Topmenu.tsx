@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { RestaurantItem } from "../../interface";
 import getRestaurants from "@/libs/getRestaurants";
-
+import SearchIcon from '@mui/icons-material/Search';
 export default function TopMenu() {
+
     const [role,setRole] = useState<string|undefined>();
     const [restaurant, setRestaurant] = useState<RestaurantItem>();
 
@@ -43,6 +44,9 @@ export default function TopMenu() {
                 {
                 role !== 'owner' ? 
                 <div>
+                <Link href={role ? '/restaurants/' : '/signin'}>
+                    <SearchIcon />
+                </Link>
                 <Link href={role ? '/myreservation/' : '/signin'}>
                     reservation
                 </Link>
