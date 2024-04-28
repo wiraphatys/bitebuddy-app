@@ -1,11 +1,15 @@
 'use client'
 import config from "@/utils/config";
-import { RestaurantJson } from "../../interface";
 
-export default async function getRestaurants() {
+export default async function getRestaurants({ search }: { search?: string } = {}) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     
-    await new Promise((resolve)=>setTimeout(resolve,1000))
-    const response = await fetch(`${config.api}/restaurants`, config.headers());
+    let url = `${config.api}/restaurants`;
+    if (search) {
+        url += `?search=${encodeURIComponent(search)}`;
+    }
+
+    const response = await fetch(url, config.headers());
 
     if (!response.ok) {
         throw new Error('Failed to fetch restaurants: ' + response.statusText);
