@@ -145,7 +145,7 @@ function EditReservationPage({params}:{params:{rid:string}}){
 
                 <div className="flex flex-row h-[84%]" >
                     <div className="w-[50%] h-auto ml-[24px] mr-[12px] mb-[24px] relative rounded-[24px] overflow-hidden">
-                        <Image src={reservation.restaurant.img? reservation.restaurant.img:"/img/kfc.jpg"} alt="icon" layout="fill" objectFit="cover" className="rounded-[24px]" />
+                        <Image src={reservation.restaurant.img? reservation.restaurant.img:'/img/loading.png'} alt="icon" layout="fill" objectFit="cover" className="rounded-[24px]" />
                     </div>
 
                     <div className="flex flex-col w-[50%] h-full">
