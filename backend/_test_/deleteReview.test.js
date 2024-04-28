@@ -183,7 +183,7 @@ describe('reviewController.deleteReviewById', () => {
   });
 
   describe('when trying to delete a non-existing review', () => {
-    it('should return a 404 status code', async () => {
+    it('should return a 401 status code', async () => {
       // Mock the request and response objects
       const req = {
         params: {
