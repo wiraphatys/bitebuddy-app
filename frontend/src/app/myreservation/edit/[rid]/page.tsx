@@ -12,7 +12,6 @@ import { FormControl } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { TimePicker } from "@mui/x-date-pickers";
-import datepickerLocalization from "@/components/DatepickerLocalization";
 
 interface ReservationItem{
     restaurant:{
@@ -140,7 +139,7 @@ function EditReservationPage({params}:{params:{rid:string}}){
     }
 
     return(
-        <LocalizationProvider dateAdapter={AdapterDayjs} dateFormats={datepickerLocalization}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div className={styles.container}>
                 <div className="flex flex-row">
                     <div className='text-gray-400 text-[36px] md:text-[48px] py-6 pl-[72px]'>Reservation </div>

@@ -11,7 +11,6 @@ import { FormControl } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { TimePicker } from "@mui/x-date-pickers";
-import datepickerLocalization from "@/components/DatepickerLocalization";
 import getRestaurant from "@/libs/getRestaurant";
 import DateValidationShouldDisableDate from "@/components/Calendar";
 import dayjs, { Dayjs } from "dayjs";
@@ -117,7 +116,7 @@ function ReservationPage({params}:{params:{rid:string}}){
         
     }
     return(
-        <LocalizationProvider dateAdapter={AdapterDayjs} dateFormats={datepickerLocalization}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div className={styles.container}>
                 <div className="flex flex-row">
                     <div className='text-gray-400 text-[28px] md:text-[42px] py-6 pl-[72px]'>Restaurant &gt; Detail</div>
