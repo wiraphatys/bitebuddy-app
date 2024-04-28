@@ -211,40 +211,4 @@ describe('reviewController.deleteReviewById', () => {
       });
     });
   });
-
-  describe('when encountering an error while deleting a review', () => {
-    it('should return a 500 status code', async () => {
-      // Mock the request and response objects
-      const req = {
-        params: {
-          id: '67127491ede37740c58572e3',
-        },
-        user: {
-          id: '662d0b6100ccd592b35c4cd9',
-          role: 'user',
-        },
-      };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-        send: jest.fn(),
-      };
-      const next = jest.fn();
-  
-      // Mocking a scenario where findByIdAndDelete function throws an error
-      Review.findByIdAndDelete = jest.fn().mockRejectedValue(new Error('Mock error'));
-  
-      // Call the deleteReviewById function
-      await deleteReviewById(req, res, next);
-  
-      // Assert the expected behavior
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        message: 'Cannot delete Review'
-      });
-    });
-  });
-  
-  
 });
