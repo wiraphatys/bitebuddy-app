@@ -204,10 +204,10 @@ describe('reviewController.deleteReviewById', () => {
       await deleteReviewById(req, res, jest.fn());
 
       // Assert the expected behavior
-      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.status).toHaveBeenCalledWith(401);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
-        message: `Not found review ID of ${req.params.id}`
+        message: `This user ${req.user.id} is not authorized to delete this review`
       });
     });
   });
