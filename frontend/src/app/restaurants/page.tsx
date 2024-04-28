@@ -44,6 +44,7 @@ export default function RestaurantsPage() {
                 <p className="text-[48px]">Restaurant</p>
                 <div className={styles.searchBar}>
                     <input
+                        id="searchBar"
                         type="text"
                         placeholder="Search..."
                         value={searchTerm}

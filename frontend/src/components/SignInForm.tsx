@@ -62,12 +62,12 @@ function SignInForm() {
             <form onSubmit={handleSubmit} className="signin-form">
                 <h2>Sign In</h2>
                 <div>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='&#9993; Email' required />
+                    <input id="emailBox" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='&#9993; Email' required />
                 </div>
                 <div>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Password' required />
+                    <input id="passwordBox" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Password' required />
                 </div>
-                <button type="submit">Sign In &#8594;</button>
+                <button id="button" type="submit">Sign In &#8594;</button>
                 <div className="create-account">Not a member? <a href="/register">Create an account.</a></div>
             </form>
             <style jsx>{`
