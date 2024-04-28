@@ -10,9 +10,14 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { FormControl } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { TimePicker } from "@mui/x-date-pickers";
-import datepickerLocalization from "@/components/DatepickerLocalization";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
 
 interface ReservationItem{
     restaurant:{
@@ -52,10 +57,7 @@ function EditReservationPage({params}:{params:{rid:string}}){
             count:0
         }
     )
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-    const [selectedTime, setSelectedTime] = useState<Date | null>(null);
-    const [minTime, setMinTime] = useState<Date | null>(null);
-    const [maxTime, setMaxTime] = useState<Date | null>(null);
+    const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
 
     useEffect(()=>{
         setRole(localStorage.getItem('role'));
@@ -68,23 +70,15 @@ function EditReservationPage({params}:{params:{rid:string}}){
 
             if(response.success === true){
                 setReservation(response.data);
-                console.log(response.data)
-                setMinTime(response.data.data.restaurant.openTime);
-                setMaxTime(response.data.data.restaurant.closeTime);
-                console.log("Min Time (After setting):", minTime); // Move this log here
             }
             
         }catch(error:any){
             console.log("Error: ", error);
         }
     };
-
-    const handleDateTimeChange = (newDate: Date | null) => {
-        setSelectedDate(newDate);
-    };
-
-    const handleTimeChange = (newTime: Date | null) => {
-        setSelectedTime(newTime);
+    
+    const handleDateTimeChange = (newTime: Date | null) => {
+        setSelectedDateTime(newTime);
     };
     const formatDateTime = (dateTimeString: string) => {
         const dateTime = new Date(dateTimeString);
@@ -103,14 +97,16 @@ function EditReservationPage({params}:{params:{rid:string}}){
 
     const handleReservationChange =async()=>{
         try{
-            if(selectedDate && selectedTime){
-                const formattedDate: string = selectedDate.toISOString();
-                const formattedTime: string = selectedTime.toISOString().split('T')[1]; // Extracting time portion
-                const dateTime: string = formattedDate.split('T')[0] + 'T' + formattedTime;
-
+            if(selectedDateTime){
+                console.log(selectedDateTime)
+                console.log(new Date())
+                if(selectedDateTime<new Date()){
+                    throw new Error("Cannot set reservation datetime to a past datetime.");
+                }
                 const payload = {
-                    datetime: dateTime
+                    datetime: selectedDateTime
                 };
+                console.log(payload)
 
                 const response = await axios.put(`${config.api}/reservations/${params.rid}`, payload, config.headers());
 
@@ -140,7 +136,7 @@ function EditReservationPage({params}:{params:{rid:string}}){
     }
 
     return(
-        <LocalizationProvider dateAdapter={AdapterDayjs} dateFormats={datepickerLocalization}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div className={styles.container}>
                 <div className="flex flex-row">
                     <div className='text-gray-400 text-[36px] md:text-[48px] py-6 pl-[72px]'>Reservation </div>
@@ -149,7 +145,7 @@ function EditReservationPage({params}:{params:{rid:string}}){
 
                 <div className="flex flex-row h-[84%]" >
                     <div className="w-[50%] h-auto ml-[24px] mr-[12px] mb-[24px] relative rounded-[24px] overflow-hidden">
-                        <Image src="/img/kfc.jpg" alt="icon" layout="fill" objectFit="cover" className="rounded-[24px]" />
+                        <Image src={reservation.restaurant.img? reservation.restaurant.img:'/img/loading.png'} alt="icon" layout="fill" objectFit="cover" className="rounded-[24px]" />
                     </div>
 
                     <div className="flex flex-col w-[50%] h-full">
@@ -186,18 +182,15 @@ function EditReservationPage({params}:{params:{rid:string}}){
                             <div className="w-full">
                                 <form>
                                     <FormControl className="w-full">
-                                        <DatePicker
-                                            value={selectedDate}
-                                            onChange={handleDateTimeChange}
-                                            className="mt-[12px]"
-                                        />
-                                        <TimePicker
-                                            value={selectedTime}
-                                            onChange={handleTimeChange}
-                                            className="mt-[12px]"
-                                            minTime={minTime|| undefined}
-                                            maxTime={maxTime|| undefined}
-                                        />
+                                        <div className="mt-[12px] w-full">
+                                            <DateTimePicker
+                                                disablePast={true}
+                                                value={selectedDateTime}
+                                                onChange={(value) => {handleDateTimeChange(value)}}
+                                                className="w-full"
+                                            />
+                                        </div>
+                                       
                                     </FormControl>
                                 </form>
                             </div>
