@@ -1,7 +1,7 @@
 import { request } from "http"
 import config from "@/utils/config"
 
-describe('epic5', () => {
+describe('us5-1,2', () => {
   beforeEach(() => {
 
     cy.visit('/signin')
@@ -9,7 +9,7 @@ describe('epic5', () => {
     
     // signin
     cy.get('div').get('form').within(()=>{
-      cy.get("[type='email']").type('admin@cypress.com')
+      cy.get("[type='email']").type('user@test.com')
       cy.get("[type='password']").type('12345678')
       cy.get('button').click()
     
@@ -18,7 +18,7 @@ describe('epic5', () => {
     })
   })
 
-  it('admin search correct restaurants', () => {
+  it('user search correct restaurants', () => {
     const restaurantName = 'ivory'
 
     cy.intercept({
@@ -42,12 +42,12 @@ describe('epic5', () => {
       restaurants = response?.body.data 
     }).then(()=>{
       restaurants.forEach( (restaurant) => {
-        expect(restaurant.name.toLowerCase()).include(restaurantName.toLocaleLowerCase())
+        expect(restaurant.name.toLowerCase()).include(restaurantName.toLowerCase())
       })
     })
   })
 
-  it('admin search wrong restaurants', () => {
+  it('user search wrong restaurants', () => {
     const restaurantName = 'invaliddd'
 
     cy.intercept({
@@ -69,7 +69,7 @@ describe('epic5', () => {
     })
   })
 
-  it('admin search correct description', () => {
+  it('user search correct description', () => {
     const description = 'french'
 
     cy.intercept({
@@ -98,7 +98,7 @@ describe('epic5', () => {
     })
   })
 
-  it('admin search wrong description', () => {
+  it('user search wrong description', () => {
     const description = 'invaliddd'
 
     cy.intercept({

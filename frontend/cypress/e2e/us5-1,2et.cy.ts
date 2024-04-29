@@ -10,14 +10,14 @@ describe('User searching test', () => {
     cy.visit('/signin');
     cy.wait(3000);
     cy.get('#emailBox').type('user@test.com');
-    cy.get('#passwordBox').type('17072546');
+    cy.get('#passwordBox').type('12345678');
     cy.get('#button').click();
     cy.wait(3000); 
   });
 
   it('Displays relevant restaurants with correct names', () => {
     // Type the restaurant name into the search bar and press enter
-    const restaurantName = 'KFC';
+    const restaurantName = 'ivory';
     cy.get('#searchBar').type(restaurantName);
     cy.get('#searchBar').type('{enter}');
 
@@ -36,7 +36,7 @@ describe('User searching test', () => {
 
       // Verify that all restaurants in the array have the correct name
       restaurants.forEach((restaurant) => {
-        expect(restaurant.name).to.equal(restaurantName);
+        expect(restaurant.name.toLowerCase()).include(restaurantName.toLowerCase());
       });
     });
   });
@@ -73,7 +73,7 @@ describe('User searching test', () => {
 
   it('Displays relevant restaurants with correct description', () => {
     // Type the restaurant name into the search bar and press enter
-    const restaurantDescription = 'doors';
+    const restaurantDescription = 'french';
     cy.get('#searchBar').type(restaurantDescription);
     cy.get('#searchBar').type('{enter}');
 
