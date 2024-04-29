@@ -1117,7 +1117,7 @@ const options = {
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/ReviewInputWithRating"
+                    "$ref": "#/components/schemas/ReviewInputWithRatingAndComment"
                   }
                 }
               },
@@ -1663,22 +1663,19 @@ const options = {
               }
             }
           },
-          "ReviewInputWithRating": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ReviewInput"
+          "ReviewInputWithRatingAndComment": {
+            "type": "object",
+            "properties": {
+              "rating": {
+                "maximum": 5,
+                "minimum": 0,
+                "type": "number"
               },
-              {
-                "type": "object",
-                "properties": {
-                  "rating": {
-                    "maximum": 5,
-                    "minimum": 0,
-                    "type": "number"
-                  }
-                }
+              "comment": {
+                "minLength": 1,
+                "type": "string"
               }
-            ]
+            }
           },
           "ReviewsResponse": {
             "type": "object",
