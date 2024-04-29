@@ -37,10 +37,13 @@ function SignInForm() {
 
 
                 setTimeout(() => {
-                    if(role === 'user' || 'admin'){
-                        router.push('/restaurants')
-                    }else {
+                    router.push("/restaurants/owner")
+                    if (role === 'owner') {
                         router.push('/restaurants/owner')
+                    } else if (role === 'user' || role === 'admin') {
+                        router.push('/restaurants')
+                    } else {
+                        router.push('/')
                     }
                 }, 1000)
             }else{

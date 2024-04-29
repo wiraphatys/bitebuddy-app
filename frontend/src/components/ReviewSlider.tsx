@@ -36,8 +36,8 @@ export default function ReviewSlider({rid}:{rid?:string}) {
     infinite: false,
     speed: 500,
     slidesToShow: 5,
-    slidesToScroll: 1,
-    swipeToSlide: false,
+    swipeToSlide: true,
+    variableWidth: true,
     nextArrow: (
       <div>
         <div className="next-slick-arrow">
@@ -61,7 +61,7 @@ export default function ReviewSlider({rid}:{rid?:string}) {
       <Slider {...settings}>
       {
         reviewItems?.map((reviewItem: ReviewItem) => (
-          <div key={reviewItem._id}>
+          <div key={reviewItem._id} className="mr-6">
             <ReviewCard name={reviewItem.user.email} nameRes={reviewItem.restaurant.name} img={(rid) ? reviewItem.user.img : reviewItem.restaurant.img} comment={reviewItem.comment} rating={reviewItem.rating} rid={reviewItem._id} fetchReview={fetchReviews}/>
           </div>
         ))

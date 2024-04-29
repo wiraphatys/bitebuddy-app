@@ -12,6 +12,7 @@ import getReservations from '@/libs/getReservations';
 import { ReservationItem } from '../../../../interface';
 import styles from './page.module.css'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import Loading from '@/components/Loading';
 
 interface DeleteJSON {
   success: boolean;
@@ -20,6 +21,7 @@ interface DeleteJSON {
 
 
 function MyReservationPage() {
+  const [loading, setLoading] = useState<boolean>(true);
   const [reservationList, setReservationList] = useState<ReservationItem[]>([{
     restaurant:{
       name:"",
@@ -47,6 +49,7 @@ function MyReservationPage() {
 
   const fetchData = async () => {
     try {
+      setLoading(true)
       const response = await getReservations({ rid: undefined });
       console.log(response.data); // Make sure response.data contains the expected data
   
@@ -55,6 +58,8 @@ function MyReservationPage() {
       }
     } catch (err: any) {
       console.log(err.message);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -113,8 +118,11 @@ function MyReservationPage() {
     })
   }
   return (
-
-    <div>
+    <>
+      {
+        loading ? (<Loading />) : (
+          <>
+                  <div>
           
       <p className='text-center text-gray-600 text-[36px] md:text-[48px] py-6'>My reservation</p>
 
@@ -185,10 +193,10 @@ function MyReservationPage() {
               ):''}
         </div>
     </div>
-      
-    
-    
-    
+          </>
+        )
+      }
+    </>    
   );
 }
 

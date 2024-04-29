@@ -41,6 +41,7 @@ export default function MenuSlider({rid}: {rid: string}) {
     slidesToShow: 5,
     slidesToScroll: 1,
     swipeToSlide: true,
+    variableWidth: true,
     nextArrow: (
       <div>
         <div className="next-slick-arrow">
@@ -70,7 +71,7 @@ export default function MenuSlider({rid}: {rid: string}) {
       <Slider {...settings}>
       {
         menuItems?.map((menuItem: MenuItem) => (
-          <div key={menuItem._id} className="mt-5">
+          <div key={menuItem._id} className="mt-5 mr-6">
             <Menu name={menuItem.name} img={menuItem.img} description={menuItem.description} mid={menuItem._id} rid={rid}/>
           </div>
         ))
