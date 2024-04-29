@@ -1117,7 +1117,7 @@ const options = {
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/ReviewInput"
+                    "$ref": "#/components/schemas/ReviewInputWithRating"
                   }
                 }
               },
@@ -1654,12 +1654,31 @@ const options = {
             "type": "object",
             "properties": {
               "rating": {
+                "maximum": 5,
+                "minimum": 0,
                 "type": "number"
               },
               "comment": {
                 "type": "string"
               }
             }
+          },
+          "ReviewInputWithRating": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReviewInput"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "rating": {
+                    "maximum": 5,
+                    "minimum": 0,
+                    "type": "number"
+                  }
+                }
+              }
+            ]
           },
           "ReviewsResponse": {
             "type": "object",
