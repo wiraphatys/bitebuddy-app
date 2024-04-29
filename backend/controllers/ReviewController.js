@@ -263,6 +263,11 @@ exports.createReview = async (req, res, next) => {
         req.body.restaurant = req.params.restaurantId;
         req.body.user = req.user.id;
 
+        if (req.body.comment.trim() === "") return res.status(400).json({
+            success: false,
+            message: "comment cannot be null"
+        })
+
         const restaurant = await Restaurant.findById(req.params.restaurantId);
 
         if (!restaurant) {

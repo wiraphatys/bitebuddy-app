@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
-// Import required models and functions
 const Review = require('../models/ReviewModel');
 const Restaurant = require('../models/RestaurantModel');
 const { deleteReviewById } = require('../api_test/DeleteReview');
@@ -126,7 +125,6 @@ describe('reviewController.deleteReviewById', () => {
 
   describe('when deleting a review successfully', () => {
     it('should return a 200 status code', async () => {
-      // Mock the request and response objects
       const req = {
         params: {
           id: '67127491ede37740c58572e1',
@@ -142,10 +140,8 @@ describe('reviewController.deleteReviewById', () => {
         send: jest.fn(),
       };
 
-      // Call the deleteReviewById function
       await deleteReviewById(req, res, jest.fn());
 
-      // Assert the expected behavior
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalled();
       expect(res.json.mock.calls[0][0].success).toBe(true);
@@ -154,7 +150,6 @@ describe('reviewController.deleteReviewById', () => {
 
   describe('when trying to delete a review without permission', () => {
     it('should return a 401 status code', async () => {
-      // Mock the request and response objects
       const req = {
         params: {
           id: '67127491ede37740c58572e2',
@@ -170,10 +165,8 @@ describe('reviewController.deleteReviewById', () => {
         send: jest.fn(),
       };
 
-      // Call the deleteReviewById function
       await deleteReviewById(req, res, jest.fn());
 
-      // Assert the expected behavior
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
@@ -184,7 +177,6 @@ describe('reviewController.deleteReviewById', () => {
 
   describe('when trying to delete a non-existing review', () => {
     it('should return a 401 status code', async () => {
-      // Mock the request and response objects
       const req = {
         params: {
           id: '67127491ede37740c5857789',
@@ -211,4 +203,34 @@ describe('reviewController.deleteReviewById', () => {
       });
     });
   });
+
+  describe('when an error occurs during deletion', () => {
+    it('should return a 500 status code', async () => {
+      const req = {
+        params: {
+          id: '67127491ede37740c58572e1',
+        },
+        user: {
+          id: '662d0b6100ccd592b35c4cd9',
+          role: 'user',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      const mockError = new Error('Something went wrong');
+      jest.spyOn(Review, 'findById').mockRejectedValue(mockError);
+
+      await deleteReviewById(req, res, jest.fn());
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: 'Cannot delete Review',
+      });
+    });
+  });
+
 });
