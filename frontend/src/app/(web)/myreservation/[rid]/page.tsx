@@ -60,30 +60,41 @@ function MyReservationforOwnerPage({ params }: { params: { rid: string } }) {
         <>
             <div>
                 <p className='text-center text-gray-600 text-[36px] md:text-[48px] py-6'>My reservation</p>
-                {reservationList.length === 0 ? (
-                    <div className={styles.card}>
-                        <p className='font-semibold mt-1'>Reservation history is empty.</p>
-                    </div>
-                ) : (
-                    reservationList.map((reservation) => (
-                        <div key={reservation._id} className={isExpired(reservation.datetime) ? styles.expiredCard : styles.card}>
-                            <div className='flex flex-row justify-between'>
-                                <div className='flex flex-row items-center'>
-                                    <PersonIcon />
-                                    <div className={styles.information}>{reservation.user.email}</div>
+                
+                <div className='flex flex-col items-center'>
+                    {reservationList.length === 0 ? (
+                        <div className={styles.card}>
+                            <p className='font-semibold mt-1'>Reservation history is empty.</p>
+                        </div>
+                    ) : (
+                        reservationList.map((reservation) => (
+                            <div key={reservation._id} className='relative'>
+                                {
+                                    isExpired(reservation.datetime) ?
+                                    <div className='flex flex-col items-center absolute top-[35%] left-[140px] z-30'>
+                                    <p className='text-[28px] font-semibold'>Reservation has expired!!</p>
+                                    </div> : ''
+                                }
+                                <div key={reservation._id} className={isExpired(reservation.datetime) ? styles.expiredCard : styles.card}>
+                                    <div className='flex flex-row justify-between'>
+                                        <div className='flex flex-row items-center'>
+                                            <PersonIcon />
+                                            <div className={styles.information}>{reservation.user.email}</div>
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-row items-center'>
+                                        <CalendarMonthIcon />
+                                        <div className={styles.information}>{formatDate(reservation.datetime)}</div>
+                                    </div>
+                                    <div className='flex flex-row items-center'>
+                                        <AccessTimeIcon />
+                                        <div className={styles.information}>{formatTime(reservation.datetime)}</div>
+                                    </div>
                                 </div>
                             </div>
-                            <div className='flex flex-row items-center'>
-                                <CalendarMonthIcon />
-                                <div className={styles.information}>{formatDate(reservation.datetime)}</div>
-                            </div>
-                            <div className='flex flex-row items-center'>
-                                <AccessTimeIcon />
-                                <div className={styles.information}>{formatTime(reservation.datetime)}</div>
-                            </div>
-                        </div>
-                    ))
-                )}
+                        ))
+                    )}
+                </div>
             </div>
         </>
     );
