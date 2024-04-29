@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
-// Import required models and functions
 const Review = require('../models/ReviewModel');
 const Restaurant = require('../models/RestaurantModel');
 const { createReview } = require('../api_test/CreateReview');
@@ -96,11 +95,9 @@ describe('reviewController.createReview', () => {
 
   describe('when creating a review successfully', () => {
     it('should return a 200 status code', async () => {
-      // Mock the request and response objects
       const req = {
         body: {
-          rating: 4, // Valid rating value
-          // Other required fields
+          rating: 4,
         },
         params: {
           restaurantId: '66127491ede37740c58572e2',
@@ -111,12 +108,10 @@ describe('reviewController.createReview', () => {
       };
       const res = {
         status: jest.fn().mockReturnThis(),
-        json: jest.fn() // Add the json method here
+        json: jest.fn()
       };
 
-      // Call the createReview function
       await createReview(req, res, jest.fn());
-      // Assert the expected behavior
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalled();
       expect(res.json.mock.calls[0][0].success).toBe(true);
@@ -125,11 +120,9 @@ describe('reviewController.createReview', () => {
 
   describe('when the user has already written a review for the restaurant', () => {
     it('should return a 400 status code', async () => {
-      // Mock the request and response objects
       const req = {
         body: {
-          rating: 4, // Valid rating value
-          // Other required fields
+          rating: 4,
         },
         params: {
           restaurantId: '66127491ede37740c58572e1',
@@ -143,19 +136,15 @@ describe('reviewController.createReview', () => {
         send: jest.fn(),
       };
 
-      // Create a mock existing review
       const existingReview = new Review({
         user: req.user.id,
         restaurant: req.params.restaurantId,
         rating: req.body.rating
-        // Other review fields
       });
       await existingReview.save();
 
-      // Call the createReview function
       await createReview(req, res, jest.fn());
 
-      // Assert the expected behavior
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
@@ -166,11 +155,9 @@ describe('reviewController.createReview', () => {
 
   describe('when the restaurant does not exist', () => {
     it('should return a 404 status code', async () => {
-      // Mock the request and response objects
       const req = {
         body: {
-          rating: 4, // Valid rating value
-          // Other required fields
+          rating: 4,
         },
         params: {
           restaurantId: '5fc60fcdeaf1457d361c7b8a',
@@ -184,10 +171,8 @@ describe('reviewController.createReview', () => {
         send: jest.fn(),
       };
 
-      // Call the createReview function
       await createReview(req, res, jest.fn());
 
-      // Assert the expected behavior
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
@@ -198,11 +183,9 @@ describe('reviewController.createReview', () => {
 
   describe('when review rating is invalid', () => {
     it('should return a 400 status code', async () => {
-      // Mock the request and response objects
       const req = {
         body: {
-          rating: 6, // Invalid rating value
-          // Other required fields
+          rating: 6,
         },
         params: {
           restaurantId: '66127491ede37740c58572e3',
@@ -216,14 +199,47 @@ describe('reviewController.createReview', () => {
         send: jest.fn(),
       };
 
-      // Call the createReview function
       await createReview(req, res, jest.fn());
 
-      // Assert the expected behavior
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
         message: "rating value can only between 0-5"
+      });
+    });
+  });
+
+  describe('when an error occurs during review creation', () => {
+    it('should return a 500 status code', async () => {
+      const req = {
+        body: {
+          rating: 4,
+        },
+        params: {
+          restaurantId: '66127491ede37740c58572e1',
+        },
+        user: {
+          id: '662d0b6100ccd592b35c4cd9',
+        },
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      jest.spyOn(Restaurant, 'findById').mockResolvedValue({
+        _id: '66127491ede37740c58572e1',
+      });
+
+      const mockError = new Error('Something went wrong');
+      jest.spyOn(Review, 'create').mockRejectedValue(mockError);
+
+      await createReview(req, res, jest.fn());
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: 'Cannot create Review',
       });
     });
   });
