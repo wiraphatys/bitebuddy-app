@@ -33,7 +33,7 @@ export default function RestaurantDetail({ rid }: { rid: string }) {
   return (
     <div className={styles.container}>
       <div className={styles.imgContainer}>
-        {restaurant?.img ? <Image src={restaurant.img} alt='icon' layout='fill' objectFit="contain"/> : null}
+        {restaurant?.img ? <Image className="rounded-[24px]" src={restaurant.img} alt='icon' layout='fill' objectFit="cover"/> : null}
       </div>
       <div>
         <div className={styles.nameContainer}>

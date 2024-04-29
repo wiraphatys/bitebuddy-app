@@ -10,7 +10,7 @@ export default function RestaurantCard({name, img, open, close, avgRating, id}: 
     return (
         <Link href={`/restaurants/${id}`}>
          <div className={styles.card}>
-            <Image src={img} alt='icon' layout='fill' objectFit="contain"/>
+            <Image src={img} alt='icon' layout='fill' objectFit="cover"/>
             <div className={styles.cardtext}>
                 <div className={styles.text}>
                 <h1>{name}</h1>
