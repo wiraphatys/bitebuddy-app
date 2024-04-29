@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 3000;
 const MODE = process.env.NODE_ENV;
 const limiter = rateLimit({
     windowMs: 10 * 60 * 1000, // 10 minutes
-    max: 1000 // limit each IP to 1000 requests per windowMs
+    max: 10000 // limit each IP to 1000 requests per windowMs
 });
 
 // Connect to database

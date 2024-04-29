@@ -84,10 +84,11 @@ export default function RestaurantOwner() {
     <div className={styles.container}>
       <div className={styles.imgContainer}>
         <Image
+          className="rounded-[24px]"
           src={restaurant.img}
           alt="icon"
           layout="fill"
-          objectFit="contain"
+          objectFit="cover"
         />
       </div>
       <div>
