@@ -1,6 +1,6 @@
 "use client"
 
-import config from '../../utils/config';
+import config from '../../../utils/config';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
@@ -9,7 +9,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import getReservations from '@/libs/getReservations';
-import { ReservationItem } from '../../../interface';
+import { ReservationItem } from '../../../../interface';
 import styles from './page.module.css'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 

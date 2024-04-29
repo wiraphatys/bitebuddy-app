@@ -37,6 +37,11 @@ function MyReservationforOwnerPage({ params }: { params: { rid: string } }) {
         }
     };
 
+    const isExpired = (dateTimeString: string) => {
+        const dateTime = new Date(dateTimeString);
+        return dateTime < new Date(); // Check if reservation datetime is less than current datetime
+    };
+
     // Function to format the booking date to show only the date part
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -61,7 +66,7 @@ function MyReservationforOwnerPage({ params }: { params: { rid: string } }) {
                     </div>
                 ) : (
                     reservationList.map((reservation) => (
-                        <div key={reservation._id} className={styles.card}>
+                        <div key={reservation._id} className={isExpired(reservation.datetime) ? styles.expiredCard : styles.card}>
                             <div className='flex flex-row justify-between'>
                                 <div className='flex flex-row items-center'>
                                     <PersonIcon />
