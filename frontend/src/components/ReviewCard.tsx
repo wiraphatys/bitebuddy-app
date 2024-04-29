@@ -17,7 +17,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import ReviewUpdate from "./ReviewUpdate";
 
-export default function ReviewCard({name, img, comment, rating, rid} : {name: string, img: string, comment: string, rating:number, rid:string}) {
+export default function ReviewCard({name, nameRes, img, comment, rating, rid, fetchReview} : {name: string, nameRes?:string, img: string, comment: string, rating:number, rid:string, fetchReview: () => {}}) {
 
     const [role, setRole] = useState<string>();
     const [user, setUser] = useState<UserItem>();
@@ -44,6 +44,8 @@ export default function ReviewCard({name, img, comment, rating, rid} : {name: st
             }
         };
         fetchUser();
+        console.log(name);
+        console.log(nameRes);
     }, []);
 
     const handleReviewDelete = async()=>{
@@ -94,7 +96,7 @@ export default function ReviewCard({name, img, comment, rating, rid} : {name: st
 
     return (
         <div className={styles.container}>
-            { create ? 
+            { !create ? 
             <div>
             {
                 ( role == 'admin' || user?.email == name )?
@@ -108,14 +110,14 @@ export default function ReviewCard({name, img, comment, rating, rid} : {name: st
                 <img src={img ? img : '/img/userAnonymous.png'} className="w-full h-full rounded-full"/>
             </div>
                 <h1 className={styles.nameText}>
-                    {name}
+                    {nameRes ? nameRes : name}
                 </h1>
                 <p className={styles.descriptionText}>
                     {comment}
                 </p>
                 <div className={styles.rating}>{rating.toFixed(1)} <Rating value={parseFloat(rating.toFixed(1))} readOnly style={{ color: 'black' }}/></div>
                 </div>
-                : <ReviewUpdate rid={rid} rate={rating} des={comment} setCreate={setCreate} />
+                : <ReviewUpdate rid={rid} rate={rating} des={comment} setCreate={setCreate} fetchReview={fetchReview}/>
             }
         </div>
     );
