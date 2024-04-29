@@ -295,7 +295,7 @@ exports.createReview = async (req, res, next) => {
         console.log(err);
 
         if (req.body.rating < 0 || req.body.rating > 5) {
-            return res.status(400).json({
+            return res.status(400).send({
                 success: false,
                 message: `rating value can only between 0-5`
             });
@@ -390,7 +390,7 @@ exports.deleteReviewById = async (req, res, next) => {
 
             await review.deleteOne();
 
-            return res.status(200).sjon({
+            return res.status(200).json({
                 success: true,
                 data: {}
             })

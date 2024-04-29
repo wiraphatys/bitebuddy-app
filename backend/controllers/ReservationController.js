@@ -1,5 +1,8 @@
 const Reservation = require("../models/ReservationModel")
 const Restaurant = require("../models/RestaurantModel")
+const {
+    getImageUrl
+} = require("../config/aws-s3");
 
 // @desc    Get all reservations
 // @route   GET /api/v1/reservations/ || GET /api/v1/restaurants/:restaurantId/reservations
@@ -107,6 +110,8 @@ exports.getReservationByID = async (req, res, next) => {
                 select: "name tel img description close open"
             });
 
+            reservation.restaurant.img = await getImageUrl(reservation.restaurant.img)
+
             if (reservation && reservation.user.toString() === req.user.id) {
                 return res.status(200).send({
                     success: true,
@@ -127,6 +132,7 @@ exports.getReservationByID = async (req, res, next) => {
             const restaurant = await Restaurant.findById(reservation.restaurant)
 
             if (restaurant && restaurant.owner.toString() === req.user.id) {
+                reservation.restaurant.img = await getImageUrl(reservation.restaurant.img)
                 return res.status(200).send({
                     success: true,
                     data: reservation
@@ -145,6 +151,8 @@ exports.getReservationByID = async (req, res, next) => {
                 path: "restaurant",
                 select: "name tel img description"
             })
+
+            reservation.restaurant.img = await getImageUrl(reservation.restaurant.img)
 
             if (!reservation) {
                 return res.status(404).json({
@@ -196,6 +204,25 @@ exports.createReservation = async (req, res, next) => {
             })
         }
 
+        // Check if the reservation datetime is within the restaurant's operating hours
+        const reservationDateTime = new Date(req.body.datetime);
+        const reservationDay = reservationDateTime.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        const reservationHour = reservationDateTime.getHours();
+        const reservationMinute = reservationDateTime.getMinutes();
+
+        const [openHour, openMinute] = restaurant.open.split(':').map(Number);
+        const [closeHour, closeMinute] = restaurant.close.split(':').map(Number);
+
+        const isOpenHour = (reservationHour > openHour) || (reservationHour === openHour && reservationMinute >= openMinute);
+        const isCloseHour = (reservationHour < closeHour) || (reservationHour === closeHour && reservationMinute < closeMinute);
+
+        if (restaurant.closeDate.includes(reservationDay) || !isOpenHour || !isCloseHour) {
+            return res.status(400).send({
+                success: false,
+                message: 'The reservation time is outside the restaurant operating hours.'
+            });
+        }
+
         const reservation = await Reservation.create(req.body);
         return res.status(201).send({
             success: true,
@@ -217,6 +244,27 @@ exports.createReservation = async (req, res, next) => {
 exports.updateReservation = async (req, res, next) => {
     try {
         let reservation = await Reservation.findById(req.params.id);
+        if (req.body.datetime) {
+            const restaurant = await Restaurant.findById(reservation.restaurant);
+            // Check if the reservation datetime is within the restaurant's operating hours
+            const reservationDateTime = new Date(req.body.datetime);
+            const reservationDay = reservationDateTime.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+            const reservationHour = reservationDateTime.getHours();
+            const reservationMinute = reservationDateTime.getMinutes();
+
+            const [openHour, openMinute] = restaurant.open.split(':').map(Number);
+            const [closeHour, closeMinute] = restaurant.close.split(':').map(Number);
+
+            const isOpenHour = (reservationHour > openHour) || (reservationHour === openHour && reservationMinute >= openMinute);
+            const isCloseHour = (reservationHour < closeHour) || (reservationHour === closeHour && reservationMinute < closeMinute);
+
+            if (restaurant.closeDate.includes(reservationDay) || !isOpenHour || !isCloseHour) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'The reservation time is outside the restaurant operating hours.'
+                });
+            }
+        }
 
         if (req.user.role !== "admin") {
             if (reservation && req.user.id === reservation.user.toString()) {

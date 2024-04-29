@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { RestaurantItem } from "../../interface";
 import getRestaurants from "@/libs/getRestaurants";
-
+import SearchIcon from '@mui/icons-material/Search';
 export default function TopMenu() {
+
     const [role,setRole] = useState<string|undefined>();
     const [restaurant, setRestaurant] = useState<RestaurantItem>();
 
@@ -43,24 +44,27 @@ export default function TopMenu() {
                 {
                 role !== 'owner' ? 
                 <div>
-                <Link href={role ? '/myreservation/' : '/signin'}>
+                <Link className="px-2" href={role ? '/restaurants/' : '/signin'}>
+                    restaurant
+                </Link>
+                <Link className="px-2" href={role ? '/myreservation/' : '/signin'}>
                     reservation
                 </Link>
-                <Link  href={role ? '/profile' : '/signin'}>
+                <Link className="px-2"  href={role ? '/profile' : '/signin'}>
                     account
                 </Link>
                 </div> : 
                 <div>
-                <Link href={`/myreservation/${restaurant?._id}`}>
+                <Link className="px-2" href={`/myreservation/${restaurant?._id}`}>
                     reservation
                 </Link>
-                <Link href={`/menu/${restaurant?._id}`}>
+                <Link className="px-2" href={`/menu/${restaurant?._id}`}>
                     menu
                 </Link>
-                <Link href={`/review/${restaurant?._id}`}>
+                <Link className="px-2" href={`/review/${restaurant?._id}`}>
                     review
                 </Link>
-                <Link href={role ? '/profile' : '/signin'}>
+                <Link className="px-2" href={role ? '/profile' : '/signin'}>
                     account
                 </Link>
                 </div>

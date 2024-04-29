@@ -62,7 +62,7 @@ export default function ReviewSlider({rid}:{rid?:string}) {
       {
         reviewItems?.map((reviewItem: ReviewItem) => (
           <div key={reviewItem._id}>
-            <ReviewCard name={reviewItem.user.email} img={reviewItem.user.img} comment={reviewItem.comment} rating={reviewItem.rating} rid={reviewItem._id}/>
+            <ReviewCard name={reviewItem.restaurant.name} img={reviewItem.restaurant.img} comment={reviewItem.comment} rating={reviewItem.rating} rid={reviewItem._id}/>
           </div>
         ))
       }

@@ -105,7 +105,7 @@ export default function ReviewCard({name, img, comment, rating, rid} : {name: st
                 <button className={styles.update} onClick={() => setCreate(true)}><MoreHorizIcon/></button>:null
             }
             <div className={styles.circle}>
-                <img src={img ? img : '/img/userAnonymous.png'} className="w-full h-full"/>
+                <img src={img ? img : '/img/userAnonymous.png'} className="w-full h-full rounded-full"/>
             </div>
                 <h1 className={styles.nameText}>
                     {name}
