@@ -67,3 +67,7 @@ process.on('unhandledRejection', (err, promise) => {
     // Close server & exit process
     server.close(() => process.exit(1));
 });
+
+// Swagger setup
+const swaggerSetup = require("./config/swagger");
+swaggerSetup(app);
