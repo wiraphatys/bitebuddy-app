@@ -3,8 +3,7 @@ import config from "@/utils/config"
 
 describe('epic5', () => {
   beforeEach(() => {
-    // home
-    cy.visit('/')
+
     cy.visit('/signin')
     cy.wait(2000)
     
@@ -20,7 +19,7 @@ describe('epic5', () => {
   })
 
   it('admin search correct restaurants', () => {
-    const restaurantName = 'KFC'
+    const restaurantName = 'ivory'
 
     cy.intercept({
       method: 'GET',
@@ -43,13 +42,13 @@ describe('epic5', () => {
       restaurants = response?.body.data 
     }).then(()=>{
       restaurants.forEach( (restaurant) => {
-        expect(restaurant.name).equal(restaurantName)
+        expect(restaurant.name.toLowerCase()).include(restaurantName.toLocaleLowerCase())
       })
     })
   })
 
   it('admin search wrong restaurants', () => {
-    const restaurantName = 'vyinvalidrestaurant'
+    const restaurantName = 'invaliddd'
 
     cy.intercept({
       method: 'GET',
@@ -70,18 +69,18 @@ describe('epic5', () => {
     })
   })
 
-  it('admin search correct menu', () => {
-    const menuName = 'chicken'
+  it('admin search correct description', () => {
+    const description = 'french'
 
     cy.intercept({
       method: 'GET',
-      url: `${config.api}/restaurants?search=${menuName}`},
+      url: `${config.api}/restaurants?search=${description}`},
       req => {
         delete req.headers['if-none-match']
     }).as('getRestaurant')
 
     
-    cy.get('div').get('div').get('div').get('input').first().type(menuName)
+    cy.get('div').get('div').get('div').get('input').first().type(description)
     cy.get('div').get('div').get('div').get('button').click()
 
     var restaurants:string[] = []
@@ -94,23 +93,23 @@ describe('epic5', () => {
       restaurants = response?.body.data 
     }).then(()=>{
       restaurants.forEach( (restaurant) => {
-        expect(restaurant.description).include(menuName)
+        expect(restaurant.description.toLowerCase()).include(description.toLowerCase())
       })
     })
   })
 
-  it('admin search wrong menu', () => {
-    const menuName = 'vyinvalidmenu'
+  it('admin search wrong description', () => {
+    const description = 'invaliddd'
 
     cy.intercept({
       method: 'GET',
-      url: `${config.api}/restaurants?search=${menuName}`},
+      url: `${config.api}/restaurants?search=${description}`},
       req => {
         delete req.headers['if-none-match']
     }).as('getRestaurant')
 
     
-    cy.get('div').get('div').get('div').get('input').first().type(menuName)
+    cy.get('div').get('div').get('div').get('input').first().type(description)
     cy.get('div').get('div').get('div').get('button').click()
 
     cy.wait(2000)
