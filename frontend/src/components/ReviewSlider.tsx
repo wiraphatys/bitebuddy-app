@@ -30,7 +30,7 @@ export default function ReviewSlider({rid}:{rid?:string}) {
   };
   useEffect(() => {
     fetchReviews();
-  },[reviewItems])
+  },[])
     const settings = {
     dots: true,
     infinite: false,
@@ -62,8 +62,7 @@ export default function ReviewSlider({rid}:{rid?:string}) {
       {
         reviewItems?.map((reviewItem: ReviewItem) => (
           <div key={reviewItem._id}>
-            <ReviewCard name={(rid) ? reviewItem.user.email : reviewItem.restaurant.name} img={(rid) ? reviewItem.user.img : reviewItem.restaurant.img} comment={reviewItem.comment} rating={reviewItem.rating} rid={reviewItem._id} />
-            {/* <ReviewCard name={reviewItem.restaurant.name} img={reviewItem.restaurant.img} comment={reviewItem.comment} rating={reviewItem.rating} rid={reviewItem._id}/> */}
+            <ReviewCard name={reviewItem.user.email} nameRes={reviewItem.restaurant.name} img={(rid) ? reviewItem.user.img : reviewItem.restaurant.img} comment={reviewItem.comment} rating={reviewItem.rating} rid={reviewItem._id} fetchReview={fetchReviews}/>
           </div>
         ))
       }

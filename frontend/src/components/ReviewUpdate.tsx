@@ -15,11 +15,13 @@ export default function ReviewUpdate({
   rate,
   des,
   setCreate,
+  fetchReview,
 }: {
   rid: string;
   rate: number,
   des: string,
   setCreate: React.Dispatch<React.SetStateAction<boolean>>;
+  fetchReview: () => {};
 }) {
   const [rating, setRating] = useState<number | null>(rate);
   const [comment, setComment] = useState<string>(des);
@@ -44,6 +46,7 @@ export default function ReviewUpdate({
     // If user confirms the deletion
     if (!confirmation.isConfirmed) {
         try {
+          comment.trim();
             setCreate(false)
 
             if(rating && comment){
@@ -54,6 +57,7 @@ export default function ReviewUpdate({
             const response = await axios.put(`${config.api}/reviews/${rid}`, payload, config.headers());
 
             if (response.data.success) {
+              fetchReview();
                 Swal.fire({
                     title: 'Updated!',
                     text: 'Review has been updated successfully.',
@@ -64,6 +68,8 @@ export default function ReviewUpdate({
             } else {
                 throw new Error(response.data.message);
             }
+        }else {
+          throw new Error("You cannot update blank comment or rating")
         }
         } catch (error: any) {
             Swal.fire({
@@ -78,7 +84,7 @@ export default function ReviewUpdate({
 
   return (
     <div className={styles.create}>
-          <div className={styles.container}>
+          <div className={styles.updateContainer}>
             <div className="absolute top-12 right-12">
               <button
                 onClick={() => {
