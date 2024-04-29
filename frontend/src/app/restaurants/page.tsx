@@ -40,20 +40,14 @@ export default function RestaurantsPage() {
 
     return (
         <div className={styles.page}>
-            <div className="flex flex-row justify-between items-center">
-                <p className="text-[48px]">Restaurant</p>
-                <div className={styles.searchBar}>
-                    <input
-                        type="text"
-                        placeholder="Search..."
-                        value={searchTerm}
+            <div className="form-control">
+                <div className='grid grid-cols-12'>
+                    <input type="text" placeholder="Search..." className="col-span-10 md:col-span-11 input input-bordered mr-4" value={searchTerm}
                         onChange={handleSearchInputChange}
-                        onKeyPress={handleKeyPress}
-                        className={styles.input}
                     />
-                    <button onClick={handleSearchButtonClick} className="bg-white rounded-full p-[4px]">
-                        <SearchIcon sx={{ fontSize: 24 }} />
-                    </button>
+                    <button className='btn bg-gray-400 hover:bg-gray-600 text-white col-span-2 md:col-span-1'
+                        onClick={handleSearchButtonClick}
+                    ><SearchIcon /></button>
                 </div>
             </div>
             <RestaurantSlider restaurantsJson={restaurants} />
