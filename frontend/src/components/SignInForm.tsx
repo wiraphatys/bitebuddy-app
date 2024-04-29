@@ -45,11 +45,6 @@ function SignInForm() {
                     } else {
                         router.push('/')
                     }
-                    // if(role === 'user' || 'admin'){
-                    //     router.push('/restaurants')
-                    // }else {
-                    //     router.push('/restaurants/owner')
-                    // }
                 }, 1000)
             }else{
                 throw new Error('Sign In failed.');
