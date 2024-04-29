@@ -9,6 +9,19 @@
     margin-right: auto;
     margin-top: 12px;
 }
+.expiredCard{
+    border:#F0F0F0 solid;
+    border-radius: 20px;
+    background-color: #F0F0F0;
+    padding: 24px;
+    height: auto;
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 12px;
+    filter: blur(2.5px);
+    color: #333;
+}
 .button{
     border: black solid 2px;
     border-radius: 20px;
@@ -19,7 +32,15 @@
     margin-bottom: 12px;
     width: 82px;
     height: 36px;
+    transition: all 0.5s ease;
 }
+
+.button:hover {
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}
+
 .information{
     border: rgba(00, 00, 00,0.2) solid;
     border-radius: 5px;

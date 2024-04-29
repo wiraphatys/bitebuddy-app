@@ -4,7 +4,7 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 // Import required models and functions
 const Review = require('../models/ReviewModel');
 const Restaurant = require('../models/RestaurantModel');
-const { deleteReviewById } = require('../controllers/ReviewController');
+const { deleteReviewById } = require('../api_test/DeleteReview');
 
 describe('reviewController.deleteReviewById', () => {
   let mongoServer;

@@ -44,27 +44,30 @@ export default function TopMenu() {
                 {
                 role !== 'owner' ? 
                 <div>
-                <Link className="px-2" href={role ? '/restaurants/' : '/signin'}>
+                <Link className="px-2 hover:text-black hover:font-bold" href={role ? '/restaurants/' : '/signin'}>
                     restaurant
                 </Link>
-                <Link className="px-2" href={role ? '/myreservation/' : '/signin'}>
+                <Link className="px-2 hover:text-black hover:font-bold" href={role ? '/myreservation/' : '/signin'}>
                     reservation
                 </Link>
-                <Link className="px-2"  href={role ? '/profile' : '/signin'}>
+                <Link className="px-2 hover:text-black hover:font-bold"  href={role ? '/profile' : '/signin'}>
                     account
                 </Link>
                 </div> : 
                 <div>
-                <Link className="px-2" href={`/myreservation/${restaurant?._id}`}>
-                    reservation
-                </Link>
-                <Link className="px-2" href={`/menu/${restaurant?._id}`}>
+                <Link className="px-2 hover:text-black hover:font-bold" href={`/menu/${restaurant?._id}`}>
                     menu
                 </Link>
-                <Link className="px-2" href={`/review/${restaurant?._id}`}>
+                <Link className="px-2 hover:text-black hover:font-bold" href={`/review/${restaurant?._id}`}>
                     review
                 </Link>
-                <Link className="px-2" href={role ? '/profile' : '/signin'}>
+                <Link className="px-2 hover:text-black hover:font-bold" href={`/restaurants/owner`}>
+                    restaurant
+                </Link>
+                <Link className="px-2 hover:text-black hover:font-bold" href={`/myreservation/${restaurant?._id}`}>
+                    reservation
+                </Link>
+                <Link className="px-2 hover:text-black hover:font-bold" href={role ? '/profile' : '/signin'}>
                     account
                 </Link>
                 </div>

@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ReduxProvider>
-        <TopMenu/>
+        {/* <TopMenu/> */}
         <div className="min-h-[50vh]">
         {children}
         </div>
