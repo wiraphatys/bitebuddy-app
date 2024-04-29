@@ -143,10 +143,7 @@ exports.getReviews = async (req, res, next) => {
             } else {
                 const reviews = await Review.find({ restaurant: req.params.restaurantId }).populate({
                     path: "user",
-                    select: "email"
-                }).populate({
-                    path: "restaurant",
-                    select: "name tel"
+                    select: "email img"
                 })
 
                 if (!reviews) {
@@ -154,6 +151,12 @@ exports.getReviews = async (req, res, next) => {
                         success: false,
                         message: `Not found review ID of ${req.params.id}`
                     })
+                }
+
+                for (const review of reviews) {
+                    if (review.user.img) {
+                        review.user.img = await getImageUrl(review.user.img)
+                    }
                 }
 
                 return res.status(200).json({
