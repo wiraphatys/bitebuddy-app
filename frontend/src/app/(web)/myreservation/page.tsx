@@ -119,7 +119,7 @@ function MyReservationPage() {
           <p className='text-center text-gray-600 text-[36px] md:text-[48px] py-6'>My reservation</p>
 
             { (role==='user'||role==='admin')?(
-              (reservationList.length === 0)? (
+              (!reservationList)? (
                 <div className="border border-gray-200 p-4 px-8 mt-4  hover:bg-gray-100  bg-white block text-left">
                   <p className='font-semibold mt-1'>Reservation in history is empty.</p>
                   {role==='user'?(<button className="hover:bg-gray-400 hover:text-white text-gray-400 my-2 py-1 px-4 border border-gray-400" onClick={(e)=>{e.stopPropagation; router.push("/restaurants")}}>make new reservation</button>):''}
