@@ -94,6 +94,8 @@ export default function ReviewCard({name, img, comment, rating, rid} : {name: st
 
     return (
         <div className={styles.container}>
+            { create ? 
+            <div>
             {
                 ( role == 'admin' || user?.email == name )?
                 <button className={styles.delete} onClick={handleReviewDelete}><DeleteOutlineIcon/></button>:null
@@ -112,8 +114,8 @@ export default function ReviewCard({name, img, comment, rating, rid} : {name: st
                     {comment}
                 </p>
                 <div className={styles.rating}>{rating.toFixed(1)} <Rating value={parseFloat(rating.toFixed(1))} readOnly style={{ color: 'black' }}/></div>
-                            {
-                create ? <ReviewUpdate rid={rid} rate={rating} des={comment} setCreate={setCreate} /> : null
+                </div>
+                : <ReviewUpdate rid={rid} rate={rating} des={comment} setCreate={setCreate} />
             }
         </div>
     );
