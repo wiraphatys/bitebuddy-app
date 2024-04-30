@@ -9,7 +9,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import getReservations from '@/libs/getReservations';
-import { ReservationItem } from '../../../../interface';
+import { ReservationItem, RestaurantItem } from '../../../../interface';
 import styles from './page.module.css'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import Loading from '@/components/Loading';
@@ -117,6 +117,22 @@ function MyReservationPage() {
       }
     })
   }
+
+  const sortedReservationList = (reservationList)
+    ? reservationList.sort((a, b) => {
+      const aDateTime = new Date(a.datetime).getTime();
+      const bDateTime = new Date(b.datetime).getTime();
+      const currentDateTime = new Date().getTime();
+
+      if (aDateTime < currentDateTime && bDateTime >= currentDateTime) {
+        return 1;
+      } else if (bDateTime < currentDateTime && aDateTime >= currentDateTime) {
+        return -1;
+      } else {
+        return aDateTime - bDateTime;
+      }
+    })
+    : reservationList;
   return (
     <>
       {
@@ -128,12 +144,12 @@ function MyReservationPage() {
 
         <div className='flex flex-col items-center'>
           { (role==='user'||role==='admin')?(
-                (reservationList.length === 0)? (
-                  <div className="border border-gray-200 p-4 px-8 mt-4  hover:bg-gray-100  bg-white block text-left">
+                (!reservationList)? (
+                  <div className="border border-gray-200 p-4 px-8 mt-4 bg-white block text-left rounded-xl">
                     <p className='font-semibold mt-1'>Reservation in history is empty.</p>
-                    {role==='user'?(<button className="hover:bg-gray-400 hover:text-white text-gray-400 my-2 py-1 px-4 border border-gray-400" onClick={(e)=>{e.stopPropagation; router.push("/restaurants")}}>make new reservation</button>):''}
+                    {role==='user'?(<button className="hover:bg-gray-400 duration-300 rounded-lg hover:text-white text-gray-400 my-2 py-1 px-4 border border-gray-400" onClick={(e)=>{e.stopPropagation; router.push("/restaurants")}}>make new reservation</button>):''}
                   </div>
-                ) : reservationList.map((reservation) => (
+                ) : sortedReservationList.map((reservation) => (
                   reservation.restaurant !== null ? 
                   <div key={reservation._id} className='relative'>
                     {

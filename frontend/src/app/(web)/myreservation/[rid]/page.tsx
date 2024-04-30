@@ -56,18 +56,34 @@ function MyReservationforOwnerPage({ params }: { params: { rid: string } }) {
         return dateTime.toLocaleTimeString(undefined, options);
     };
 
+    const sortedReservationList = (reservationList)
+        ? reservationList.sort((a, b) => {
+            const aDateTime = new Date(a.datetime).getTime();
+            const bDateTime = new Date(b.datetime).getTime();
+            const currentDateTime = new Date().getTime();
+
+            if (aDateTime < currentDateTime && bDateTime >= currentDateTime) {
+                return 1;
+            } else if (bDateTime < currentDateTime && aDateTime >= currentDateTime) {
+                return -1;
+            } else {
+                return aDateTime - bDateTime;
+            }
+        })
+        : reservationList;
+
     return (
         <>
             <div>
                 <p className='text-center text-gray-600 text-[36px] md:text-[48px] py-6'>My reservation</p>
                 
                 <div className='flex flex-col items-center'>
-                    {reservationList.length === 0 ? (
+                    {!reservationList ? (
                         <div className={styles.card}>
                             <p className='font-semibold mt-1'>Reservation history is empty.</p>
                         </div>
                     ) : (
-                        reservationList.map((reservation) => (
+                        sortedReservationList.map((reservation) => (
                             <div key={reservation._id} className='relative'>
                                 {
                                     isExpired(reservation.datetime) ?
