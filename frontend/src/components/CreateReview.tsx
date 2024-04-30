@@ -27,8 +27,8 @@ export default function CreateReview({
     try {
       if (rating && comment) {
         const payload = {
-            rating: rating,
-            comment: comment,
+          rating: rating,
+          comment: comment,
         }
         const response = await axios.post(
           `${config.api}/restaurants/${rid}/reviews`,

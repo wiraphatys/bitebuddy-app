@@ -1,12 +1,12 @@
 "use client";
 import Image from "next/image";
 import styles from "./homepage.module.css";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faUser , faUtensils} from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser, faUtensils } from "@fortawesome/free-solid-svg-icons"
 import { useEffect, useState } from "react";
 
 export default function HomePage() {
-  const [role, setRole] = useState<string|null>()
+  const [role, setRole] = useState<string | null>()
   useEffect(() => {
     setRole(localStorage.getItem('role'))
   })
@@ -97,18 +97,18 @@ export default function HomePage() {
         </div>
         <div className={styles.bottomContent}>
           <div className={styles.bottomLeftContent}>
-            <FontAwesomeIcon icon={faUser} size="2x"/>
-            <br/>
+            <FontAwesomeIcon icon={faUser} size="2x" />
+            <br />
             At Bitebuddy, we're driven by our passion to make
-            <br/>
+            <br />
             <div>every dining experience <span className={styles.semiBold}>extraordinary</span> for you.</div>
           </div>
           <div className={styles.bottomRightContent}>
-            <FontAwesomeIcon icon={faUtensils} size="2x"/>
-            <br/>
+            <FontAwesomeIcon icon={faUtensils} size="2x" />
+            <br />
             At Bitebuddy, we're more than just a reservation
-            <br/>
-            <div>platform. We're your dedicated partner in <span className={styles.semiBold}>sharing <br/> your culinary passion with the world.</span></div>
+            <br />
+            <div>platform. We're your dedicated partner in <span className={styles.semiBold}>sharing <br /> your culinary passion with the world.</span></div>
           </div>
         </div>
       </div>
