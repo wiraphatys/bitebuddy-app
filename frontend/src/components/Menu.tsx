@@ -75,7 +75,7 @@ export default function Menu({name, img, description, mid, rid} : {name: string,
     return (
         <div className={styles.container}>
             <div className={styles.image}>
-                <Image src={img} alt='icon' layout='fill' objectFit="contain"/>
+                <Image className="rounded-t-[24px]" src={img} alt='icon' layout='fill' objectFit="cover"/>
                 {
                 role === 'owner'?
                 <button className={styles.circle} onClick={handleMenuDelete}><DeleteOutlineIcon/></button>:null
@@ -85,7 +85,7 @@ export default function Menu({name, img, description, mid, rid} : {name: string,
                 <h1>
                     {name}
                 </h1>
-                <p>
+                <p className="pr-4">
                     {description}
                 </p>
             </div>

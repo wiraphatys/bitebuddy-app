@@ -1,0 +1,109 @@
+.container {
+    width: 250px;
+    height: 330px;
+    border-radius: 24px;
+    background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    font-family: "Poppins";
+    justify-content: center;
+}
+
+.updateContainer {
+    width: 240px;
+    height: 320px;
+    border-radius: 24px;
+    background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    font-family: "Poppins";
+    justify-content: center;
+}
+
+.circle {
+    width: 100px;
+    height: 100px;
+    background-color: white;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 24px;
+    position: relative;
+}
+
+.nameText {
+    display: flex;
+    margin-top: 24px;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: black;
+    justify-content: center;
+}
+
+.descriptionText {
+    display: flex;
+    font-size: 12px;
+    color: #8d8d8d;
+    font-weight: 400;
+    margin-left: 24px;
+    margin-right: 24px;
+    width: 202px;
+    height: 85px;
+    margin-bottom: 4px;
+    justify-content: center;
+}
+
+.rating {
+    display: flex;
+    color: #333333;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 28px;
+    justify-content: center;
+    align-items: center;
+}
+
+.delete {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    background-color: white;
+    border-radius: 50%;
+    margin-top: 17px;
+    margin-left: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.update {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    background-color: white;
+    border-radius: 50%;
+    margin-top: 65px;
+    margin-left: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity as needed */
+    z-index: 1000; /* Make sure the overlay is behind the .create element */
+}
+
+.create {
+    position: relative;
+
+    border-radius: 24px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+}

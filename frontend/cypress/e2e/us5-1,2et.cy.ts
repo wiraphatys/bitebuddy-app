@@ -1,7 +1,4 @@
-import getRestaurants from "@/libs/getRestaurants";
-import config from "@/utils/config";
 import { match } from "assert";
-import { any } from "node_modules/cypress/types/bluebird";
 import { json } from "stream/consumers";
 
 describe('User searching test', () => {

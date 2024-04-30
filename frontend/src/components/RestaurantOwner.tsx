@@ -9,14 +9,17 @@ import axios from "axios";
 import config from "@/utils/config";
 import getRestaurants from "@/libs/getRestaurants";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import Loading from "./Loading";
 
 export default function RestaurantOwner() {
+  const [loading, setLoading] = useState<boolean>(true)
   const router = useRouter();
   const [restaurant, setRestaurant] = useState<RestaurantItem>();
 
   useEffect(() => {
     const fetchRestaurant = async () => {
       try {
+        setLoading(true)
         if (typeof window !== 'undefined') {
             if (localStorage.getItem('role') !== "owner"){
               router.back();
@@ -27,6 +30,8 @@ export default function RestaurantOwner() {
         setRestaurant(restaurantData.data);
       } catch (error) {
         console.error("Error fetching restaurant data:", error);
+      } finally {
+        setLoading(false)
       }
     };
 
@@ -78,77 +83,86 @@ export default function RestaurantOwner() {
   };
 
   return (
-    <div>
-    {
-      restaurant ? 
-    <div className={styles.container}>
-      <div className={styles.imgContainer}>
-        <Image
-          src={restaurant.img}
-          alt="icon"
-          layout="fill"
-          objectFit="contain"
-        />
-      </div>
-      <div>
-        <div className={styles.nameContainer}>
-          <div className={styles.nameText}>
-            <h1>{restaurant?.name}</h1>
-          </div>
-          <h3>Description</h3>
-          <div className={styles.description}>{restaurant?.description}</div>
-        </div>
-        <div className={styles.belowContainer}>
-          <div className={styles.addressContainer}>
-            <div className={styles.address}>
-              <div>
-                <div><h1>Street :&ensp;</h1> <div>{restaurant?.street}</div></div>
-                <div><h1>District :&ensp;</h1> <div>{restaurant?.district}</div></div>
-                <div><h1>Zip Code :&ensp;</h1> <div>{restaurant?.zipcode}</div></div>
-              </div>
-              <div>
-                <div><h1>Locality :&ensp;</h1> <div>{restaurant?.locality}</div></div>
-                <div><h1>Province :&ensp;</h1> <div>{restaurant?.province}</div></div>
-                <div><h1>Telephone :&ensp;</h1> <div>{restaurant?.tel}</div></div>
-              </div>
+    <>
+      {
+        loading ? (<Loading />) : (
+          <>
+            <div>
+              {
+                restaurant ?
+                  <div className={styles.container}>
+                    <div className={styles.imgContainer}>
+                      <Image
+                        className="rounded-[24px]"
+                        src={restaurant.img}
+                        alt="icon"
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    </div>
+                    <div>
+                      <div className={styles.nameContainer}>
+                        <div className={styles.nameText}>
+                          <h1>{restaurant?.name}</h1>
+                        </div>
+                        <h3>Description</h3>
+                        <div className={styles.description}>{restaurant?.description}</div>
+                      </div>
+                      <div className={styles.belowContainer}>
+                        <div className={styles.addressContainer}>
+                          <div className={styles.address}>
+                            <div>
+                              <div><h1>Street :&ensp;</h1> <div>{restaurant?.street}</div></div>
+                              <div><h1>District :&ensp;</h1> <div>{restaurant?.district}</div></div>
+                              <div><h1>Zip Code :&ensp;</h1> <div>{restaurant?.zipcode}</div></div>
+                            </div>
+                            <div>
+                              <div><h1>Locality :&ensp;</h1> <div>{restaurant?.locality}</div></div>
+                              <div><h1>Province :&ensp;</h1> <div>{restaurant?.province}</div></div>
+                              <div><h1>Telephone :&ensp;</h1> <div>{restaurant?.tel}</div></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className={styles.dateContainer}>
+                          <div className={styles.time}>
+                            <h1>Open - Close Time</h1>
+                            <div>
+                              <div>{restaurant?.open}</div>
+                              <h2>&ensp;-&ensp;</h2>
+                              <div>{restaurant?.close}</div>
+                            </div>
+                          </div>
+                          <div className={styles.date}>
+                            <h1>Opening Date</h1>
+                            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+                              (day, index) => (
+                                <div key={index}>
+                                  <h2>{day}</h2>
+                                  <input
+                                    type="checkbox"
+                                    checked={!restaurant?.closeDate.includes(index)}
+                                    style={{ accentColor: "#333333" }}
+                                  />
+                                </div>
+                              )
+                            )}
+                          </div>
+                          <div></div>
+                        </div>
+                      </div>
+                      <div className={styles.buttonContainer}>
+                        <div className="flex flex-row ml-auto">
+                          <button className={styles.button} onClick={handleRestaurantDelete}>Delete</button>
+                          <a href={`/restaurants/${restaurant._id}/update`}><button className={styles.button}>Edit</button></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div> : <a href="/restaurants/owner/create"><button className={styles.createButton}><AddCircleOutlineIcon /> Create Your Restaurant</button></a>
+              }
             </div>
-          </div>
-          <div className={styles.dateContainer}>
-            <div className={styles.time}>
-              <h1>Open - Close Time</h1>
-              <div>
-                <div>{restaurant?.open}</div>
-                <h2>&ensp;-&ensp;</h2>
-                <div>{restaurant?.close}</div>
-              </div>
-            </div>
-            <div className={styles.date}>
-              <h1>Opening Date</h1>
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
-                (day, index) => (
-                  <div key={index}>
-                    <h2>{day}</h2>
-                    <input
-                      type="checkbox"
-                      checked={!restaurant?.closeDate.includes(index)}
-                      style={{accentColor: "#333333"}}
-                    />
-                  </div>
-                )
-              )}
-            </div>
-            <div></div>
-          </div>
-        </div>
-        <div className={styles.buttonContainer}>
-          <div className="flex flex-row ml-auto">
-          <button className={styles.button} onClick={handleRestaurantDelete}>Delete</button>
-          <a href={`/restaurants/${restaurant._id}/update`}><button className={styles.button}>Edit</button></a>
-          </div>
-        </div>
-      </div>
-      </div> : <a href="/restaurants/owner/create"><button className={styles.createButton}><AddCircleOutlineIcon/> Create Your Restaurant</button></a>
+          </>
+        )
       }
-    </div>
+    </>
   );
 }

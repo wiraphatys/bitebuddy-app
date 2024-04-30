@@ -44,27 +44,30 @@ export default function TopMenu() {
                 {
                 role !== 'owner' ? 
                 <div>
-                <Link href={role ? '/restaurants/' : '/signin'}>
-                    <SearchIcon />
+                <Link className="px-2 hover:text-black hover:font-bold" href={role ? '/restaurants/' : '/signin'}>
+                    restaurant
                 </Link>
-                <Link href={role ? '/myreservation/' : '/signin'}>
+                <Link className="px-2 hover:text-black hover:font-bold" href={role ? '/myreservation/' : '/signin'}>
                     reservation
                 </Link>
-                <Link  href={role ? '/profile' : '/signin'}>
+                <Link className="px-2 hover:text-black hover:font-bold"  href={role ? '/profile' : '/signin'}>
                     account
                 </Link>
                 </div> : 
                 <div>
-                <Link href={`/myreservation/${restaurant?._id}`}>
-                    reservation
-                </Link>
-                <Link href={`/menu/${restaurant?._id}`}>
+                <Link className="px-2 hover:text-black hover:font-bold" href={`/menu/${restaurant?._id}`}>
                     menu
                 </Link>
-                <Link href={`/review/${restaurant?._id}`}>
+                <Link className="px-2 hover:text-black hover:font-bold" href={`/review/${restaurant?._id}`}>
                     review
                 </Link>
-                <Link href={role ? '/profile' : '/signin'}>
+                <Link className="px-2 hover:text-black hover:font-bold" href={`/restaurants/owner`}>
+                    restaurant
+                </Link>
+                <Link className="px-2 hover:text-black hover:font-bold" href={`/myreservation/${restaurant?._id}`}>
+                    reservation
+                </Link>
+                <Link className="px-2 hover:text-black hover:font-bold" href={role ? '/profile' : '/signin'}>
                     account
                 </Link>
                 </div>

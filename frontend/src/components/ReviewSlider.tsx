@@ -10,20 +10,15 @@ import { useRouter } from "next/navigation";
 export default function RestaurantSlider({restaurantsJson}: {restaurantsJson: RestaurantJson}) {
   const router = useRouter()
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (localStorage.getItem('role') === "owner" || !localStorage.getItem('role')){
-        router.push('/');
-      }
-    }
-  }, []);
-  const restaurants = restaurantsJson
-  const settings = {
-    dot: false,
+    fetchReviews();
+  },[])
+    const settings = {
+    dots: true,
     infinite: false,
     speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
+    slidesToShow: 5,
     swipeToSlide: true,
+    variableWidth: true,
     nextArrow: (
       <div>
         <div className="next-slick-arrow">
@@ -44,8 +39,10 @@ export default function RestaurantSlider({restaurantsJson}: {restaurantsJson: Re
     <div>
       <Slider {...settings}>
       {
-        restaurants.data.map((restaurantItem: RestaurantItem) => (
-          <RestaurantCard name={restaurantItem.name} img={restaurantItem.img} open={restaurantItem.open} close={restaurantItem.close} avgRating={restaurantItem.averageRating} id={restaurantItem._id}/>
+        reviewItems?.map((reviewItem: ReviewItem) => (
+          <div key={reviewItem._id} className="mr-6">
+            <ReviewCard name={reviewItem.user.email} nameRes={reviewItem.restaurant.name} img={(rid) ? reviewItem.user.img : reviewItem.restaurant.img} comment={reviewItem.comment} rating={reviewItem.rating} rid={reviewItem._id} fetchReview={fetchReviews}/>
+          </div>
         ))
       }
       </Slider>

@@ -204,6 +204,25 @@ exports.createReservation = async (req, res, next) => {
             })
         }
 
+        // Check if the reservation datetime is within the restaurant's operating hours
+        const reservationDateTime = new Date(req.body.datetime);
+        const reservationDay = reservationDateTime.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        const reservationHour = reservationDateTime.getHours();
+        const reservationMinute = reservationDateTime.getMinutes();
+
+        const [openHour, openMinute] = restaurant.open.split(':').map(Number);
+        const [closeHour, closeMinute] = restaurant.close.split(':').map(Number);
+
+        const isOpenHour = (reservationHour > openHour) || (reservationHour === openHour && reservationMinute >= openMinute);
+        const isCloseHour = (reservationHour < closeHour) || (reservationHour === closeHour && reservationMinute < closeMinute);
+
+        if (restaurant.closeDate.includes(reservationDay) || !isOpenHour || !isCloseHour) {
+            return res.status(400).send({
+                success: false,
+                message: 'The reservation time is outside the restaurant operating hours.'
+            });
+        }
+
         const reservation = await Reservation.create(req.body);
         return res.status(201).send({
             success: true,
@@ -225,6 +244,27 @@ exports.createReservation = async (req, res, next) => {
 exports.updateReservation = async (req, res, next) => {
     try {
         let reservation = await Reservation.findById(req.params.id);
+        if (req.body.datetime) {
+            const restaurant = await Restaurant.findById(reservation.restaurant);
+            // Check if the reservation datetime is within the restaurant's operating hours
+            const reservationDateTime = new Date(req.body.datetime);
+            const reservationDay = reservationDateTime.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+            const reservationHour = reservationDateTime.getHours();
+            const reservationMinute = reservationDateTime.getMinutes();
+
+            const [openHour, openMinute] = restaurant.open.split(':').map(Number);
+            const [closeHour, closeMinute] = restaurant.close.split(':').map(Number);
+
+            const isOpenHour = (reservationHour > openHour) || (reservationHour === openHour && reservationMinute >= openMinute);
+            const isCloseHour = (reservationHour < closeHour) || (reservationHour === closeHour && reservationMinute < closeMinute);
+
+            if (restaurant.closeDate.includes(reservationDay) || !isOpenHour || !isCloseHour) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'The reservation time is outside the restaurant operating hours.'
+                });
+            }
+        }
 
         if (req.user.role !== "admin") {
             if (reservation && req.user.id === reservation.user.toString()) {

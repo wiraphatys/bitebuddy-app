@@ -37,11 +37,14 @@ function SignInForm() {
 
 
                 setTimeout(() => {
-                    if(role === 'user' || 'admin'){
-                        router.push('/restaurants')
-                    }else {
-                        router.push('/restaurants/owner')
-                    }
+                    router.push('/')
+                    // if (role === 'owner') {
+                    //     router.push('/restaurants/owner')
+                    // } else if (role === 'user' || role === 'admin') {
+                    //     router.push('/restaurants')
+                    // } else {
+                    //     router.push('/')
+                    // }
                 }, 1000)
             }else{
                 throw new Error('Sign In failed.');

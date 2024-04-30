@@ -143,10 +143,7 @@ exports.getReviews = async (req, res, next) => {
             } else {
                 const reviews = await Review.find({ restaurant: req.params.restaurantId }).populate({
                     path: "user",
-                    select: "email"
-                }).populate({
-                    path: "restaurant",
-                    select: "name tel"
+                    select: "email img"
                 })
 
                 if (!reviews) {
@@ -154,6 +151,12 @@ exports.getReviews = async (req, res, next) => {
                         success: false,
                         message: `Not found review ID of ${req.params.id}`
                     })
+                }
+
+                for (const review of reviews) {
+                    if (review.user.img) {
+                        review.user.img = await getImageUrl(review.user.img)
+                    }
                 }
 
                 return res.status(200).json({
@@ -263,6 +266,11 @@ exports.createReview = async (req, res, next) => {
         req.body.restaurant = req.params.restaurantId;
         req.body.user = req.user.id;
 
+        if (req.body.comment.trim() === "") return res.status(400).json({
+            success: false,
+            message: "comment cannot be null"
+        })
+
         const restaurant = await Restaurant.findById(req.params.restaurantId);
 
         if (!restaurant) {
@@ -295,7 +303,7 @@ exports.createReview = async (req, res, next) => {
         console.log(err);
 
         if (req.body.rating < 0 || req.body.rating > 5) {
-            return res.status(400).json({
+            return res.status(400).send({
                 success: false,
                 message: `rating value can only between 0-5`
             });
@@ -390,7 +398,7 @@ exports.deleteReviewById = async (req, res, next) => {
 
             await review.deleteOne();
 
-            return res.status(200).sjon({
+            return res.status(200).json({
                 success: true,
                 data: {}
             })

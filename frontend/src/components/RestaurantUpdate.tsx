@@ -143,10 +143,11 @@ export default function RestaurantUpdate({ rid }: { rid: string }) {
     <div className={styles.container}>
       <div className={styles.imgContainer}>
         <Image
+          className="rounded-[24px]"
           src={restaurant ? restaurant.img : '/test/'}
           alt="icon"
           layout="fill"
-          objectFit="contain"
+          objectFit="cover"
         />
       </div>
       <div>
