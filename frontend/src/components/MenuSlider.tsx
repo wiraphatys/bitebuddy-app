@@ -13,30 +13,30 @@ import { AppDispatch, useAppSelector } from "@/redux/store";
 import { setInitialMenuItems } from "@/redux/features/menuSlice"
 import Menu from "./Menu";
 
-export default function MenuSlider({rid}: {rid: string}) {
-    const [role, setRole] = useState<string|null>();
-    const [create, setCreate] = useState(false);
-    const dispatch = useDispatch<AppDispatch>();
-    const menuItems = useAppSelector((state) => state.menuSlice.menuItems);
+export default function MenuSlider({ rid }: { rid: string }) {
+  const [role, setRole] = useState<string | null>();
+  const [create, setCreate] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const menuItems = useAppSelector((state) => state.menuSlice.menuItems);
 
-    useEffect(() => {
-        fetchMenu();
-    }, [rid]);
+  useEffect(() => {
+    fetchMenu();
+  }, [rid]);
 
-    const fetchMenu = async () => {
-      try {
-          const menuData = await getMenu(rid);
-          setRole(localStorage.getItem('role'))
-          console.log(menuData);
-          dispatch(setInitialMenuItems(menuData.data))
-          
-      } catch (error) {
-          console.error('Error fetching menu data:', error);
-      }
+  const fetchMenu = async () => {
+    try {
+      const menuData = await getMenu(rid);
+      setRole(localStorage.getItem('role'))
+      console.log(menuData);
+      dispatch(setInitialMenuItems(menuData.data))
+
+    } catch (error) {
+      console.error('Error fetching menu data:', error);
+    }
   };
-    const settings = {
-    dots: true,
-    infinite: true,
+  const settings = {
+    dots: role !== 'owner',
+    infinite: false,
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,
@@ -45,7 +45,7 @@ export default function MenuSlider({rid}: {rid: string}) {
     nextArrow: (
       <div>
         <div className="next-slick-arrow">
-            <svg xmlns="http://www.w3.org/2000/svg" stroke="black" height="24" viewBox="0 -960 960 960" width="24"><path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" stroke="black" height="24" viewBox="0 -960 960 960" width="24"><path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z" /></svg>
         </div>
       </div>
     ),
@@ -53,7 +53,7 @@ export default function MenuSlider({rid}: {rid: string}) {
     prevArrow: (
       <div>
         <div className="next-slick-arrow rotate-180">
-          <svg xmlns="http://www.w3.org/2000/svg" stroke="black" height="24" viewBox="0 -960 960 960" width="24"><path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" stroke="black" height="24" viewBox="0 -960 960 960" width="24"><path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z" /></svg>
         </div>
       </div>
     ),
@@ -61,23 +61,23 @@ export default function MenuSlider({rid}: {rid: string}) {
   return (
     <div>
       {
-        role == 'owner' ? <button className={styles.createButton} onClick={() => setCreate(true)}><AddCircleOutlineIcon/> Add Your Menu</button> : null
+        role == 'owner' ? <button className={styles.createButton} onClick={() => setCreate(true)}><AddCircleOutlineIcon /> Add Your Menu</button> : null
       }
       {
-        create ? <MenuCard rid={rid} setCreate={setCreate} fetchMenu={fetchMenu}/> : null
+        create ? <MenuCard rid={rid} setCreate={setCreate} fetchMenu={fetchMenu} /> : null
       }
-    {
-        (menuItems && menuItems?.length > 0) ? 
-      <Slider {...settings}>
       {
-        menuItems?.map((menuItem: MenuItem) => (
-          <div key={menuItem._id} className="mt-5 mr-6">
-            <Menu name={menuItem.name} img={menuItem.img} description={menuItem.description} mid={menuItem._id} rid={rid}/>
-          </div>
-        ))
+        (menuItems && menuItems?.length > 0) ?
+          <Slider {...settings}>
+            {
+              menuItems?.map((menuItem: MenuItem) => (
+                <div key={menuItem._id} className="mt-5 mr-6">
+                  <Menu name={menuItem.name} img={menuItem.img} description={menuItem.description} mid={menuItem._id} rid={rid} />
+                </div>
+              ))
+            }
+          </Slider> : ''
       }
-      </Slider> : ''
-    }
     </div>
   );
 }
