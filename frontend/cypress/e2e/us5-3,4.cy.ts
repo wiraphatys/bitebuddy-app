@@ -19,7 +19,7 @@ describe('us5-3,4', () => {
   })
 
   it('admin search correct restaurants', () => {
-    const restaurantName = 'ivory'
+    const restaurantName = 'Ivory'
 
     cy.intercept({
       method: 'GET',
@@ -48,7 +48,7 @@ describe('us5-3,4', () => {
   })
 
   it('admin search wrong restaurants', () => {
-    const restaurantName = 'invaliddd'
+    const restaurantName = 'Ivoryy'
 
     cy.intercept({
       method: 'GET',
@@ -70,7 +70,7 @@ describe('us5-3,4', () => {
   })
 
   it('admin search correct description', () => {
-    const description = 'french'
+    const description = 'French'
 
     cy.intercept({
       method: 'GET',
@@ -99,7 +99,7 @@ describe('us5-3,4', () => {
   })
 
   it('admin search wrong description', () => {
-    const description = 'invaliddd'
+    const description = 'Frenchh'
 
     cy.intercept({
       method: 'GET',
