@@ -1,5 +1,6 @@
-import { match } from "assert";
-import { json } from "stream/consumers";
+import { match } from "assert"
+import { json } from "stream/consumers"
+import config from "@/utils/config"
 
 describe('User searching test', () => {
   beforeEach(() => {
