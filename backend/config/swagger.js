@@ -15,7 +15,7 @@ const options = {
           "description": "SwaggerHub API Auto Mocking"
         },
         {
-          "url": "http://localhost:4000/api/v1"
+          "url": "https://bitebuddy-api.vercel.app/api/v1"
         }
       ],
       "tags": [
@@ -127,6 +127,40 @@ const options = {
                 }
               }
             }
+          }
+        },
+        "/users": {
+          "get": {
+            "tags": [
+              "Users"
+            ],
+            "summary": "Get all users",
+            "responses": {
+              "200": {
+                "description": "Successful response",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              },
+              "401": {
+                "description": "Unauthorized"
+              },
+              "403": {
+                "description": "Forbidden for non-admin users"
+              },
+              "500": {
+                "description": "Internal server error"
+              }
+            },
+            "security": [
+              {
+                "bearerAuth": []
+              }
+            ]
           }
         },
         "/users/{role}": {
