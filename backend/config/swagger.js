@@ -15,7 +15,7 @@ const options = {
           "description": "SwaggerHub API Auto Mocking"
         },
         {
-          "url": "https://bitebuddy-api.vercel.app/api/v1"
+          "url": "http://localhost:4000/api/v1"
         }
       ],
       "tags": [
