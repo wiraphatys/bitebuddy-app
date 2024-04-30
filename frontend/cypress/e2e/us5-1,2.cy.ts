@@ -12,10 +12,12 @@ describe('us5-1,2', () => {
       cy.get("[type='email']").type('user@test.com')
       cy.get("[type='password']").type('12345678')
       cy.get('button').click()
-    
-    // restaurants
-    cy.wait(2000)
+      cy.wait(2000)
     })
+
+    cy.visit('/restaurants')
+    cy.wait(4000)
+    // restaurants
   })
 
   it('user search correct restaurants', () => {
@@ -118,5 +120,9 @@ describe('us5-1,2', () => {
       expect(response?.body.data).be.not.null
       expect(response?.body.data).to.have.length(0)
     })
+  })
+
+  afterEach(() => {
+    cy.visit('/')
   })
 })

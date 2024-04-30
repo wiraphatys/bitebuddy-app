@@ -12,10 +12,12 @@ describe('us5-3,4', () => {
       cy.get("[type='email']").type('admin@cypress.com')
       cy.get("[type='password']").type('12345678')
       cy.get('button').click()
-    
-    // restaurants
-    cy.wait(2000)
+      cy.wait(2000)
     })
+
+    cy.visit('/restaurants')
+    cy.wait(4000)
+    // restaurants
   })
 
   it('admin search correct restaurants', () => {
@@ -118,5 +120,9 @@ describe('us5-3,4', () => {
       expect(response?.body.data).be.not.null
       expect(response?.body.data).to.have.length(0)
     })
+  })
+  
+  afterEach(() => {
+    cy.visit('/')
   })
 })
