@@ -17,7 +17,6 @@ export default function OverallRating ({rid}: {rid:string}) {
     const [restaurant, setRestaurant] = useState<RestaurantItem>();
     const dispatch = useDispatch<AppDispatch>();
     const reviewItems = useAppSelector((state) => state.reviewSlice.reviewItems);
-    const [review, setReview] = useState<ReviewItem[]>();
     const [role, setRole] = useState('');
     const [rate5, setRate5] = useState<number>(0);
     const [rate4, setRate4] = useState<number>(0);
@@ -47,21 +46,20 @@ export default function OverallRating ({rid}: {rid:string}) {
             }
         };
         
-        setReview(reviewItems)
         fetchReviews();
         fetchRestaurant();
     }, [reviewItems]);
 
     const fetchReviews = async () => {
         try {
-            if (review) {
+            if (reviewItems) {
                 let count5 = 0;
                 let count4 = 0;
                 let count3 = 0;
                 let count2 = 0;
                 let count1 = 0;
         
-                review.forEach((review) => {
+                reviewItems.forEach((review) => {
                     if (review.rating === 5) {
                         count5++;
                     } else if (review.rating === 4) {
@@ -80,7 +78,7 @@ export default function OverallRating ({rid}: {rid:string}) {
                 setRate3(count3);
                 setRate2(count2);
                 setRate1(count1);
-                setTotal(review.length);
+                setTotal(reviewItems.length);
             }
         } catch (error) {
             console.error('Error fetching reviews data:', error);
