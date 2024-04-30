@@ -1,5 +1,6 @@
 import { request } from "http"
 import config from "@/utils/config"
+import { RestaurantItem } from "interface"
 
 describe('us5-3,4', () => {
   beforeEach(() => {
@@ -34,7 +35,7 @@ describe('us5-3,4', () => {
     cy.get('div').get('div').get('div').get('input').first().type(restaurantName)
     cy.get('div').get('div').get('div').get('button').click()
 
-    var restaurants:string[] = []
+    var restaurants: RestaurantItem[] = []
 
     cy.wait(2000)
     cy.wait('@getRestaurant').should(({response}) => {
@@ -43,7 +44,7 @@ describe('us5-3,4', () => {
       expect(response?.body.data).not.to.have.length(0)
       restaurants = response?.body.data 
     }).then(()=>{
-      restaurants.forEach( (restaurant) => {
+      restaurants.forEach( (restaurant: RestaurantItem) => {
         expect(restaurant.name.toLowerCase()).include(restaurantName.toLowerCase())
       })
     })
@@ -85,7 +86,7 @@ describe('us5-3,4', () => {
     cy.get('div').get('div').get('div').get('input').first().type(description)
     cy.get('div').get('div').get('div').get('button').click()
 
-    var restaurants:string[] = []
+    var restaurants: RestaurantItem[] = []
 
     cy.wait(2000)
     cy.wait('@getRestaurant').should(({response}) => {
@@ -94,7 +95,7 @@ describe('us5-3,4', () => {
       expect(response?.body.data).not.to.have.length(0)
       restaurants = response?.body.data 
     }).then(()=>{
-      restaurants.forEach( (restaurant) => {
+      restaurants.forEach( (restaurant: RestaurantItem) => {
         expect(restaurant.description.toLowerCase()).include(description.toLowerCase())
       })
     })
