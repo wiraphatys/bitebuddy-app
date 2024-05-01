@@ -7,7 +7,6 @@ exports.deleteReviewById = async (req, res, next) => {
     try {
         let review = await Review.findById(req.params.id);
 
-        if (req.user.role !== "admin") {
             if (review && req.user.id === review.user.toString()) {
                 await review.deleteOne();
                 return res.status(200).json({
@@ -20,7 +19,6 @@ exports.deleteReviewById = async (req, res, next) => {
                     message: `This user ${req.user.id} is not authorized to delete this review`
                 })
             }
-        }
     } catch (err) {
         res.status(500).json({
             success: false,
