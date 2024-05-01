@@ -54,10 +54,11 @@ export default function HomePage() {
         </div>
         <div className={styles.rightBlock}>
           <Image
-            src="/img/logo.png"
+            className="rounded-[24px]"
+            src="/img/banner.png"
             alt="icon"
             layout="fill"
-            objectFit="contain"
+            objectFit="cover"
           />
         </div>
       </div>
