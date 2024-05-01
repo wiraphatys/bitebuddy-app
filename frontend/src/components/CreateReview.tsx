@@ -58,9 +58,18 @@ export default function CreateReview({
       }
     } catch (error: any) {
       console.log(error.response);
+
+      if (error.response && error.response.status === 403) {
+        return Swal.fire({
+          title: "Failed to make review",
+          text: "User role admin not allowed to create review",
+          icon: "error",
+          timer: 2000,
+        });
+      }
       Swal.fire({
         title: "Failed to make review",
-        text: "You already made a review of this restaurant",
+        text: error.message || "You already made a review of this restaurant",
         icon: "error",
         timer: 2000,
       });

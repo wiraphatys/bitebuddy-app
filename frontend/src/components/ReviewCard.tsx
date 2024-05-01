@@ -103,7 +103,7 @@ export default function ReviewCard({name, nameRes, img, comment, rating, rid, fe
                 <button className={styles.delete} onClick={handleReviewDelete}><DeleteOutlineIcon/></button>:null
             }  
             {
-                ( role == 'admin' || user?.email == name )?
+                ( user?.email == name )?
                 <button className={styles.update} onClick={() => setCreate(true)}><MoreHorizIcon/></button>:null
             }
             <div className={styles.circle}>
